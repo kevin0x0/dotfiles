@@ -1,0 +1,28 @@
+#
+# Status Bar:
+#
+# Read `man 5 sway-bar` for more information about this section.
+bar {
+    font "JetBrainsMonoNL Nerd Font Mono" Bold 12
+    gaps 4
+    position top
+    tray_padding 4
+    separator_symbol "  "
+    set icon_theme Adwaita
+
+    # When the status_command prints a new line to stdout, swaybar updates.
+    # The default just shows the current date and time.
+    # status_command while date +'%Y-%m-%d %X'; do sleep 1; done
+    status_command i3status
+    colors {
+        separator #60FFBB
+        statusline #FFBBBB
+        background #00000060
+        focused_workspace #00000060 #00000060 #FFFFFF
+        active_workspace #00000060 #00000060 #AAAAAA
+        inactive_workspace #00000060 #00000060 #999999
+        urgent_workspace #00000060 #00000060 #FF0000
+    }
+}
+
+# vim: ft=swayconfig

@@ -1,0 +1,22 @@
+
+# fast start
+bindsym {
+  # Start terminal
+  $mod+Return exec $term
+  # Start broswer
+  $mod+Shift+Return exec $broswer
+  # Start proxy
+  $mod+Shift+p exec $proxy
+  # Start music player
+  $mod+m exec $musicplayer
+  # Screen shot
+  $mod+Shift+s exec grim
+  # Kill focused window
+  $mod+Shift+q kill
+  # Start your launcher
+  $mod+d exec $menu
+  # Start with prime-run
+  $mod+Shift+d exec prime-run $menu
+}
+
+# vim: ft=swayconfig
