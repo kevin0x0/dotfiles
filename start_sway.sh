@@ -9,6 +9,6 @@ export GLFW_IM_MODULE=fcitx
 # for grim
 export GRIM_DEFAULT_DIR=$XDG_PICTURES_DIR/screenshots
 
-sway "$@"
+exec sway "$@"
 
 # vim: ft=bash
