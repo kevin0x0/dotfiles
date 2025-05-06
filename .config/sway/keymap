@@ -121,9 +121,9 @@ bindsym $mod+r mode "resize"
 #
 # Utilities:
 #
-# Special keys to adjust volume via PulseAudio
-bindsym --locked XF86AudioLowerVolume exec amixer set Master 5%-
-bindsym --locked XF86AudioRaiseVolume exec amixer set Master 5%+
+# Special keys to adjust volume via amixer
+bindsym --locked XF86AudioLowerVolume exec amixer set Master 5%- && killall -USR1 i3status
+bindsym --locked XF86AudioRaiseVolume exec amixer set Master 5%+ && killall -USR1 i3status
 # Special keys to adjust brightness via brightnessctl
 # bindsym --locked XF86MonBrightnessDown exec brightnessctl set 5%-
 # bindsym --locked XF86MonBrightnessUp exec brightnessctl set 5%+
