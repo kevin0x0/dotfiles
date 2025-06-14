@@ -1,0 +1,18 @@
+font=JetBrainsMonoNL Nerd Font Mono, 12
+
+background-color=#303030E0
+text-color=#B8F0E4
+border-color=#353B38
+border-size=3
+border-radius=4
+
+default-timeout=5000
+
+format= <b>%s</b> <small><i>%a</i></small>\n%b
+
+
+[urgency=critical]
+text-color=#FF4060
+
+[urgency=low]
+text-color=#808080
