@@ -11,5 +11,5 @@ set editor = "nvim"
 source keybindings
 source /usr/share/neomutt/colorschemes/neonwolf-256.neomuttrc
 
+folder-hook "~/documents/mail/gmail-private/" 'source accounts/gmail-private'
 source "accounts/gmail-private"
-folder-hook $folder 'source accounts/gmail-private'
