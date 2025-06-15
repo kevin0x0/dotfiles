@@ -1,0 +1,6 @@
+#! /bin/sh
+
+gpgfile=$1
+key=$2
+
+gpg --decrypt -q $gpgfile | sed -n '/^'$key'/s/^'$key' //p'

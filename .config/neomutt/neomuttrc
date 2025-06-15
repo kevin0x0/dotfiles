@@ -1,0 +1,15 @@
+set mbox_type = Maildir
+set header_cache = "~/.cache/neomutt/header/"
+set message_cache_dir = "~/.cache/neomutt/message/"
+
+set use_threads = yes
+set sort = date
+set sort_aux = date
+
+set editor = "nvim"
+
+source keybindings
+source /usr/share/neomutt/colorschemes/neonwolf-256.neomuttrc
+
+source "accounts/gmail-private"
+folder-hook $folder 'source accounts/gmail-private'
