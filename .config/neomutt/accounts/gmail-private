@@ -2,6 +2,9 @@
 
 set my_address = "`~/scripts/decget ~/documents/accounts/gmail-private.gpg user`"
 set folder = "~/documents/mail/gmail-private/"
+unset imap_user
+unset imap_pass
+unset imap_send_id
 set spool_file = +INBOX
 
 alternates $my_address
@@ -27,6 +30,7 @@ mailboxes +INBOX $postponed "+[Gmail]/Sent Mail"
 mailboxes +[Gmail]/Starred $trash
 mailboxes "+[Gmail]/All Mail" +[Gmail]/Important
 
+unalternates *
 alternates $my_address
 
 # vim: ft=neomuttrc

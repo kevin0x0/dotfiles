@@ -9,7 +9,8 @@ set sort_aux = date
 set editor = "nvim"
 
 source keybindings
-source /usr/share/neomutt/colorschemes/neonwolf-256.neomuttrc
+source color
 
 folder-hook "~/documents/mail/gmail-private/" 'source accounts/gmail-private'
+
 source "accounts/gmail-private"
