@@ -1,0 +1,5 @@
+#!/bin/sh
+
+source ~/scripts/riced-wmenu
+
+wmenu-run $WMENU_COLORS -f "$WMENU_FONT"

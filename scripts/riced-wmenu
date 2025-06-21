@@ -1,0 +1,7 @@
+#!/bin/sh
+
+WMENU_FONT='JetBrainsMonoNL Nerd Font Mono, Normal 12'
+WMENU_COLORS='-S 4ca491 -s 000000 -N 353b38'
+riced_wmenu() {
+  wmenu $WMENU_COLORS -f "$WMENU_FONT" "$@"
+}
