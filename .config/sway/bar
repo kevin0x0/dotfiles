@@ -15,13 +15,13 @@ bar {
     # status_command while date +'%Y-%m-%d %X'; do sleep 1; done
     status_command i3status
     colors {
-        separator #60FFBB
-        statusline #FFBBBB
-        background #00000060
-        focused_workspace #00000060 #00000060 #FFFFFF
-        active_workspace #00000060 #00000060 #AAAAAA
-        inactive_workspace #00000060 #00000060 #999999
-        urgent_workspace #00000060 #00000060 #FF0000
+        separator #B8E8C4
+        statusline #B8E4F0
+        background #A8D0D418
+        focused_workspace #A8D0D418 #A8D0D418 #B8F0E4
+        active_workspace #A8D0D418 #A8D0D418 #FFF0C8
+        inactive_workspace #A8D0D418 #A8D0D418 #687A90
+        urgent_workspace #A8D0D418 #A8D0D418 #FF4060
     }
 }
 

@@ -16,3 +16,5 @@ text-color=#FF4060
 
 [urgency=low]
 text-color=#808080
+
+# vim: ft=dosini
