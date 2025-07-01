@@ -1,5 +1,5 @@
 
-font pango:JetBrainsMonoNL Nerd Font Mono Bold 12
+font pango:JetBrainsMonoNL Nerd Font Mono Normal 12
 default_border pixel 3
 seat * hide_cursor 5000
 seat * xcursor_theme capitaine-cursors
