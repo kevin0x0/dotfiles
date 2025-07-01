@@ -2,6 +2,10 @@
 # Reload the configuration file
 bindsym $mod+Shift+c reload
 
+# Toggle border
+bindsym $mod+bracketright border normal
+bindsym $mod+bracketleft border pixel
+
 # Exit sway (logs you out of your Wayland session)
 # bindsym $mod+Shift+e exec swaynag -t warning -m 'You pressed the exit shortcut. Do you really want to exit sway? This will end your Wayland session.' -B 'Yes, exit sway' 'swaymsg exit'
 bindsym $mod+Shift+e exit
@@ -89,11 +93,11 @@ bindsym $mod+c focus child
 
 # Notification
 # dismiss all notifications
-bindsym $mod+n makoctl dismiss -a
+bindsym $mod+n exec makoctl dismiss -a
 # restore notification
-bindsym $mod+Shift+n makoctl restore
+bindsym $mod+Shift+n exec makoctl restore
 # invoke action
-bindsym $mod+a makoctl invoke
+bindsym $mod+a exec makoctl invoke
 
 #
 # Scratchpad:

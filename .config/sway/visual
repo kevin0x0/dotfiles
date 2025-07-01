@@ -1,14 +1,21 @@
 
-font pango:"JetBrainsMonoNL Nerd Font Mono" Bold 12
+font pango:JetBrainsMonoNL Nerd Font Mono Bold 12
 default_border pixel 3
 seat * hide_cursor 5000
 seat * xcursor_theme capitaine-cursors
 gaps inner 4
 
+exec_always {
+  gsettings set $gnome-schema gtk-theme 'Materia'
+  #gsettings set $gnome-schema icon-theme 'Your icon theme'
+  #gsettings set $gnome-schema cursor-theme 'Your cursor Theme'
+  #gsettings set $gnome-schema font-name 'Your font name'
+}
+
 smart_borders on
 
-client.focused #4c7899 #285577 #ffffff #2c5a48 #4ca491
-client.focused_inactive #333333 #5f676a #ffffff #184d3b90 #287d6b90
-client.unfocused #333333 #222222 #888888 #184d3b20 #287d6b20
+client.focused #4ca491 #4ca491 #ffffff #2c5a48 #4ca491
+client.focused_inactive #184d3b90 #184d3b90 #ffffff #184d3b90 #287d6b90
+client.unfocused #184d3b20 #184d3b20 #888888 #184d3b20 #287d6b20
 
 # vim: ft=swayconfig

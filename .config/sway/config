@@ -2,10 +2,10 @@
 include "output"
 include "input"
 include "bar"
-include "visual"
 include "autostart"
 include "variables"
 include "keymap"
 include "start"
+include "visual"
 
 include /etc/sway/config.d/*
