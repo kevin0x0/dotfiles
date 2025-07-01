@@ -47,4 +47,7 @@ bind index          <return>    display-message
 bind generic,index,pager  h     noop
 bind generic,index,pager  h     help
 
+# Synchronize
+macro index,pager $ "<enter-command>unset wait_key<enter><shell-escape>mbsync -a >/dev/null 2>&1 &<enter><enter-command>set wait_key=yes<enter>" "Sync mailbox"
+
 # vim: ft=neomuttrc

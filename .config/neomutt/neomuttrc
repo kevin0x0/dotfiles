@@ -14,3 +14,15 @@ source color
 folder-hook "~/documents/mail/gmail-private/" 'source accounts/gmail-private'
 
 source "accounts/gmail-private"
+
+set crypt_auto_pgp = yes
+set crypt_auto_encrypt = no
+set crypt_auto_sign = no
+set crypt_reply_sign = yes
+set crypt_reply_sign_encrypted = yes
+set crypt_use_gpgme = yes
+set crypt_verify_sig = yes
+
+set pgp_self_encrypt = yes
+set pgp_sign_as = "0x8A455B651AF295E2"
+set pgp_use_gpg_agent = yes
