@@ -1,0 +1,5 @@
+
+. /usr/share/bash-completion/completions/git
+eval $(complete -p git | sed 's/\<git\>/dotfiles/')
+
+# vim: ft=bash
