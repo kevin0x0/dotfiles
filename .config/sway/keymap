@@ -98,6 +98,8 @@ bindsym $mod+n exec makoctl dismiss -a
 bindsym $mod+Shift+n exec makoctl restore
 # invoke action
 bindsym $mod+a exec makoctl invoke
+# invoke action selected via riced-wmenu
+bindsym $mod+Shift+a exec makoctl menu -- ~/scripts/riced-wmenu -l 2
 
 #
 # Scratchpad:
