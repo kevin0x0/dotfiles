@@ -1,0 +1,5 @@
+# Font by fontconfig format
+RICE_FONT_FC='JetBrainsMonoNL Nerd Font Mono, Normal 12'
+RICE_WMENU_COLORS='-S 4ca491 -s 000000 -N 353b38'
+
+# vim: ft=bash
