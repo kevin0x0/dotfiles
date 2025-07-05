@@ -1,8 +1,7 @@
 
 output eDP-1 {
   resolution 1920x1080@165.014Hz position 1920 1
-  # bg /home/kevin/pictures/background/yunjin.png stretch
-  bg /home/kevin/pictures/background/mirror.png stretch
+  bg $background stretch
 }
 
 # vim: ft=swayconfig

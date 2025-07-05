@@ -3,12 +3,12 @@
 #
 # Read `man 5 sway-bar` for more information about this section.
 bar {
-    font "JetBrainsMonoNL Nerd Font Mono" Bold 12
+    font $font, Bold 12
     gaps 4
     position top
     tray_padding 4
     separator_symbol "  "
-    set icon_theme Adwaita
+    set icon_theme $icon-theme
 
     # When the status_command prints a new line to stdout, swaybar updates.
     # The default just shows the current date and time.

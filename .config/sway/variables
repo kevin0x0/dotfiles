@@ -13,4 +13,13 @@ set $proxy /opt/clash-for-windows-bin/cfw
 set $broswer firefox
 set $musicplayer /opt/YesPlayMusic/yesplaymusic
 
+set $gnome-schema org.gnome.desktop.interface
+
+set $background /home/kevin/pictures/background/mirror.png
+
+set $font JetBrainsMonoNL Nerd Font Mono
+set $gtk-theme Materia
+set $icon-theme Adwaita
+set $cursor-theme capitaine-cursors
+
 # vim: ft=swayconfig
