@@ -25,4 +25,4 @@ ps1_njob() {
     echo " ($njob)"
   fi
 }
-PS1='\[\e[1m\e[36m\]\u\[\e[37m\]@\[\e[35m\]\h \[\e[37m\]\w\[\e[31m\]$(ps1_exitcode)\[\e[0m\]\[\e[34m\]$(ps1_njob)\[\e[0m\]\n\$ '
+PS1='\[\e[1m\e[36m\]\u\[\e[37m\]@\[\e[35m\]\h \[\e[37m\]\w\[\e[31m\]$(ps1_exitcode)\[\e[34m\]$(ps1_njob)\[\e[0m\]\n\[\e[1m\]\$\[\e[0m\] '
