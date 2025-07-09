@@ -9,7 +9,7 @@ set $right l
 
 set $term foot
 set $menu riced-wmenu-run
-set $proxy /opt/clash-for-windows-bin/cfw
+set $proxy clash-start
 set $broswer firefox
 set $musicplayer /opt/YesPlayMusic/yesplaymusic
 
