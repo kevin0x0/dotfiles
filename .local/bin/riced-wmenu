@@ -1,0 +1,7 @@
+#!/bin/sh
+
+for config in ${XDG_CONFIG_HOME:-$HOME/.config}/riced-wmenu/*; do
+  . "$config"
+done
+
+exec wmenu $COLORS -f "$FONT" "$@"

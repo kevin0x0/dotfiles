@@ -1,0 +1,29 @@
+#!/usr/bin/bash
+
+set -e
+set -o pipefail
+
+error() {
+  echo $1
+  exit 1
+}
+
+CLASH_CONFIG_HOME=${XDG_CONFIG_HOME:=$HOME/.config}/clash
+
+if ! [ -d $CLASH_CONFIG_HOME ]; then
+  error "$CLASH_CONFIG_HOME does not exist"
+fi
+
+DOWNLOAD_URL="$(~/scripts/decget ~/documents/downloads_url.gpg proxies-for-clash)"
+
+if [ -z "$DOWNLOAD_URL" ]; then
+  error "Unable to find proxes-for-clash in ~/documents/downloads_url.gpg"
+fi
+
+curl "$DOWNLOAD_URL" | cat - "$CLASH_CONFIG_HOME/tun.yaml" >"$CLASH_CONFIG_HOME/config.yaml"
+
+# Notify clash to update config
+if ps -A | grep clash; then
+  ~/scripts/clash-stop
+  ~/scripts/clash-start
+fi

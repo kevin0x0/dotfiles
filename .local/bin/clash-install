@@ -1,0 +1,30 @@
+#!/usr/bin/bash
+
+set -e
+set -o pipefail
+
+error() {
+  echo $1
+  exit 1
+}
+
+BIN_DIR=~/.local/bin
+
+if ! [ -d "$BIN_DIR" ]; then
+  error "$BIN_DIR does not exist or is not a directory"
+fi
+
+if [ -e "$BIN_DIR/clash" ]; then
+  error "Clash already installed"
+fi
+
+DOWNLOAD_URL="$(~/scripts/decget ~/documents/downloads_url.gpg clash-premium)"
+if [ -z $DOWNLOAD_URL ]; then
+  error "Unable to find clash-premium in ~/documents/downloads_url.gpg"
+fi
+
+if ! curl "$DOWNLOAD_URL" | gunzip >"$BIN_DIR/clash"; then
+  [ -e "$BIN_DIR/clash" ] && rm "$BIN_DIR/clash" 
+fi
+
+chmod u+x "$BIN_DIR/clash"
