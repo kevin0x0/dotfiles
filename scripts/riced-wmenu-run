@@ -1,4 +1,0 @@
-#!/bin/sh
-
-source ~/scripts/rice-config
-exec wmenu-run $RICE_WMENU_COLORS -f "$RICE_FONT_FC" "$@"
