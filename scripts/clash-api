@@ -1,0 +1,68 @@
+#!/usr/bin/bash
+
+set -e
+set -o pipefail
+
+error() {
+  echo $1
+  exit 1
+}
+
+urlencode() {
+  local str="$1" result=''
+  for ((i = 0; i < ${#str}; i++)); do
+    local ch=${str:i:1}
+    if [[ "$ch" =~ [a-zA-Z0-9.~_-] ]]; then
+      result+="$ch"
+    else
+      result+=$(printf '%%%02X' "'$ch")
+    fi
+  done
+  echo "$result"
+}
+
+check_opt_value() {
+  if [ "$#" -eq 1 ]; then
+    error "Option '$1' expect a value"
+  fi
+}
+
+HTTP_METHOD=GET
+API_BASE=http://localhost:9090
+API_METHOD=
+HTTP_BODY=
+EXTRA_ARGS=()
+
+while [ "$#" -ne 0 ]; do
+  case "$1" in
+    -X)
+      check_opt_value
+      shift
+      HTTP_METHOD=$1
+      ;;
+    --base|-B)
+      check_opt_value
+      shift
+      API_BASE=$1
+      ;;
+    -d)
+      check_opt_value
+      shift
+      HTTP_BODY=$1
+      ;;
+    -*)
+      error "Unknown option $1"
+      ;;
+    *)
+      API_METHOD+=${1// /%20}/
+      ;;
+  esac
+  shift
+done
+
+
+if [ -n "$HTTP_BODY" ]; then
+  EXTRA_ARGS=(-H "Content-Type: application/json" -d "$HTTP_BODY")
+fi
+
+curl -s -X "$HTTP_METHOD" "$API_BASE/$API_METHOD" "${EXTRA_ARGS[@]}"
