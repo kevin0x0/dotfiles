@@ -1,0 +1,5 @@
+#!/usr/bin/bash
+
+CLASH_CONFIG_HOME=${XDG_CONFIG_HOME:=$HOME/.config}/clash
+
+nohup sudo ~/.local/bin/clash -d "$CLASH_CONFIG_HOME" >"${1:-/dev/null}" &

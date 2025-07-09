@@ -13,4 +13,6 @@ export XDG_CACHE_HOME=~/.cache
 
 source $XDG_CONFIG_HOME/user-dirs.dirs
 
+export PATH="~/.local/bin:$PATH"
+
 [[ -f ~/.bashrc ]] && . ~/.bashrc
