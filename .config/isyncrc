@@ -2,8 +2,8 @@
 IMAPAccount gmail-private
 Host imap.gmail.com
 Port 993
-UserCmd "~/scripts/decget ~/documents/accounts/gmail-private.gpg user"
-PassCmd "~/scripts/decget ~/documents/accounts/gmail-private.gpg app-password"
+UserCmd "decget ~/documents/accounts/gmail-private.gpg user"
+PassCmd "decget ~/documents/accounts/gmail-private.gpg app-password"
 TLSType IMAPS
 # AuthMechs XOAUTH2
 

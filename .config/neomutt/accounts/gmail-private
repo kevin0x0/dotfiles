@@ -1,6 +1,6 @@
 #IMAP
 
-set my_address = "`~/scripts/decget ~/documents/accounts/gmail-private.gpg user`"
+set my_address = "`decget ~/documents/accounts/gmail-private.gpg user`"
 set folder = "~/documents/mail/gmail-private/"
 unset imap_user
 unset imap_pass
@@ -15,7 +15,7 @@ alternates $my_address
 set real_name = 'kevin'
 set from = $my_address
 set smtp_url = "smtps://$my_address@smtp.gmail.com:465/"
-set smtp_pass = "`~/scripts/decget ~/documents/accounts/gmail-private.gpg app-password`"
+set smtp_pass = "`decget ~/documents/accounts/gmail-private.gpg app-password`"
 set ssl_force_tls = yes
 set ssl_starttls = yes
 set smtp_authenticators = "plain"
