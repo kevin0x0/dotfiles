@@ -1,0 +1,6 @@
+
+# Font by fontconfig format
+FONT='JetBrainsMonoNL Nerd Font Mono, Normal 12'
+COLORS='-S 4ca491 -s 000000 -N 353b38'
+
+# vim: ft=bash
