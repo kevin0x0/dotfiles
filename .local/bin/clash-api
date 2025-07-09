@@ -54,7 +54,7 @@ while [ "$#" -ne 0 ]; do
       error "Unknown option $1"
       ;;
     *)
-      API_METHOD+=${1// /%20}/
+      API_METHOD=${1// /%20}
       ;;
   esac
   shift
