@@ -1,0 +1,3 @@
+#!/usr/bin/bash
+
+SUDO_ASKPASS="$HOME/.local/bin/riced-wmenu-askpass" exec "$@"
