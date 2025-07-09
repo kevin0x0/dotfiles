@@ -21,3 +21,9 @@ if [ -z "$DOWNLOAD_URL" ]; then
 fi
 
 curl "$DOWNLOAD_URL" | cat - "$CLASH_CONFIG_HOME/tun.yaml" >"$CLASH_CONFIG_HOME/config.yaml"
+
+# Notify clash to update config
+if ps -A | grep clash; then
+  ~/scripts/clash-stop
+  ~/scripts/clash-start
+fi
