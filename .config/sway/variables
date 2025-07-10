@@ -9,7 +9,7 @@ set $right l
 
 set $term foot
 set $menu riced-wmenu-run
-set $proxy 'SUDO_ASKPASS=$HOME/.local/bin/riced-wmenu-askpass sudo --askpass clash-start || \
+set $proxy 'SUDO_ASKPASS="$HOME/.local/bin/riced-wmenu-askpass" clash-start --askpass || \
           { [ $LANG = "zh_CN.UTF-8" ] && notify-send --app-name "clash-start" "错误" "Clash 启动失败"; } || \
             notify-send --app-name "clash-start" "Error" "Clash unable to start." '
 set $broswer firefox
