@@ -23,7 +23,7 @@ fi
 curl "$DOWNLOAD_URL" | cat - "$CLASH_CONFIG_HOME/tun.yaml" >"$CLASH_CONFIG_HOME/config.yaml"
 
 # Notify clash to update config
-if ps -A | grep clash; then
+if ps -A | grep "$HOME/.local/bin/clash"; then
   clash-stop
   clash-start
 fi
