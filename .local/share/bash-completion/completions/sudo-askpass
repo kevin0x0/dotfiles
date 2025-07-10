@@ -1,8 +1,0 @@
-_comp_cmd_sudo_askpass()
-{
-  local cur prev words cword was_split comp_args
-  _comp_initialize -s -- "$@" || return
-  _comp_command_offset 1
-} && complete -F _comp_cmd_sudo_askpass sudo-askpass
-
-# ex: filetype=bash
