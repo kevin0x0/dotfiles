@@ -1,0 +1,3 @@
+for_window [app_id=mpv] floating enable
+
+# vim: ft=swayconfig

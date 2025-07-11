@@ -7,5 +7,6 @@ include "autostart"
 include "keymap"
 include "start"
 include "visual"
+include "layout"
 
 include /etc/sway/config.d/*

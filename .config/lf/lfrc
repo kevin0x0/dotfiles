@@ -1,0 +1,15 @@
+set previewer lf-previewer
+set incsearch true
+
+map <tab> toggle
+map <c-j> :{{
+  toggle
+  down
+}}
+map <c-k> :{{
+  toggle
+  up
+}}
+
+cmd open $lf-open $f
+map <c-o> $lf-open $fs

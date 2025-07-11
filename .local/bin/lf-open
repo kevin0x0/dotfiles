@@ -1,0 +1,46 @@
+#!/bin/bash
+
+set -e
+set -o pipefail
+
+shopt -s extglob
+
+IMAGES=()
+MEDIA=()
+TEXTS=()
+OTHERS=()
+
+for f in "$@"; do
+  case $(file --brief --mime-type "$f") in
+    image/*)
+      IMAGES+=("$f")
+      ;;
+    @(audeo|video)/*)
+      MEDIA+=("$f")
+      ;;
+    @(application/@(json|yaml|toml)|text/*))
+      TEXTS+=("$f")
+      ;;
+    *)
+      OTHERS+=("$f")
+      ;;
+  esac
+done
+
+if [ ${#IMAGES[@]} -ne 0 ]; then
+  # Gallary mode for multiple images
+  [ ${#IMAGES[@]} -gt 1 ] && gallary_mode=-g
+  swayimg ${gallary_mode:-} "${IMAGES[@]}" </dev/null &>/dev/null &
+fi
+
+if [ ${#MEDIA[@]} -ne 0 ]; then
+  mpv "${MEDIA[@]}" </dev/null &>/dev/null &
+fi
+
+if [ ${#OTHERS[@]} -ne 0 ]; then
+  setsid xdg-open "${OTHERS[@]}" </dev/null &>/dev/null
+fi
+
+if [ ${#TEXTS[@]} -ne 0 ]; then
+  nvim "${TEXTS[@]}" </dev/null 2>/dev/null
+fi
