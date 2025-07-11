@@ -1,4 +1,4 @@
-#!/bin/sh
+#!/usr/bin/sh
 
 CONFIG_FILE=${XDG_CONFIG_HOME:-$HOME/.config}/riced-wmenu
 [ -f "$CONFIG_FILE" ] && source "$CONFIG_FILE"
