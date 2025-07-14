@@ -1,0 +1,5 @@
+set active-region-start-color "\e[1m\e[32m\e[47m"
+set active-region-end-color "\e[0m"
+
+set colored-completion-prefix On
+set colored-stats On
