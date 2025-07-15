@@ -15,7 +15,7 @@ for f in "$@"; do
     image/*)
       IMAGES+=("$f")
       ;;
-    @(audeo|video)/*)
+    @(audio|video)/*)
       MEDIA+=("$f")
       ;;
     @(application/@(json|yaml|toml)|text/*))
