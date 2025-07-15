@@ -28,13 +28,21 @@ for f in "$@"; do
 done
 
 if [ ${#IMAGES[@]} -ne 0 ]; then
-  # Gallary mode for multiple images
-  [ ${#IMAGES[@]} -gt 1 ] && gallary_mode=-g
-  swayimg ${gallary_mode:-} "${IMAGES[@]}" </dev/null &>/dev/null &
+  if type -P swayimg &>/dev/null; then
+    # Gallary mode for multiple images
+    [ ${#IMAGES[@]} -gt 1 ] && gallary_mode=-g
+    swayimg ${gallary_mode:-} "${IMAGES[@]}" </dev/null &>/dev/null &
+  else
+    setsid xdg-open "${IMAGES[@]}" </dev/null &>/dev/null
+  fi
 fi
 
 if [ ${#MEDIA[@]} -ne 0 ]; then
-  mpv "${MEDIA[@]}" </dev/null &>/dev/null &
+  if type -P mpv &>/dev/null; then
+    mpv "${MEDIA[@]}" </dev/null &>/dev/null &
+  else
+    setsid xdg-open "${MEDIA[@]}" </dev/null &>/dev/null
+  fi
 fi
 
 if [ ${#OTHERS[@]} -ne 0 ]; then
@@ -42,5 +50,5 @@ if [ ${#OTHERS[@]} -ne 0 ]; then
 fi
 
 if [ ${#TEXTS[@]} -ne 0 ]; then
-  nvim "${TEXTS[@]}" </dev/null 2>/dev/null
+  ${EDITOR:-nvim} "${TEXTS[@]}" </dev/null 2>/dev/null
 fi
