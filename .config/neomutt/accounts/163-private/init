@@ -1,0 +1,14 @@
+set my_163_private_address = "`decget ~/documents/accounts/163-private.gpg user`"
+set my_163_private_smtp_pass = "`decget ~/documents/accounts/163-private.gpg app-password`"
+set my_163_private_imap_pass = "$my_163_private_smtp_pass"
+set my_163_private_sign_keyid = "`decget ~/documents/accounts/163-private.gpg pgp-sign-keyid`"
+set my_163_private_self_encrypt_keyid = "`decget ~/documents/accounts/163-private.gpg pgp-self-encrypt-keyid`"
+
+set my_163_private_source = enter
+source enter
+
+unmailboxes *
+mailboxes +INBOX +已发送
+# mailboxes +垃圾邮件 +广告邮件 +病毒文件夹 +草稿箱 +已删除
+
+# vim: ft=neomuttrc

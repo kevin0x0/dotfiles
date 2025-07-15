@@ -35,19 +35,24 @@ bind index                      za  collapse-thread
 bind index                      zA  collapse-all # Missing :folddisable/foldenable
 
 # Sidebar
-bind index,pager    B           sidebar-toggle-visible
-bind index,pager    K           sidebar-prev
-bind index,pager    J           sidebar-next
-bind index,pager    O           sidebar-open
-bind index,pager    A           what-key
+bind index,pager    B               sidebar-toggle-visible
+bind index,pager    K               sidebar-prev
+bind index,pager    J               sidebar-next
+bind index,pager    O               sidebar-open
+bind index,pager    A               what-key
 
-bind index          <enter>     display-message
-bind index          <return>    display-message
+bind index                         <enter>     display-message
+bind index                         <return>    display-message
+bind index                         l           display-message
+bind pager,attach,compose,query    h           exit
+bind pager                         l           view-attachments
+bind attach                        l           view-attach
+bind compose                       l           view-attach
+bind query                         l           mail
 
-bind generic,index,pager  h     noop
-bind generic,index,pager  h     help
+bind generic,index,pager        \Ch         help
 
-# Synchronize
-macro index,pager $ "<enter-command>unset wait_key<enter><shell-escape>mbsync -a >/dev/null 2>&1 &<enter><enter-command>set wait_key=yes<enter>" "Sync mailbox"
+# Query
+bind editor                     <tab>       complete-query
 
 # vim: ft=neomuttrc

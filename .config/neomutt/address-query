@@ -1,0 +1,19 @@
+#!/usr/bin/sh
+
+# Assume that there are no empty line
+make_result() {
+  IFS= read -n 1 A
+  if [ ${#A} -eq 0 ] || [ "$A" = $'\n' ]; then
+    echo "No matchs found"
+    exit 1
+  else
+    echo "Found"
+    echo -n "$A"
+    exec cat
+  fi
+}
+
+gpg -q --decrypt ~/documents/addressbook.gpg 2>/dev/null \
+  | head -q -n -1 2>/dev/null \
+  | fuzzy-query "$1" 2>/dev/null \
+  | make_result

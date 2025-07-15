@@ -1,0 +1,32 @@
+#!/usr/bin/bash
+
+set -e
+set -o pipefail
+
+if type -P fzf &>/dev/null; then
+  # Find fzf, just use it
+  exec fzf -f "$1"
+fi
+
+# Using grep to simulate fuzzy find
+
+pattern=$1
+ignore_case=
+
+# If Uppercased `pattern' equal o `pattern', then there are uppercase letters
+# in `pattern'. In such case we use case-sensitive search otherwise
+# case-insensitive search. This behaviour is to mimic fzf smart-case.
+if [ "${pattern@U}" = "$pattern" ]; then
+  ignore_case=--no-ignore-case
+else
+  ignore_case=--ignore-case
+fi
+
+# Insert regular expression `.*' after each character.
+# Example 'Hello' -> 'H.*e.*l.*l.*o.*'.
+if [ -z "$pattern" ]; then
+  pattern='.*'
+else
+  pattern=$(echo "$1" | sed 's/./&.*/g')
+fi
+exec grep "$ignore_case" "$pattern"

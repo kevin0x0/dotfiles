@@ -8,12 +8,8 @@ set sort_aux = date
 
 set editor = "nvim"
 
-source keybindings
-source color
-
-folder-hook "~/documents/mail/gmail-private/" 'source accounts/gmail-private'
-
-source "accounts/gmail-private"
+source "accounts/gmail-private/on-startup"
+source "accounts/163-private/on-startup"
 
 set crypt_auto_smime = no
 set crypt_auto_pgp = no
@@ -25,10 +21,9 @@ set crypt_reply_sign_encrypted = yes
 set crypt_use_gpgme = yes
 set crypt_verify_sig = yes
 
-set pgp_sign_as = `decget ~/documents/accounts/gmail-private.gpg pgp-sign-keyid`
-#set smime_sign_as = `decget ~/documents/accounts/gmail-private.gpg smime-sign-keyid`
-set pgp_use_gpg_agent = yes
+set query_command = "$XDG_CONFIG_HOME/neomutt/address-query %s"
+source keybindings
+source "colors/`termcolors`"
 
-set pgp_self_encrypt = yes
-set smime_self_encrypt = no
-set pgp_default_key = `decget ~/documents/accounts/gmail-private.gpg pgp-self-encrypt-keyid`
+# Synchronize
+macro index,pager $ "<shell-escape>mbsync -a<enter>" "Sync mailbox"
