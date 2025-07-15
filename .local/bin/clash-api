@@ -3,10 +3,7 @@
 set -e
 set -o pipefail
 
-error() {
-  echo $1
-  exit 1
-}
+source utils
 
 urlencode() {
   local str="$1" result=''
@@ -21,12 +18,6 @@ urlencode() {
   echo "$result"
 }
 
-check_opt_value() {
-  if [ "$#" -eq 1 ]; then
-    error "Option '$1' expect a value"
-  fi
-}
-
 HTTP_METHOD=GET
 API_BASE=http://localhost:9090
 API_METHOD=
@@ -36,19 +27,25 @@ EXTRA_ARGS=()
 while [ "$#" -ne 0 ]; do
   case "$1" in
     -X)
-      check_opt_value
+      [ "$#" -eq 1 ] && error "Option '$1' need a value"
       shift
       HTTP_METHOD=$1
       ;;
     --base|-B)
-      check_opt_value
+      [ "$#" -eq 1 ] && error "Option '$1' need a value"
       shift
       API_BASE=$1
       ;;
     -d)
-      check_opt_value
+      [ "$#" -eq 1 ] && error "Option '$1' need a value"
       shift
       HTTP_BODY=$1
+      ;;
+    --switch|-S)
+      [ "$#" -eq 1 ] && error "Option '$1' need a value"
+      shift
+      HTTP_METHOD=PUT
+      HTTP_BODY="{ \"name\": \"$1\" }"
       ;;
     -*)
       error "Unknown option $1"

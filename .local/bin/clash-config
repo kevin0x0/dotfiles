@@ -3,10 +3,7 @@
 set -e
 set -o pipefail
 
-error() {
-  echo $1
-  exit 1
-}
+source utils
 
 CLASH_CONFIG_HOME=${XDG_CONFIG_HOME:=$HOME/.config}/clash
 
