@@ -26,3 +26,7 @@ ps1_njob() {
   fi
 }
 PS1='\[\e[1m\e[36m\]\u\[\e[37m\]@\[\e[35m\]\h \[\e[37m\]\w\[\e[31m\]$(ps1_exitcode)\[\e[34m\]$(ps1_njob)\[\e[0m\]\n\[\e[1m\]\$\[\e[0m\] '
+
+if [ "$TERM" = Linux ]; then
+  LANG=en_US.UTF-8
+fi
