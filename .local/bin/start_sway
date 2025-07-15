@@ -17,7 +17,7 @@ export GLFW_IM_MODULE=fcitx
 export GRIM_DEFAULT_DIR="${XDG_PICTURES_DIR}/screenshots"
 
 # Export locale setting
-export LANG=zh_CM.UTF-8
+export LANG=zh_CN.UTF-8
 
 # Start sway with passed arguments
 exec sway "$@"
