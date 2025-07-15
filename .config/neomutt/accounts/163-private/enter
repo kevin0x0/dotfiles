@@ -23,7 +23,7 @@ set smtp_authenticators = "plain"
 # PGP and SMIME
 set pgp_sign_as = $my_163_private_sign_keyid
 # TODO: I prefer to use S/MIME for 163 account
-#set smime_sign_as = `decget ~/documents/accounts/163-private.gpg smime-sign-keyid`
+#set smime_sign_as = `decget /accounts/163-private.gpg smime-sign-keyid`
 set pgp_use_gpg_agent = yes
 
 set pgp_self_encrypt = yes

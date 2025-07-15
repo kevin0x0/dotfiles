@@ -7,7 +7,7 @@
 # time we enter the folder for this account.
 
 
-set folder = "~/documents/mail/gmail-private/"
+set folder = "$my_documents_dir/mail/gmail-private/"
 
 set my_gmail_private_source = init
 folder-hook $folder 'source $my_gmail_private_source'

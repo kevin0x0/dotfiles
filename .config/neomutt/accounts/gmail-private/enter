@@ -23,7 +23,7 @@ set smtp_authenticators = "plain"
 
 # PGP and SMIME
 set pgp_sign_as = $my_gmail_private_sign_keyid
-#set smime_sign_as = `decget ~/documents/accounts/gmail-private.gpg smime-sign-keyid`
+#set smime_sign_as = `decget $(xdg-user-dir DOCUMENTS)/accounts/gmail-private.gpg smime-sign-keyid`
 set pgp_use_gpg_agent = yes
 
 set pgp_self_encrypt = yes
