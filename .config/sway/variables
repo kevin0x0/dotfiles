@@ -22,7 +22,7 @@ set $musicplayer /opt/YesPlayMusic/yesplaymusic
 
 set $gnome-schema org.gnome.desktop.interface
 
-set $background /home/kevin/pictures/background/mirror.png
+set $background "$(xdg-user-dir PICTURES)/background/mirror.png"
 
 set $font JetBrainsMonoNL Nerd Font Mono
 set $gtk-theme Materia
