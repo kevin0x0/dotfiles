@@ -1,0 +1,116 @@
+#!/usr/bin/bash
+
+set -e
+set -o pipefail
+
+source utils
+
+opt_install_clash=
+opt_config_clash=
+opt_encrypt=
+opt_gpg_recipient=()
+
+dotfiles() {
+  cd "$HOME"
+  git --git-dir="$HOME/dotfiles.git" --work-tree="$HOME" "$@"
+}
+
+check_diff() {
+ if dotfiles diff --quiet --diff-filter=M; then
+   return $?
+ fi
+ while IFS=$'\n' read line; do
+   case "$line" in
+     *.gpg)
+       continue
+       ;;
+     *)
+       return 1
+       ;;
+   esac
+ done < <(dotfiles diff --quiet --diff-filter=M)
+}
+
+list_diff() {
+ while IFS=$'\n' read line; do
+   case "$line" in
+     *.gpg)
+       continue
+       ;;
+     *)
+       echo "$line"
+       ;;
+   esac
+ done < <(dotfiles diff --quiet --diff-filter=M)
+}
+
+while [ $# -ne 0 ]; do
+  case "$1" in
+    --install-clash|-i)
+      opt_install_clash=1
+      ;;
+    --config-clash|-c)
+      opt_config_clash=1
+      ;;
+    --encrypt|-e)
+      opt_encrypt=1
+      ;;
+    --recipient|-r)
+      [ $# -eq 1 ] && error "Option $1 needs a value"
+      shift
+      opt_gpg_recipient+=(-r "$1")
+      opt_encrypt=1
+      ;;
+    --hidden-recipient|-R)
+      [ $# -eq 1 ] && error "Option $1 needs a value"
+      shift
+      opt_gpg_recipient+=(-R "$1")
+      opt_encrypt=1
+      ;;
+    --all|-a)
+      opt_install_clash=1
+      opt_config_clash=1
+      opt_encrypt=1
+      ;;
+    *)
+      error "Unknown option: $1"
+      ;;
+  esac
+  shift
+done
+
+if ! check_diff; then
+  list_diff
+  error "The contents of files listed above are different from those in the repository,"$'\n'\
+"can not safely checkout."
+fi
+
+# Checkout
+dotfiles checkout -q
+
+
+# Create XDG user directories
+source "$XDG_CONFIG_HOME/user-dirs.dirs"
+mkdir -p "$XDG_DESKTOP_DIR"
+mkdir -p "$XDG_MUSIC_DIR"
+mkdir -p "$XDG_TEMPLATES_DIR"
+mkdir -p "$XDG_PUBLICSHARE_DIR"
+mkdir -p "$XDG_DOCUMENTS_DIR"
+mkdir -p "$XDG_PICTURES_DIR"
+mkdir -p "$XDG_VIDEOS_DIR"
+mkdir -p "$XDG_DOWNLOAD_DIR"
+
+# Create mail directories
+mkdir -p "$XDG_DOCUMENTS_DIR"/mail/gmail-private
+mkdir -p "$XDG_DOCUMENTS_DIR"/mail/163-private
+
+# Install Clash
+[ -n "$opt_install_clash" ] && clash-install
+
+# Config Clash
+[ -n "$opt_config_clash" ] && clash-config
+
+# Encrypt files using gpg
+if [ -n "$opt_encrypt" ]; then
+  find "$XDG_DOCUMENTS_DIR" -type f -name '*.gpg' | sed 's/\.gpg$//' | xargs -I FILE gpg -qe --yes "${opt_gpg_recipient[@]}" FILE
+fi
