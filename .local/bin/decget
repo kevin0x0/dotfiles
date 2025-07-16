@@ -14,7 +14,20 @@ set -o pipefail
 # - Key and value are separated by exactly one space.
 # - Extra spaces are treated as part of the value.
 
+# I have to determine error by myself.
+make_result() {
+  local ch
+  if ! read -N 1 ch; then
+    exit 1
+  fi
+  echo -n "$ch"
+  [ "$ch" = $'\n' ] && exit 1
+  cat
+}
+
 gpgfile=$1
 key=$2
 
-gpg --decrypt -q $gpgfile 2>/dev/null | sed -n '/^'$key'/s/^'$key' //p'
+# Append `|| true' to gpg command to avoid failure due to a suspicious bug.
+# See https://bugs.launchpad.net/ubuntu/+source/gnupg2/+bug/2024496
+{ gpg --decrypt -q "$gpgfile" 2>/dev/null || true; } | sed -n '/^'$key'/s/^'$key' //p' | make_result
