@@ -27,22 +27,22 @@ EXTRA_ARGS=()
 while [ "$#" -ne 0 ]; do
   case "$1" in
     -X)
-      [ "$#" -eq 1 ] && error "Option '$1' need a value"
+      [ "$#" -eq 1 ] && error "Option '$1' needs a value"
       shift
       HTTP_METHOD=$1
       ;;
     --base|-B)
-      [ "$#" -eq 1 ] && error "Option '$1' need a value"
+      [ "$#" -eq 1 ] && error "Option '$1' needs a value"
       shift
       API_BASE=$1
       ;;
     -d)
-      [ "$#" -eq 1 ] && error "Option '$1' need a value"
+      [ "$#" -eq 1 ] && error "Option '$1' needs a value"
       shift
       HTTP_BODY=$1
       ;;
     --switch|-S)
-      [ "$#" -eq 1 ] && error "Option '$1' need a value"
+      [ "$#" -eq 1 ] && error "Option '$1' needs a value"
       shift
       HTTP_METHOD=PUT
       HTTP_BODY="{ \"name\": \"$1\" }"
