@@ -7,7 +7,7 @@
 
 alias ls='ls --color=auto'
 alias grep='grep --color=auto'
-alias dotfiles='git --git-dir=$HOME/dotfiles.git/ --work-tree=$HOME'
+alias dotfiles='git --git-dir="$HOME/dotfiles.git/" --work-tree="$HOME"'
 
 # my PS1
 ps1_exitcode() {
