@@ -1,6 +1,7 @@
-#!/usr/bin/sh
+#!/usr/bin/bash
 
 set -e
+set -o pipefail
 
 # Decrypt a GPG file and extract the value for a given key.
 # 
