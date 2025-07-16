@@ -30,4 +30,8 @@ set pgp_self_encrypt = yes
 set smime_self_encrypt = no
 set pgp_default_key = $my_163_private_self_encrypt_keyid
 
+unmailboxes *
+mailboxes +INBOX +已发送
+# mailboxes +垃圾邮件 +广告邮件 +病毒文件夹 +草稿箱 +已删除
+
 # vim: ft=neomuttrc
