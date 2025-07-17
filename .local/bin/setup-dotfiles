@@ -2,11 +2,14 @@
 
 set -e
 set -o pipefail
+shopt -s nullglob
 
 source utils
 
 opt_install_clash=
 opt_config_clash=
+opt_xdg_dirs=
+opt_mail_dirs=
 opt_encrypt=
 opt_gpg_recipient=()
 
@@ -17,7 +20,7 @@ dotfiles() {
 
 check_diff() {
  if dotfiles diff --quiet --diff-filter=M; then
-   return $?
+   return 0
  fi
  while IFS=$'\n' read line; do
    case "$line" in
@@ -28,7 +31,7 @@ check_diff() {
        return 1
        ;;
    esac
- done < <(dotfiles diff --quiet --diff-filter=M)
+ done < <(dotfiles diff --name-only --diff-filter=M)
 }
 
 list_diff() {
@@ -41,7 +44,7 @@ list_diff() {
        echo "$line"
        ;;
    esac
- done < <(dotfiles diff --quiet --diff-filter=M)
+ done < <(dotfiles diff --name-only --diff-filter=M)
 }
 
 while [ $# -ne 0 ]; do
@@ -51,6 +54,12 @@ while [ $# -ne 0 ]; do
       ;;
     --config-clash|-c)
       opt_config_clash=1
+      ;;
+    --xdg-dirs|-x)
+      opt_xdg_dirs=1
+      ;;
+    --mail-dirs|-m)
+      opt_mail_dirs=1
       ;;
     --encrypt|-e)
       opt_encrypt=1
@@ -79,38 +88,47 @@ while [ $# -ne 0 ]; do
   shift
 done
 
-if ! check_diff; then
-  list_diff
-  error "The contents of files listed above are different from those in the repository,"$'\n'\
-"can not safely checkout."
+# Checkout
+if [ -n "$opt_checkout" ]; then
+  if ! check_diff; then
+    list_diff
+    error "The contents of files listed above are different from those in the repository,"$'\n'\
+      "can not safely checkout."
+  fi
+  dotfiles checkout -q
 fi
 
-# Checkout
-dotfiles checkout -q
+# Encrypt files using gpg
+if [ -n "$opt_encrypt" ]; then
+  if [ ${#opt_gpg_recipient[@]} -eq 0 ]; then
+    error "You should specify recipient for encryption."
+  fi
+  find "$XDG_DOCUMENTS_DIR" -type f -name '*.gpg' | sed 's/\.gpg$//' | xargs -I FILE gpg -qe --yes "${opt_gpg_recipient[@]}" FILE
+fi
 
+[ -f "$XDG_CONFIG_HOME/user-dirs.dirs" ] && source "$XDG_CONFIG_HOME/user-dirs.dirs"
 
 # Create XDG user directories
-source "$XDG_CONFIG_HOME/user-dirs.dirs"
-mkdir -p "$XDG_DESKTOP_DIR"
-mkdir -p "$XDG_MUSIC_DIR"
-mkdir -p "$XDG_TEMPLATES_DIR"
-mkdir -p "$XDG_PUBLICSHARE_DIR"
-mkdir -p "$XDG_DOCUMENTS_DIR"
-mkdir -p "$XDG_PICTURES_DIR"
-mkdir -p "$XDG_VIDEOS_DIR"
-mkdir -p "$XDG_DOWNLOAD_DIR"
+if [ -n "$opt_xdg_dirs" ]; then
+  mkdir -p "$XDG_DESKTOP_DIR"
+  mkdir -p "$XDG_MUSIC_DIR"
+  mkdir -p "$XDG_TEMPLATES_DIR"
+  mkdir -p "$XDG_PUBLICSHARE_DIR"
+  mkdir -p "$XDG_DOCUMENTS_DIR"
+  mkdir -p "$XDG_PICTURES_DIR"
+  mkdir -p "$XDG_VIDEOS_DIR"
+  mkdir -p "$XDG_DOWNLOAD_DIR"
+fi
 
 # Create mail directories
-mkdir -p "$XDG_DOCUMENTS_DIR"/mail/gmail-private
-mkdir -p "$XDG_DOCUMENTS_DIR"/mail/163-private
+if [ -n "$opt_mail_dirs" ]; then
+  for f in "${XDG_DOCUMENTS_DIR:-~/documents}"/accounts/*.gpg; do
+    mkdir -p "$(echo "$f" | sed 's/accounts\/\([^/]\+\)\.gpg/mail\/\1/')"
+  done
+fi
 
 # Install Clash
 [ -n "$opt_install_clash" ] && clash-install
 
 # Config Clash
 [ -n "$opt_config_clash" ] && clash-config
-
-# Encrypt files using gpg
-if [ -n "$opt_encrypt" ]; then
-  find "$XDG_DOCUMENTS_DIR" -type f -name '*.gpg' | sed 's/\.gpg$//' | xargs -I FILE gpg -qe --yes "${opt_gpg_recipient[@]}" FILE
-fi
