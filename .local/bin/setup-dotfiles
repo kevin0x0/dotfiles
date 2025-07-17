@@ -4,7 +4,11 @@ set -e
 set -o pipefail
 shopt -s nullglob
 
-source utils
+error() {
+  echo "$1" >&2
+  [[ "$2" =~ [0-9]+ ]] && exit "$2"
+  exit 1
+}
 
 opt_install_clash=
 opt_config_clash=

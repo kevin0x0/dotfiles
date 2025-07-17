@@ -3,7 +3,11 @@
 set -e
 set -o pipefail
 
-source utils
+error() {
+  echo "$1" >&2
+  [[ "$2" =~ [0-9]+ ]] && exit "$2"
+  exit 1
+}
 
 urlencode() {
   local str="$1" result=''
