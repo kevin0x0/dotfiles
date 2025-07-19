@@ -10,7 +10,7 @@ alias grep='grep --color=auto'
 
 # my PS1
 ps1_exitcode() {
-  if [ $? == 0 ]; then
+  if [ $? -eq 0 ]; then
     echo ""
   else
     echo " [$?]"
@@ -18,7 +18,7 @@ ps1_exitcode() {
 }
 ps1_njob() {
   local njob=$(jobs | wc -l)
-  if [ $njob == 0 ]; then
+  if ((njob == 0)); then
     echo ""
   else
     echo " ($njob)"
