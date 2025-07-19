@@ -13,3 +13,9 @@ map <c-k> :{{
 
 cmd open $lf-open $f
 map <c-o> $lf-open $fs
+
+# Colors
+
+set promptfmt "\033[1;42;30m %w%S\033[0m"
+set rulerfmt " %a| %p| \033[1;7;31m %m \033[0m|\033[1;7;33m %c \033[0m|\033[1;7;35m %s \033[0m|\033[1;7;36m %v \033[0m|\033[1;42;30m %i/%t \033[0m"
+set statfmt "\033[1;42;30m %M \033[0m| %p| %c| %u| %g| %s| %t |\033[1;36m -> %l \033[0m"
