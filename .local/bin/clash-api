@@ -9,19 +9,6 @@ error() {
   exit 1
 }
 
-urlencode() {
-  local str="$1" result=''
-  for ((i = 0; i < ${#str}; i++)); do
-    local ch=${str:i:1}
-    if [[ "$ch" =~ [a-zA-Z0-9.~_-] ]]; then
-      result+="$ch"
-    else
-      result+=$(printf '%%%02X' "'$ch")
-    fi
-  done
-  echo "$result"
-}
-
 HTTP_METHOD=GET
 API_BASE=http://localhost:9090
 API_METHOD=
