@@ -11,6 +11,7 @@ input type:touchpad {
 
 input type:pointer {
     tap enabled
+    natural_scroll disabled
     middle_emulation enabled
 }
 
