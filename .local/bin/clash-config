@@ -15,10 +15,10 @@ if ! [ -d $CLASH_CONFIG_HOME ]; then
   error "$CLASH_CONFIG_HOME does not exist"
 fi
 
-DOWNLOAD_URL="$(decget ~/documents/downloads_url.gpg proxies-for-clash)"
+DOWNLOAD_URL="$(decget ~/documents/url.gpg proxies-for-clash)"
 
 if [ -z "$DOWNLOAD_URL" ]; then
-  error "Unable to find proxes-for-clash in ~/documents/downloads_url.gpg"
+  error "Unable to find proxes-for-clash in ~/documents/url.gpg"
 fi
 
 curl "$DOWNLOAD_URL" | cat - "$CLASH_CONFIG_HOME/tun.yaml" >"$CLASH_CONFIG_HOME/config.yaml"

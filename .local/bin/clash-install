@@ -19,9 +19,9 @@ if [ -e "$BIN_DIR/clash" ]; then
   error "Clash already installed"
 fi
 
-DOWNLOAD_URL="$(decget ~/documents/downloads_url.gpg clash-premium)"
+DOWNLOAD_URL="$(decget ~/documents/url.gpg clash-premium)"
 if [ -z $DOWNLOAD_URL ]; then
-  error "Unable to find clash-premium in ~/documents/downloads_url.gpg"
+  error "Unable to find clash-premium in ~/documents/url.gpg"
 fi
 
 if ! curl "$DOWNLOAD_URL" | gunzip >"$BIN_DIR/clash"; then
