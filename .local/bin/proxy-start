@@ -3,7 +3,7 @@
 # If then clash is already started, exit with code 64
 
 if sudo "$@" ps -A -o exe | grep --quiet "^$HOME/.local/bin/clash$"; then
-  echo "An instance of Clash is already running." >&2
+  echo "An instance of proxy is already running." >&2
   exit 64
 fi
 
