@@ -118,7 +118,7 @@ fsmon = yes
 ################################################################################
 [font]
 # Font name
-name = FiraMono Nerd Font
+name = FiraMono Nerd Font Mono
 # Font size (pt)
 size = 14
 # Font color (RGBA)

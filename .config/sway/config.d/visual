@@ -3,7 +3,7 @@ set $gnome-schema org.gnome.desktop.interface
 
 set $wallpaper "$(xdg-user-dir PICTURES)/wallpaper/current"
 
-set $monofont FiraMono Nerd Font
+set $monofont FiraMono Nerd Font Mono
 set $font Adwaita Sans
 set $gtk-theme Materia
 set $icon-theme Adwaita
