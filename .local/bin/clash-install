@@ -13,10 +13,6 @@ if ! [ -d "$BIN_DIR" ]; then
   error "$BIN_DIR does not exist or is not a directory"
 fi
 
-if [ -e "$BIN_DIR/clash" ]; then
-  error "Clash already installed"
-fi
-
 XDG_DOCUMENTS_DIR=$(xdg-user-dir DOCUMENTS)
 DOWNLOAD_URL="$(decget $XDG_DOCUMENTS_DIR/url.gpg clash-premium)"
 if [ -z "$DOWNLOAD_URL" ]; then

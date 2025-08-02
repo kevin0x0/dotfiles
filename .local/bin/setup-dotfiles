@@ -7,10 +7,6 @@ error() {
   exit 1
 }
 
-opt_install_clash=
-opt_config_clash=
-opt_xdg_dirs=
-opt_mail_dirs=
 opt_encryption_method=
 opt_gpg_recipient=
 
@@ -52,21 +48,6 @@ list_diff() {
 
 while [ $# -ne 0 ]; do
   case "$1" in
-    --install-clash|-i)
-      opt_install_clash=1
-      ;;
-    --config-clash|-c)
-      opt_config_clash=1
-      ;;
-    --xdg-dirs|-x)
-      opt_xdg_dirs=1
-      ;;
-    --mail-dirs|-m)
-      opt_mail_dirs=1
-      ;;
-    --encrypt|-e)
-      opt_encryption_method=-r
-      ;;
     --recipient|-r)
       [ $# -eq 1 ] && error "Option $1 needs a value"
       [ -n "$opt_gpg_recipient" ] && \
@@ -83,11 +64,6 @@ while [ $# -ne 0 ]; do
       opt_gpg_recipient=$1
       opt_encryption_method=-R
       ;;
-    --all|-a)
-      opt_install_clash=1
-      opt_config_clash=1
-      opt_encryption_method=1
-      ;;
     *)
       error "Unknown option: $1"
       ;;
@@ -96,54 +72,52 @@ while [ $# -ne 0 ]; do
 done
 
 # Checkout
-if [ -n "$opt_checkout" ]; then
-  if ! check_diff; then
-    list_diff
-    error "The contents of files listed above are different from those in the repository,"$'\n'\
-      "can not safely checkout."
-  fi
-  dotfiles checkout -q
+if ! check_diff; then
+  list_diff
+  error "The contents of files listed above are different from those in the repository
+can not safely checkout."
 fi
-
-[ -f "$XDG_CONFIG_HOME/user-dirs.dirs" ] && . "$XDG_CONFIG_HOME/user-dirs.dirs"
+dotfiles checkout -q
 
 # Create XDG user directories
-if [ -n "$opt_xdg_dirs" ]; then
-  mkdir -p "$XDG_DESKTOP_DIR"
-  mkdir -p "$XDG_MUSIC_DIR"
-  mkdir -p "$XDG_TEMPLATES_DIR"
-  mkdir -p "$XDG_PUBLICSHARE_DIR"
-  mkdir -p "$XDG_DOCUMENTS_DIR"
-  mkdir -p "$XDG_PICTURES_DIR"
-  mkdir -p "$XDG_VIDEOS_DIR"
-  mkdir -p "$XDG_DOWNLOAD_DIR"
+if ! [ -f "$XDG_CONFIG_HOME/user-dirs.dirs" ]; then
+  error "$XDG_CONFIG_HOME/user-dirs.dirs does not exist"
 fi
+. "$XDG_CONFIG_HOME/user-dirs.dirs"
+mkdir -p "$XDG_DESKTOP_DIR"
+mkdir -p "$XDG_MUSIC_DIR"
+mkdir -p "$XDG_TEMPLATES_DIR"
+mkdir -p "$XDG_PUBLICSHARE_DIR"
+mkdir -p "$XDG_DOCUMENTS_DIR"
+mkdir -p "$XDG_PICTURES_DIR"
+mkdir -p "$XDG_VIDEOS_DIR"
+mkdir -p "$XDG_DOWNLOAD_DIR"
 
 # Encrypt files using gpg
-if [ -n "$opt_encryption_method" ]; then
-  if [ -z "$opt_gpg_recipient" ]; then
-    error "You should specify a recipient for encryption."
-  fi
-  find "$XDG_DOCUMENTS_DIR" -type f -name '*.gpg' \
-    | sed 's/\.gpg$//' \
-    | xargs -I {} gpg -qe --yes "$opt_encryption_method" "$opt_gpg_recipient" {}
+if [ -z "$opt_gpg_recipient" ]; then
+  error "You should specify a recipient for encryption."
 fi
+find "$XDG_DOCUMENTS_DIR" -type f -name '*.gpg' \
+  | sed 's/\.gpg$//' \
+  | { 
+    IFS= read -r file
+    [ -e "$file" ] || error "$file does not exist"
+    gpg -qe --yes "$opt_encryption_method" "$opt_gpg_recipient" "$file"
+  }
 
-# Create mail directories
-if [ -n "$opt_mail_dirs" ]; then
-  DOC_DIR=${XDG_DOCUMENTS_DIR:-~/documents}
-  for f in "$DOC_DIR"/accounts/*.gpg; do
-    [ -f "$f" ] || continue
-    mkdir -p "$(echo "$f" | sed 's/accounts\/\([^\/]\+\)\.gpg/mail\/\1/')"
-  done
+for f in "$XDG_DOCUMENTS_DIR"/accounts/*.gpg; do
+  [ -f "$f" ] || continue
+  mkdir -p "$(echo "$f" | sed 's/accounts\/\([^\/]\+\)\.gpg/mail\/\1/')"
+done
 
-  if ! grep '^Path' "$XDG_CONFIG_HOME/isyncrc" | grep "$DOC_DIR"; then
-    echo "Should manually update $XDG_CONFIG_HOME/isyncrc."
-  fi
+if ! grep '^Path' "$XDG_CONFIG_HOME/isyncrc" | grep "$XDG_DOCUMENTS_DIR" &&
+   ! grep '^Path' "$XDG_CONFIG_HOME/isyncrc" | grep "~/${XDG_DOCUMENTS_DIR##~/}"
+then
+  echo "Should manually update $XDG_CONFIG_HOME/isyncrc."
 fi
 
 # Install Clash
-[ -n "$opt_install_clash" ] && clash-install
+clash-install
 
 # Config Clash
-[ -n "$opt_config_clash" ] && clash-config
+clash-config

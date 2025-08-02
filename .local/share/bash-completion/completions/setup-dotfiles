@@ -14,14 +14,8 @@ _comp_setup_dotfiles_filter() {
 
 _comp_setup_dotfiles_list_options() {
   COMPREPLY=(
-    --install-clash -i
-    --config-clash -c
-    --xdg-dirs -x
-    --mail-dirs -m
-    --encrypt -e
     --recipient -r
     --hidden-recipient -R
-    --all -a
   )
   _comp_setup_dotfiles_filter "$cur"
 }
