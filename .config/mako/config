@@ -1,9 +1,9 @@
 font=FiraMono Nerd Font Mono, 12
 
-background-color=#1a1b24
+background-color=#1a1b30
 text-color=#4ca491
-border-color=#404040
-border-size=3
+border-color=#4ca491
+border-size=2
 border-radius=4
 width=500
 height=150
@@ -16,9 +16,11 @@ format= <b>%s</b> <small><i>%a</i></small>\n%b
 [urgency=critical]
 height=300
 text-color=#ff4060
+border-color=#ff4060
 
 [urgency=low]
 height=150
 text-color=#687a90
+border-color=#687a90
 
 # vim: ft=dosini
