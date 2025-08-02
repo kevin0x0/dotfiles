@@ -34,7 +34,7 @@ done
 for f in "$CONFIG_DIR/"*; do
   (
     . "$f"
-    set-font "$font" "$monofont"
+    set_font "$font" "$monofont"
     if [ -n "$reload" ]; then
       reload
     fi

@@ -1,5 +1,5 @@
 
-set-font() {
+set_font() {
   local font=$1 monofont=$2
   local f="$XDG_CONFIG_HOME/swayimg/config"
   sed -i '/^\[font\]$/!b; :a; n; /^name/!ba; c\
