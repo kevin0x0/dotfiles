@@ -1,0 +1,16 @@
+#!/usr/bin/dash
+
+wallpaper_dir="$(xdg-user-dir PICTURES)/wallpaper"
+
+imgfile=$(find "$wallpaper_dir" -type f \
+  | xargs swayimg -g --config=general.overlay=no)
+
+if [ -z "$imgfile" ]; then
+  exit 0
+fi
+
+swaymsg output '*' bg "$imgfile" stretch
+
+if [ "$1" = "--persist" ]; then
+  ln -srf "$imgfile" "$wallpaper_dir/current"
+fi

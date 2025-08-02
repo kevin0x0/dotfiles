@@ -1,0 +1,20 @@
+#!/usr/bin/dash
+
+colors=$(tput colors 2>/dev/null)
+
+if [ $? -ne 0 ]; then
+  echo none
+  exit 0
+fi
+
+output_colors=
+case "$colors" in
+  256|88|16|8|2)
+    output_colors=$colors
+    ;;
+  *)
+    output_colors=none
+    ;;
+esac
+
+echo "$output_colors"

@@ -1,0 +1,10 @@
+# This script use git completion for my command alias `dotfiles`
+
+# Load git completion
+_comp_load git || return
+# Quote the output so any newlines from `complete -p git` aren’t
+# word‑split by bash. Without quotes, newlines are discarded and `eval`
+# only sees single line.
+eval "$(complete -p git | sed 's/\<git\>/dotfiles/')"
+
+# vim: ft=bash

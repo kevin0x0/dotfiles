@@ -1,0 +1,5 @@
+#!/usr/bin/dash
+
+CONFIG_FILE=${XDG_CONFIG_HOME:-$HOME/.config}/riced-menu
+[ -f "$CONFIG_FILE" ] && . "$CONFIG_FILE"
+exec wmenu-run $COLORS -f "$FONT" "$@"

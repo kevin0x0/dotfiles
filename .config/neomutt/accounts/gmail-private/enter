@@ -1,0 +1,38 @@
+unalternates *
+alternates $my_gmail_private_address
+
+set spool_file = +INBOX
+set postponed = +[Gmail]/Drafts
+# Gmail will automatically save sent mail to +[Gmail]/Sent Mail
+unset record
+set trash = +[Gmail]/Trash
+
+#IMAP
+unset imap_user
+unset imap_pass
+unset imap_send_id
+
+#SMTP
+set real_name = 'kevin'
+set from = $my_gmail_private_address
+set smtp_url = "smtps://$my_gmail_private_address@smtp.gmail.com:465/"
+set smtp_pass = $my_gmail_private_smtp_pass
+set ssl_force_tls = yes
+set ssl_starttls = yes
+set smtp_authenticators = "plain"
+
+# PGP and SMIME
+set pgp_sign_as = $my_gmail_private_sign_keyid
+#set smime_sign_as = `decget $(xdg-user-dir DOCUMENTS)/accounts/gmail-private.gpg smime-sign-keyid`
+set pgp_use_gpg_agent = yes
+
+set pgp_self_encrypt = yes
+set smime_self_encrypt = no
+set pgp_default_key = $my_gmail_private_self_encrypt_keyid
+
+unmailboxes *
+mailboxes +INBOX "+[Gmail]/Sent Mail" +[Gmail]/Starred 
+mailboxes "+[Gmail]/All Mail" +[Gmail]/Important
+# mailboxes +[Gmail]/Trash +[Gmail]/Drafts 
+
+# vim: ft=neomuttrc

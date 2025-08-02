@@ -1,0 +1,12 @@
+
+set-font() {
+  local font=$1 monofont=$2
+  local f="$XDG_CONFIG_HOME/foot/foot.ini"
+  sed -i 's/^\(font=\)[^-:]*\([-:]\)/\1'"$monofont"'\2/' "$f"
+}
+
+reload() {
+  return
+}
+
+# vim: ft=bash

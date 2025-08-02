@@ -1,0 +1,35 @@
+#!/usr/bin/dash
+
+set -e
+
+case "$(command -v fzf)" in
+  */fzf)
+    # Find fzf, just use it
+    exec fzf -f "$1"
+    ;;
+esac
+
+# Using grep to simulate fuzzy find
+
+pattern=$1
+ignore_case=
+
+# If there are uppercase letters in `pattern', we use case-sensitive search
+# otherwise case-insensitive search. This behaviour is to mimic fzf smart-case.
+case "$pattern" in
+  [A-Z]*)
+    ignore_case=--no-ignore-case
+    ;;
+  *)
+    ignore_case=--ignore-case
+    ;;
+esac
+
+# Insert regular expression `.*' after each character.
+# Example 'Hello' -> 'H.*e.*l.*l.*o.*'.
+if [ -z "$pattern" ]; then
+  pattern='.*'
+else
+  pattern=$(printf "%s\n" "$1" | sed 's/./&.*/g')
+fi
+exec grep "$ignore_case" "$pattern"

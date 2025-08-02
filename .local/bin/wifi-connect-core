@@ -1,0 +1,39 @@
+#!/usr/bin/dash
+
+[ $# -eq 0 ] && exit 1
+
+list_network() {
+  wpa_cli list_network | tail -n +3 | \
+    {
+      tab='	'
+      newline='
+'
+      list=
+      while IFS=$tab read -r number ssid bssid flags; do
+        case $flags in
+          *\[CURRENT\]*)
+            printf "%s\t[CURRENT]\n" "$ssid"
+            break
+            ;;
+          *)
+            list=$list$ssid$newline
+            ;;
+        esac
+      done
+
+      printf "%s" "$list"
+
+      while IFS=$tab read -r number ssid bssid flags; do
+        printf "%s\n" "$ssid"
+      done
+    }
+}
+
+if ! selected=$(list_network | "$@"); then
+  exit 1
+fi
+
+selected=${selected%%	*}
+
+number=$(wpa_cli list_network | tail -n +3 | grep "	$selected	" | cut -f 1)
+wpa_cli select_network "$number"

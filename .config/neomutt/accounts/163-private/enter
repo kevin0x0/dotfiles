@@ -1,0 +1,37 @@
+unalternates *
+alternates $my_163_private_address
+
+set spool_file = +INBOX
+set postponed = +草稿箱
+unset record
+set trash = +已删除
+
+#IMAP
+set imap_user = "$my_163_private_address"
+set imap_pass = "$my_163_private_imap_pass"
+set imap_send_id = yes
+
+#SMTP
+set real_name = 'kevin'
+set from = $my_163_private_address
+set smtp_url = "smtps://$my_163_private_address@smtp.163.com:465/"
+set smtp_pass = $my_163_private_smtp_pass
+set ssl_force_tls = yes
+set ssl_starttls = yes
+set smtp_authenticators = "plain"
+
+# PGP and SMIME
+set pgp_sign_as = $my_163_private_sign_keyid
+# TODO: I prefer to use S/MIME for 163 account
+#set smime_sign_as = `decget /accounts/163-private.gpg smime-sign-keyid`
+set pgp_use_gpg_agent = yes
+
+set pgp_self_encrypt = yes
+set smime_self_encrypt = no
+set pgp_default_key = $my_163_private_self_encrypt_keyid
+
+unmailboxes *
+mailboxes +INBOX +已发送
+# mailboxes +垃圾邮件 +广告邮件 +病毒文件夹 +草稿箱 +已删除
+
+# vim: ft=neomuttrc

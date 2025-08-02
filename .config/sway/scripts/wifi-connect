@@ -1,0 +1,10 @@
+#!/usr/bin/dash
+
+if ! wifi-connect-gui; then
+  exit 1
+fi
+
+i=0
+while [ $i -le 20 ]; do
+  pkill -RTMIN+3 i3blocks; i=$((i + 1)); sleep 0.5;
+done

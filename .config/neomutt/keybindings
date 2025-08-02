@@ -1,0 +1,62 @@
+#------------------------------------------------------------
+# Vi Key Bindings
+#------------------------------------------------------------
+
+# Moving around
+bind attach,browser,index       g   noop
+bind attach,browser,index       gg  first-entry
+bind attach,browser,index       G   last-entry
+bind pager                      g   noop
+bind pager                      gg  top
+bind pager                      G   bottom
+bind pager                      k   previous-line
+bind pager                      j   next-line
+bind index                      k   previous-entry
+bind index                      j   next-entry
+
+# Scrolling
+bind attach,browser,pager,index \CF next-page
+bind attach,browser,pager,index \CB previous-page
+bind attach,browser,pager,index \Cu half-up
+bind attach,browser,pager,index \Cd half-down
+bind browser,pager              \Ce next-line
+bind browser,pager              \Cy previous-line
+
+bind pager,index                d   noop
+bind pager,index                x   delete-message
+
+# Threads
+bind browser,pager,index        ?   search-opposite
+bind pager,index                dT  delete-thread
+bind pager,index                dt  delete-subthread
+bind pager,index                gt  next-thread
+bind pager,index                gT  previous-thread
+bind index                      za  collapse-thread
+bind index                      zA  collapse-all # Missing :folddisable/foldenable
+
+# Sidebar
+bind index,pager    B               sidebar-toggle-visible
+bind index,pager    K               sidebar-prev
+bind index,pager    J               sidebar-next
+bind index,pager    O               sidebar-open
+bind index,pager    A               what-key
+
+bind index                         <enter>     display-message
+bind index                         <return>    display-message
+bind index                         l           display-message
+bind pager,attach,compose,query    h           exit
+bind pager                         l           view-attachments
+bind attach                        l           view-attach
+bind compose                       l           view-attach
+bind query                         l           mail
+
+bind generic,index,pager        \Ch         help
+
+# Query
+bind editor                     <tab>       complete-query
+
+bind index                      H           noop
+bind index                      H           display-toggle-weed
+bind index                      h           noop
+
+# vim: ft=neomuttrc

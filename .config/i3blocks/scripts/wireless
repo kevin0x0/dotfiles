@@ -1,0 +1,69 @@
+#!/usr/bin/dash
+
+. "$XDG_CONFIG_HOME/i3blocks/scripts/colors"
+
+: ${button:=-1}
+if [ "$button" -eq 1 ]; then
+  verbose=true
+fi
+
+status=
+ssid=
+ip_address=
+icon=🛜
+
+wpa_status=$(wpa_cli ${interface:+-i}$interface status 2>/dev/null)
+if [ $? -ne 0 ]; then
+  exit 0
+fi
+
+{
+  read -r interface
+  interface=${interface#* * "'"}
+  interface=${interface%"'"*}
+
+  while IFS='=' read -r key value; do
+    case "$key" in
+      wpa_state)
+        status=$value
+        ;;
+      ssid)
+        ssid=$value
+        ;;
+      ip_address)
+        ip_address=$value
+        ;;
+    esac
+  done
+} <<EOF
+$wpa_status
+EOF
+
+case "$status" in
+  COMPLETED)
+    color=$color_good
+    ;;
+  INTERFACE_DISABLED)
+    color=$color_bad
+    ;;
+  *)
+    color=$color_normal
+    ;;
+esac
+
+if [ -n "$verbose" ]; then
+  printf "%s %s %s" "$icon" "$interface" "$status"
+  [ -n "$ssid" ] && printf " %s" "$ssid"
+  [ -n "$ip_address" ] && printf " %s" "$ip_address"
+  echo
+else
+  printf "%s %s" "$icon" "$status"
+  [ -n "$ssid" ] && printf " %s" "$ssid"
+  echo
+fi
+
+printf "%s" "$icon"
+[ -n "$ssid" ] && printf " %s" "$ssid"
+echo
+
+echo $color

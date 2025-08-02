@@ -1,0 +1,3 @@
+#!/usr/bin/dash
+
+exec wifi-connect-core riced-menu -l 8

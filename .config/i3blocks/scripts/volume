@@ -1,0 +1,52 @@
+#!/usr/bin/dash
+
+. "$XDG_CONFIG_HOME/i3blocks/scripts/colors"
+
+: ${control:=Master}
+
+: ${button:-0}
+case "$button" in
+  4)
+    amixer set "$control" 2%+ >/dev/null 2>&1
+    ;;
+  5)
+    amixer set "$control" 2%- >/dev/null 2>&1
+    ;;
+  2)
+    amixer set "$control" toggle >/dev/null 2>&1
+    ;;
+esac
+
+
+data=$(amixer get "$control" \
+  | sed -En '/^\s*Mono:/s/^.*\[(.*)\]\s*\[.*\]\s*\[(.*)\]$/\1 \2/p')
+
+percent=${data%% *}
+status=${data##* }
+
+icon=
+if [ "$status" = "off" ]; then
+  icon=🔇
+else
+  case ${percent%\%} in
+    [0-2]?|[0-9])
+      icon=🔈
+      ;;
+    [3-6]?)
+      icon=🔉
+      ;;
+    [7-9]?|100)
+      icon=🔊
+      ;;
+  esac
+fi
+
+if [ "$status" = "on" ]; then
+  color=$color_normal
+else
+  color=$color_bad
+fi
+
+printf "%s %s %s\n" "$icon" "$control" "$percent"
+printf "%s %s\n" "$icon" "${percent%\%}"
+echo $color

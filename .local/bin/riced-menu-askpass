@@ -1,0 +1,9 @@
+#!/usr/bin/dash
+
+if [ "$LANG" = "zh_CN.UTF-8" ]; then
+  WMENU_PROMPT="请输入密码："
+else
+  WMENU_PROMPT="enter password: "
+fi
+
+exec riced-menu -P -p "$WMENU_PROMPT" </dev/null 2>/dev/null

@@ -1,0 +1,13 @@
+
+set-font() {
+  local font=$1 monofont=$2
+  local f="$XDG_CONFIG_HOME/sway/config.d/visual"
+  sed -i -e 's/^\(set \$font\) .*$/\1 '"$font"'/' \
+    -e 's/^\(set \$monofont\) .*$/\1 '"$monofont"'/' "$f" 
+}
+
+reload() {
+  swaymsg reload
+}
+
+# vim: ft=bash

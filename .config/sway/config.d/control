@@ -1,0 +1,85 @@
+
+set $term foot
+set $menu riced-menu-run
+set $broswer firefox
+set $musicplayer /opt/YesPlayMusic/yesplaymusic
+
+# Fast start
+bindsym {
+  # Start terminal
+  $mod+Return exec $term
+  # Start broswer
+  $mod+Shift+Return exec $broswer
+  # Screen shot
+  Print exec GRIM_DEFAULT_DIR=\"$(xdg-user-dir PICTURES)/screenshots\" grim
+  # Kill focused window
+  $mod+Shift+q kill
+  # Start your launcher
+  $mod+d exec $menu
+  # Start with prime-run
+  $mod+Shift+d exec prime-run $menu
+}
+
+mode "start" {
+  bindsym {
+    Escape mode "default"
+    $mod+q mode "default"
+    $mod+Shift+q mode "default"
+    # Start proxy
+    $mod+p exec proxy-start-gui; mode "default"
+    # Start music player
+    $mod+m exec $musicplayer; mode "default"
+  }
+}
+bindsym $mod+s mode "start"
+
+# Kill
+mode "stop" {
+  bindsym {
+    Escape mode "default"
+    $mod+q mode "default"
+    $mod+Shift+q mode "default"
+    # Kill proxy
+    $mod+Shift+p exec proxy-stop-gui; mode "default"
+    # Kill music player
+    $mod+Shift+m exec $musicplayer; mode "default"
+  }
+}
+bindsym $mod+Shift+s mode "stop"
+
+# Settings
+mode "settings" {
+  bindsym {
+    Escape mode "default"
+    $mod+q mode "default"
+    $mod+Shift+q mode "default"
+    # Set wallpaper
+    $mod+w exec "$XDG_CONFIG_HOME/sway/scripts/change-wallpaper"; mode "default"
+    # Set wallpaper persistently
+    $mod+Shift+w exec "$XDG_CONFIG_HOME/sway/scripts/change-wallpaper --persist"; mode "default"
+  }
+}
+bindsym $mod+x mode "settings"
+
+# Reload the configuration file
+bindsym $mod+Shift+c reload
+
+# Exit sway (logs you out of your Wayland session)
+# bindsym $mod+Shift+e exec swaynag -t warning -m 'You pressed the exit shortcut. Do you really want to exit sway? This will end your Wayland session.' -B 'Yes, exit sway' 'swaymsg exit'
+bindsym $mod+Shift+e exit
+
+
+#
+# Utilities:
+#
+# Special keys to adjust volume via amixer
+bindsym --locked XF86AudioLowerVolume exec amixer set Master 5%- && pkill -RTMIN+1 i3blocks
+bindsym --locked XF86AudioRaiseVolume exec amixer set Master 5%+ && pkill -RTMIN+1 i3blocks
+bindsym --locked XF86AudioMute exec amixer set Master toggle && pkill -RTMIN+1 i3blocks
+
+bindsym $mod+Shift+w exec "$XDG_CONFIG_HOME/sway/scripts/wifi-connect"
+# Special keys to adjust brightness via brightnessctl
+# bindsym --locked XF86MonBrightnessDown exec brightnessctl set 5%-
+# bindsym --locked XF86MonBrightnessUp exec brightnessctl set 5%+
+
+# vim: ft=swayconfig

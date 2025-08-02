@@ -1,0 +1,41 @@
+#!/usr/bin/dash
+
+SUDO_ASKPASS=$(command -v riced-menu-askpass) proxy-start --askpass
+exitcode=$?
+
+summary=
+body=
+
+if [ $LANG = "zh_CN.UTF-8" ]; then
+  case "$exitcode" in
+    0)
+      summary="成功"
+      body="Clash 已启动"
+      ;;
+    64)
+      summary="失败"
+      body="已有Clash实例在运行"
+      ;;
+    *)
+      summary="失败"
+      body="Clash 未启动"
+      ;;
+  esac
+else
+  case "$exitcode" in
+    0)
+      summary="Success"
+      body="Clash is started"
+      ;;
+    64)
+      summary="Failure"
+      body="An instance of Clash is already running."
+      ;;
+    *)
+      summary="Failure"
+      body="Clash is not started"
+      ;;
+  esac
+fi
+
+notify-send --app-name "proxy-start-gui" "$summary" "$body"

@@ -1,0 +1,4 @@
+#!/usr/bin/bash
+
+IFS=$'\n'
+exec "$XDG_CONFIG_HOME/lf/scripts/lf-open" $*

@@ -1,0 +1,31 @@
+set incsearch true
+
+map <tab> toggle
+map <c-j> :{{
+  toggle
+  down
+}}
+map <c-k> :{{
+  toggle
+  up
+}}
+
+set visualfmt ""
+set promptfmt ""
+set rulerfmt ""
+set statfmt ""
+
+cmd on-init &{{
+  case $(termcolors) in
+    256)
+      source_color="source \"$(printf "%s" "$XDG_CONFIG_HOME" | sed 's/\\/\\\\/g; s/"/\\"/g')/lf/color/256\";"
+      ;;
+    8)
+      source_color="source \"$(printf "%s" "$XDG_CONFIG_HOME" | sed 's/\\/\\\\/g; s/"/\\"/g')/lf/color/8\";"
+      ;;
+  esac
+  lf --remote "send $id $source_color"
+  lf --remote "send $id cmd open \$\"$XDG_CONFIG_HOME/lf/scripts/lf-open\" \"\$f\""
+  lf --remote "send $id map <c-o> \$\"$XDG_CONFIG_HOME/lf/scripts/lf-open-multi\" \"\$fs\""
+  lf --remote "send $id set previewer \"$XDG_CONFIG_HOME/lf/scripts/lf-previewer\""
+}}

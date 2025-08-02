@@ -1,0 +1,68 @@
+
+set $gnome-schema org.gnome.desktop.interface
+
+set $wallpaper "$(xdg-user-dir PICTURES)/wallpaper/current"
+
+set $monofont FiraMono Nerd Font
+set $font Adwaita Sans
+set $gtk-theme Materia
+set $icon-theme Adwaita
+set $cursor-theme capitaine-cursors
+
+
+output eDP-1 {
+  resolution 1920x1080@165.014Hz position 1920 1
+  bg $wallpaper stretch #204060
+}
+
+font pango: $monofont, Bold 12
+
+titlebar_border_thickness 3
+default_border pixel 3
+smart_borders on
+
+gaps inner 4
+
+seat * hide_cursor 5000
+seat * xcursor_theme $cursor-theme
+
+exec_always {
+  gsettings set $gnome-schema gtk-theme "$gtk-theme"
+  gsettings set $gnome-schema icon-theme "$icon-theme"
+  gsettings set $gnome-schema cursor-theme "$cursor-theme"
+  gsettings set $gnome-schema font-name "$font"
+}
+
+# border background text indicator child_border
+client.focused #2f7e6d #2f7e6d #202020 #4ca491 #2f7e6d
+client.focused_inactive #404040 #404040 #687a90 #404040 #404040
+client.unfocused #202020 #202020 #404040 #202020 #202020
+client.urgent #ff4060 #ff4060 #202020 #ff4060 #ff4060
+
+bar {
+  font $monofont, Bold 12
+  gaps 4
+  position top
+  tray_padding 4
+  status_padding 0
+  separator_symbol " ▌"
+  set icon_theme $icon-theme
+
+  status_command i3blocks
+  colors {
+    separator #1a1b24
+    statusline #ceb992
+    background #1a1b24
+
+    focused_separator #404040
+    focused_statusline #ceb992
+    focused_background #1a1b24
+
+    focused_workspace #2f7e6d #2f7e6d #1a1b24
+    active_workspace #1a1b24 #1a1b24 #4ca491
+    inactive_workspace #1a1b24 #1a1b24 #687a90
+    urgent_workspace #1a1b24 #1a1b24 #ff4060
+  }
+}
+
+# vim: ft=swayconfig

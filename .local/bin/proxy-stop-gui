@@ -1,0 +1,41 @@
+#!/usr/bin/dash
+
+SUDO_ASKPASS=$(command -v riced-menu-askpass) proxy-stop --askpass
+exitcode=$?
+
+summary=
+body=
+
+if [ $LANG = "zh_CN.UTF-8" ]; then
+  case "$exitcode" in
+    0)
+      summary="成功"
+      body="Proxy 已停止"
+      ;;
+    64)
+      summary="无进程"
+      body="没有正在运行的 Proxy 进程"
+      ;;
+    *)
+      summary="失败"
+      body="Proxy 未停止"
+      ;;
+  esac
+else
+  case "$exitcode" in
+    0)
+      summary="Success"
+      body="Proxy is stopped"
+      ;;
+    64)
+      summary="No such proccess"
+      body="No instance of Proxy was running."
+      ;;
+    *)
+      summary="Failure"
+      body="Proxy is not stopped"
+      ;;
+  esac
+fi
+
+notify-send --app-name "proxy-stop-gui" "$summary" "$body"

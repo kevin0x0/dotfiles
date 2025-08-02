@@ -1,0 +1,12 @@
+
+set-font() {
+  local font=$1 monofont=$2
+  local f="$XDG_CONFIG_HOME/riced-menu"
+  sed -i 's/^\(FONTFAMILY=\).*$/\1'"'$monofont'"'/' "$f"
+}
+
+reload() {
+  return
+}
+
+# vim: ft=bash

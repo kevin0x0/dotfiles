@@ -1,0 +1,5 @@
+
+set $mod Mod4
+
+include config.d/*
+include /etc/sway/config.d/*
