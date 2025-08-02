@@ -16,6 +16,7 @@ _comp_setup_dotfiles_list_options() {
   COMPREPLY=(
     --recipient -r
     --hidden-recipient -R
+    --wallpaper -w
   )
   _comp_setup_dotfiles_filter "$cur"
 }
@@ -24,6 +25,9 @@ _comp_setup_dotfiles() {
   local cur="${COMP_WORDS[COMP_CWORD]}"
   local prev="${COMP_WORDS[COMP_CWORD - 1]}"
   case "$prev" in
+    --wallpaper|-w)
+      return
+      ;;
     --recipient|--hidden-recipient|-r|-R)
       local savedIFS=$IFS
       IFS=$'\n'
@@ -37,6 +41,6 @@ _comp_setup_dotfiles() {
   esac
 }
 
-complete -o nosort -F _comp_setup_dotfiles setup-dotfiles
+complete -o nosort -o bashdefault -o default -F _comp_setup_dotfiles setup-dotfiles
 
 # vim: ft=bash

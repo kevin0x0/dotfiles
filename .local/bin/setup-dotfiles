@@ -7,6 +7,7 @@ error() {
   exit 1
 }
 
+opt_wallpaper=
 opt_encryption_method=
 opt_gpg_recipient=
 
@@ -55,6 +56,11 @@ while [ $# -ne 0 ]; do
       shift
       opt_gpg_recipient=$1
       opt_encryption_method=-r
+      ;;
+    --wallpaper|-w)
+      [ $# -eq 1 ] && error "Option $1 needs a value"
+      shift
+      opt_wallpaper=$1
       ;;
     --hidden-recipient|-R)
       [ $# -eq 1 ] && error "Option $1 needs a value"
@@ -105,6 +111,7 @@ find "$XDG_DOCUMENTS_DIR" -type f -name '*.gpg' \
     gpg -qe --yes "$opt_encryption_method" "$opt_gpg_recipient" "$file"
   }
 
+# Create mail directories
 for f in "$XDG_DOCUMENTS_DIR"/accounts/*.gpg; do
   [ -f "$f" ] || continue
   mkdir -p "$(echo "$f" | sed 's/accounts\/\([^\/]\+\)\.gpg/mail\/\1/')"
@@ -115,6 +122,10 @@ if ! grep '^Path' "$XDG_CONFIG_HOME/isyncrc" | grep "$XDG_DOCUMENTS_DIR" &&
 then
   echo "Should manually update $XDG_CONFIG_HOME/isyncrc."
 fi
+
+# Create wall paper directories for sway
+mkdir -p "$XDG_PICTURES_DIR/wallpaper"
+ln -srf "${opt_wallpaper:- }" "$XDG_PICTURES_DIR/wallpaper/current"
 
 # Install Clash
 clash-install
