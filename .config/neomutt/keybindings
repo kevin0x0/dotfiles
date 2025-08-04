@@ -59,4 +59,8 @@ bind index                      H           noop
 bind index                      H           display-toggle-weed
 bind index                      h           noop
 
+bind index                      S           show-log-messages
+bind index                      M           noop
+bind index                      M           compose-to-sender
+
 # vim: ft=neomuttrc
