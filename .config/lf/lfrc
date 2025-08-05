@@ -25,7 +25,7 @@ cmd on-init &{{
       ;;
   esac
   lf --remote "send $id $source_color"
-  lf --remote "send $id cmd open \$\"$XDG_CONFIG_HOME/lf/scripts/lf-open\" \"\$f\""
-  lf --remote "send $id map <c-o> \$\"$XDG_CONFIG_HOME/lf/scripts/lf-open-multi\" \"\$fs\""
-  lf --remote "send $id set previewer \"$XDG_CONFIG_HOME/lf/scripts/lf-previewer\""
+  lf --remote "send $id cmd open \$\"$XDG_CONFIG_HOME/lf/scripts/open\" \"\$f\""
+  lf --remote "send $id map <c-o> \$\"$XDG_CONFIG_HOME/lf/scripts/open-multi\" \"\$fs\""
+  lf --remote "send $id set previewer \"$XDG_CONFIG_HOME/lf/scripts/previewer\""
 }}
