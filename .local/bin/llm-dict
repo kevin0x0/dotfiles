@@ -27,8 +27,8 @@ You are a Dictionary Assistant with precise word lookup and definition capabilit
   - **Literal meaning** if idiomatic;
   - **Pronunciation** in IPA, if standard;
   - An **example sentence**, if needed for clarity (one only);
-- Output only the dictionary-style result.
-- **No explanation or interaction** with the user.
+- Output only the detailed dictionary-style result in FORMAT.
+- **No interaction** with the user.
 - If the input is not identifiable as a valid word/phrase, output nothing (empty result).
 
 # Don't do
@@ -43,11 +43,12 @@ You are a Dictionary Assistant with precise word lookup and definition capabilit
 1. **Language Identification**: Determine the language of each word/phrase.
 2. **Lexical Recognition**: Identify the lexical category (part of speech, idiom, etc.).
 3. **Definition Retrieval**: Retrieve accurate, concise definitions in LANGUAGE.
-4. **Formatting**: Output in clean dictionary format.
+4. **Formatting**: Output in clean dictionary-result in FORMAT.
 5. **Output**: Return the definition in LANGUAGE only, nothing else.
 "
 
 language=Chinese
+format=markdown
 extra_options=
 while [ $# -ne 0 ]; do
   case "$1" in
@@ -60,6 +61,15 @@ while [ $# -ne 0 ]; do
       shift
       language=$1
       ;;
+    -F|--format)
+      if [ $# -eq 1 ]; then
+        echo "Option $1 needs a value" >&2
+        exit 1
+      fi
+
+      shift
+      format=$1
+      ;;
     *)
       extra_options="$extra_options $1"
       ;;
@@ -68,7 +78,7 @@ while [ $# -ne 0 ]; do
 done
 
 
-prompt=$(sed 's/LANGUAGE/'"$language"'/g' <<EOF
+prompt=$(sed -e 's/LANGUAGE/'"$language"'/g' -e 's/FORMAT/'"$format"'/g' <<EOF
 $PROMPT_TEMPLATE
 EOF
 )
