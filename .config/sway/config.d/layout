@@ -65,6 +65,8 @@ bindsym $mod+Shift+9 move container to workspace number 9
 bindsym $mod+Shift+0 move container to workspace number 10
 # General
 bindsym $mod+w exec "$XDG_CONFIG_HOME/sway/scripts/change-workspace"
+bindsym $mod+less workspace prev
+bindsym $mod+greater workspace next
 # Note: workspaces can have any name you want, not just numbers.
 # We just use 1-10 as the default.
 
