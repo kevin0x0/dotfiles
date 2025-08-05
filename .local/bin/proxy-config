@@ -24,6 +24,6 @@ curl "$DOWNLOAD_URL" | cat - "$CLASH_CONFIG_HOME/tun.yaml" >"$CLASH_CONFIG_HOME/
 
 # Notify clash to update config
 if sudo ps -A -o exe | grep --quiet "^$HOME/.local/bin/clash$"; then
-  clash-stop
-  clash-start
+  proxy-stop
+  proxy-start
 fi

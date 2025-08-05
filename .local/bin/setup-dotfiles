@@ -128,7 +128,7 @@ mkdir -p "$XDG_PICTURES_DIR/wallpaper"
 ln -srf "${opt_wallpaper:- }" "$XDG_PICTURES_DIR/wallpaper/current"
 
 # Install Clash
-clash-install
+proxy-install
 
 # Config Clash
-clash-config
+proxy-config
