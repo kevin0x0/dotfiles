@@ -5,7 +5,7 @@ error() {
   exit 1
 }
 
-CONFIG_DIR="$XDG_CONFIG_HOME/auto-set-font"
+CONFIG_DIR="${XDG_CONFIG_HOME:-$HOME/.config}/auto-set-font"
 
 monofont='monospace'
 font='Adwaita Sans'

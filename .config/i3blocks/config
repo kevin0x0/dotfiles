@@ -11,21 +11,21 @@ separator=true
 separator_block_width=0
 
 [ethernet]
-command="$XDG_CONFIG_HOME/i3blocks/scripts/ethernet"
+command="${XDG_CONFIG_HOME:-$HOME/.config}/i3blocks/scripts/ethernet"
 interval=20
 signal=3
 
 [wireless]
-command="$XDG_CONFIG_HOME/i3blocks/scripts/wireless"
+command="${XDG_CONFIG_HOME:-$HOME/.config}/i3blocks/scripts/wireless"
 interval=20
 signal=3
 
 [battery]
-command="$XDG_CONFIG_HOME/i3blocks/scripts/battery"
+command="${XDG_CONFIG_HOME:-$HOME/.config}/i3blocks/scripts/battery"
 interval=10
 
 [volume]
-command="$XDG_CONFIG_HOME/i3blocks/scripts/volume"
+command="${XDG_CONFIG_HOME:-$HOME/.config}/i3blocks/scripts/volume"
 interval=once
 signal=1
 
@@ -36,7 +36,7 @@ interval=once
 signal=2
 
 [time]
-command="$XDG_CONFIG_HOME/i3blocks/scripts/time"
+command="${XDG_CONFIG_HOME:-$HOME/.config}/i3blocks/scripts/time"
 color=#ceb992
 interval=5
 

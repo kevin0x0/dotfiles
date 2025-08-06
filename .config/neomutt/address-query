@@ -13,7 +13,7 @@ make_result() {
   fi
 }
 
-. "$XDG_CONFIG_HOME/user-dirs.dirs"
+. "${XDG_CONFIG_HOME:-$HOME/.config}/user-dirs.dirs"
 
 gpg -q --decrypt "$(xdg-user-dir DOCUMENTS)"/addressbook.gpg 2>/dev/null \
   | head -q -n -1 2>/dev/null \

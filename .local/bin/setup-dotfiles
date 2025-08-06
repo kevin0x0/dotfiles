@@ -85,6 +85,7 @@ can not safely checkout."
 fi
 dotfiles checkout -q
 
+: ${XDG_CONFIG_HOME:=$HOME/.config}
 # Create XDG user directories
 if ! [ -f "$XDG_CONFIG_HOME/user-dirs.dirs" ]; then
   error "$XDG_CONFIG_HOME/user-dirs.dirs does not exist"

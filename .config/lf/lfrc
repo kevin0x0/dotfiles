@@ -16,6 +16,7 @@ set rulerfmt ""
 set statfmt ""
 
 cmd on-init &{{
+  : ${XDG_CONFIG_HOME:=$HOME/.config}
   case $(termcolors) in
     256)
       source_color="source \"$(printf "%s" "$XDG_CONFIG_HOME" | sed 's/\\/\\\\/g; s/"/\\"/g')/lf/color/256\";"

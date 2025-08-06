@@ -1,6 +1,6 @@
 #!/usr/bin/dash
 
-. "$XDG_CONFIG_HOME/i3blocks/scripts/colors"
+. "${XDG_CONFIG_HOME:-$HOME/.config}/i3blocks/scripts/colors"
 
 : ${control:=Master}
 

@@ -1,7 +1,7 @@
 
 set_font() {
   local font=$1 monofont=$2
-  local f="$XDG_CONFIG_HOME/mako/config"
+  local f="${XDG_CONFIG_HOME:-$HOME/.config}/mako/config"
   sed -i 's/^\(font=\)[^,]*,/\1'"$monofont"',/' "$f"
 
 }
