@@ -1,0 +1,10 @@
+#!/usr/bin/dash
+
+PROMPT="Workspace: "
+[ "$LANG" = zh_CN.UTF-8 ] && PROMPT="工作区名："
+
+workspace=$(swaymsg -pt get_workspaces \
+  | sed -n '/^Workspace/s/^Workspace \(.*\) (.*)$/\1/p' \
+  | riced-menu -p "$PROMPT")
+
+swaymsg move container to workspace "$workspace"

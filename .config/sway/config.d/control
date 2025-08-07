@@ -54,9 +54,11 @@ mode "settings" {
     $mod+q mode "default"
     $mod+Shift+q mode "default"
     # Set wallpaper
-    $mod+w exec \"${XDG_CONFIG_HOME:-$HOME/.config}/sway/scripts/change-wallpaper\"; mode "default"
+    $mod+p exec \"${XDG_CONFIG_HOME:-$HOME/.config}/sway/scripts/change-wallpaper\"; mode "default"
     # Set wallpaper persistently
-    $mod+Shift+w exec \"${XDG_CONFIG_HOME:-$HOME/.config}/sway/scripts/change-wallpaper --persist\"; mode "default"
+    $mod+Shift+p exec \"${XDG_CONFIG_HOME:-$HOME/.config}/sway/scripts/change-wallpaper --persist\"; mode "default"
+    # Set wereless connection
+    $mod+period exec \"${XDG_CONFIG_HOME:-$HOME/.config}/sway/scripts/wifi-connect\"; mode "default"
   }
 }
 bindsym $mod+x mode "settings"
@@ -87,7 +89,6 @@ bindsym --locked XF86AudioLowerVolume exec amixer set Master 5%- && pkill -RTMIN
 bindsym --locked XF86AudioRaiseVolume exec amixer set Master 5%+ && pkill -RTMIN+1 i3blocks
 bindsym --locked XF86AudioMute exec amixer set Master toggle && pkill -RTMIN+1 i3blocks
 
-bindsym $mod+Shift+w exec \"${XDG_CONFIG_HOME:-$HOME/.config}/sway/scripts/wifi-connect\"
 # Special keys to adjust brightness via brightnessctl
 # bindsym --locked XF86MonBrightnessDown exec brightnessctl set 5%-
 # bindsym --locked XF86MonBrightnessUp exec brightnessctl set 5%+
