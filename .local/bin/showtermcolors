@@ -54,7 +54,7 @@ while [ $# -ne 0 ]; do
       delimiter=$1
       ;;
     *)
-      error "Unknown option"
+      error "Unknown option $1"
       ;;
   esac
   shift
