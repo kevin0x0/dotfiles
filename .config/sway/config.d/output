@@ -1,0 +1,8 @@
+
+set $wallpaper "$(xdg-user-dir PICTURES)/wallpaper/current"
+
+output * {
+  bg $wallpaper stretch #204060
+}
+
+# vim: ft=swayconfig

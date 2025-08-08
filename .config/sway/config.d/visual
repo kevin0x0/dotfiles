@@ -1,19 +1,11 @@
 
 set $gnome-schema org.gnome.desktop.interface
 
-set $wallpaper "$(xdg-user-dir PICTURES)/wallpaper/current"
-
 set $monofont FiraMono Nerd Font Mono
 set $font Adwaita Sans
 set $gtk-theme Materia
 set $icon-theme Adwaita
 set $cursor-theme capitaine-cursors
-
-
-output eDP-1 {
-  resolution 1920x1080@165.014Hz position 1920 1
-  bg $wallpaper stretch #204060
-}
 
 font pango: $monofont, Bold 12
 
