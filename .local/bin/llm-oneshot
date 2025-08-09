@@ -26,6 +26,20 @@ do_curl() {
   echo
 }
 
+make_valid_json() {
+  local stream=$1
+  if [ "$stream" = "false" ]; then
+    exec cat
+  fi
+
+  while IFS= read -r line; do
+    if [ "$line" = "data: [DONE]" ]; then
+      break
+    fi
+    printf "%s\n" "${line##data:}"
+  done
+}
+
 URL=https://api.deepseek.com/chat/completions
 DEEPSEEK_API_KEY=$(decget "$(xdg-user-dir DOCUMENTS)/api_keys.gpg" DEEPSEEK_API_KEY)
 MODEL=deepseek-chat
@@ -82,10 +96,8 @@ else
 fi
 
 do_curl "$URL" "$DEEPSEEK_API_KEY" "$MODEL" "$prompt" "$input" "$opt_stream" \
-  | stdbuf -o 0 sed -n '/"content"\s*:/s/^.*"content"\s*:\s*"\(\([^"\\]\|\\.\)*\)".*$/\1/p' \
-  | stdbuf -o 0 sed 's/\\"/"/' | while IFS= read -r line; do
-  printf "%b" "$line"
-done
+  | make_valid_json "$opt_stream" \
+  | stdbuf -o 0 fj -srj '.choices[0].delta.content'
 
 if [ -n "$opt_append_newline" ]; then
   echo
