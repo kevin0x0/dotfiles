@@ -133,3 +133,12 @@ proxy-install
 
 # Config Clash
 proxy-config
+
+# Create repos
+mkdir -p "$HOME/repos"
+
+# Install fj
+(cd "$HOME/repos/" && \
+  git clone git@github.com:kevin0x0/fuckjson && \
+  cd "$HOME/repos/fuckjson/" && \
+  make && make install)
