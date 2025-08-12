@@ -1,8 +1,10 @@
 
 set_font() {
-  local font=$1 monofont=$2
+  local font="$1" monofont="$2"
   local f="${XDG_CONFIG_HOME:-$HOME/.config}/riced-menu"
-  sed -i 's/^\(FONTFAMILY=\).*$/\1'"'$monofont'"'/' "$f"
+  local tmpfile="$(mktemp)"
+  sed 's/^\(FONTFAMILY=\).*$/\1'"'$monofont'"'/' -- "$f" \
+    >"$tmpfile" && mv -- "$tmpfile" "$f"
 }
 
 reload() {

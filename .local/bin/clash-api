@@ -51,4 +51,4 @@ if [ -n "$HTTP_BODY" ]; then
   EXTRA_ARGS=(-H "Content-Type: application/json" -d "$HTTP_BODY")
 fi
 
-curl -s -X "$HTTP_METHOD" "$API_BASE/$API_METHOD" "${EXTRA_ARGS[@]}"
+curl -s -X "$HTTP_METHOD" "${EXTRA_ARGS[@]}" -- "$API_BASE/$API_METHOD"

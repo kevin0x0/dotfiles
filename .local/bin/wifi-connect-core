@@ -36,4 +36,4 @@ fi
 selected=${selected%%	*}
 
 number=$(wpa_cli list_network | tail -n +3 | grep "	$selected	" | cut -f 1)
-wpa_cli select_network "$number"
+wpa_cli -- select_network "$number"

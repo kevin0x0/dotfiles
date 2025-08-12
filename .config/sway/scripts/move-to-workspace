@@ -3,8 +3,8 @@
 PROMPT="Workspace: "
 [ "$LANG" = zh_CN.UTF-8 ] && PROMPT="工作区名："
 
-workspace=$(swaymsg -pt get_workspaces \
-  | sed -n '/^Workspace/s/^Workspace \(.*\) (.*)$/\1/p' \
+workspace=$(swaymsg -st get_workspaces \
+  | fj -r '[*].name' \
   | riced-menu -p "$PROMPT")
 
 swaymsg move container to workspace "$workspace"

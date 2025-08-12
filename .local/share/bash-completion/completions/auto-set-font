@@ -5,7 +5,7 @@ _comp_auto_set_font_list_options() {
     --reload -r
   )
   local prefix="$1"
-  for ((i = 0 ; i < ${#options[@]}; ++i)); do
+  for ((i = 0 ; i < "${#options[@]}"; ++i)); do
     if [[ "${options[i]}" =~ ^$prefix ]]; then
       COMPREPLY+=("${options[i]}")
     fi
@@ -14,12 +14,12 @@ _comp_auto_set_font_list_options() {
 
 # remove leading ' and "
 _comp_auto_set_font_unquote() {
-  local unquoted=${1#\"}
+  local unquoted="${1#\"}"
   echo "${unquoted#"'"}"
 }
 
 _comp_auto_set_font() {
-  local cur=${COMP_WORDS[COMP_CWORD]} prev=${COMP_WORDS[COMP_CWORD - 1]}
+  local cur="${COMP_WORDS[COMP_CWORD]}" prev="${COMP_WORDS[COMP_CWORD - 1]}"
 
   local cur_is_quoted=
 
@@ -31,7 +31,7 @@ _comp_auto_set_font() {
   esac
 
   # If the word isn't quoted, let 'read' interpret escape sequences like '\ '
-  if [ -z $cur_is_quoted ]; then
+  if [ -z "$cur_is_quoted" ]; then
     read cur <<<"$cur"
   fi
 
@@ -39,22 +39,20 @@ _comp_auto_set_font() {
 
   case "$prev" in
     --font|-f)
-      local savedIFS=$IFS
-      IFS=$'\n'
-      COMPREPLY=($(fc-list : family | cut -d ',' -f 1 | sort | uniq | grep "^$cur"))
-      IFS=$savedIFS
+      local oIFS="${IFS+_$IFS}"
+      IFS=$'\n'; COMPREPLY=($(fc-list : family | cut -d ',' -f 1 | grep "^$cur" | sort | uniq))
+      ${oIFS:+false} unset -v IFS || IFS=${oIFS#_}
 
-      if [ -z $cur_is_quoted ]; then
+      if [ -z "$cur_is_quoted" ]; then
         COMPREPLY=("${COMPREPLY[@]// /'\ '}")
       fi
       ;;
     --monofont|-m)
-      local savedIFS=$IFS
-      IFS=$'\n'
-      COMPREPLY=($(fc-list :spacing=100 family | cut -d ',' -f 1 | sort | uniq | grep "^$cur"))
-      IFS=$savedIFS
+      local oIFS="${IFS+_$IFS}"
+      IFS=$'\n'; COMPREPLY=($(fc-list :spacing=100 family | cut -d ',' -f 1 | grep "^$cur" | sort | uniq))
+      ${oIFS:+false} unset -v IFS || IFS=${oIFS#_}
 
-      if [ -z $cur_is_quoted ]; then
+      if [ -z "$cur_is_quoted" ]; then
         COMPREPLY=("${COMPREPLY[@]// /'\ '}")
       fi
       ;;

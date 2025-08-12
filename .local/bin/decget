@@ -15,13 +15,11 @@ set -e
 
 # I have to determine error by myself.
 make_result() {
-  local ch
-  if ! read -r line; then
+  if ! IFS= read -r line; then
     exit 1
   fi
-  printf "%s" "$line"
   [ -z "$line" ] && exit 1
-  cat
+  printf "%s\n" "$line"
 }
 
 gpgfile=$1
@@ -29,4 +27,4 @@ key=$2
 
 # Append `|| true' to gpg command to avoid failure due to a suspicious bug.
 # See https://bugs.launchpad.net/ubuntu/+source/gnupg2/+bug/2024496
-{ gpg --decrypt -q "$gpgfile" 2>/dev/null || true; } | sed -n '/^'$key'/s/^'$key' //p' | make_result
+{ gpg --decrypt -q -- "$gpgfile" 2>/dev/null || true; } | sed -n '/^'"$key"'/s/^'"$key"' //p' | make_result

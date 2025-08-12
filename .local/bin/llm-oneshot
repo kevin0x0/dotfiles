@@ -7,7 +7,7 @@ to_escaped_string() {
 }
 
 do_curl() {
-  local url=$1 api_key=$2 model=$3 prompt=$4 input=$5 stream=$6
+  local url="$1" api_key="$2" model="$3" prompt="$4" input="$5" stream="$6"
 
   curl -Ns "$url" \
     -H "Content-Type: application/json" \
@@ -27,7 +27,7 @@ do_curl() {
 }
 
 make_valid_json() {
-  local stream=$1
+  local stream="$1"
   if [ "$stream" = "false" ]; then
     exec cat
   fi
@@ -95,9 +95,15 @@ else
   input=$(to_escaped_string)
 fi
 
+if [ "$opt_stream" = false ]; then
+  selector='.choices[0].message.content'
+else
+  selector='.choices[0].delta.content'
+fi
+
 do_curl "$URL" "$DEEPSEEK_API_KEY" "$MODEL" "$prompt" "$input" "$opt_stream" \
   | make_valid_json "$opt_stream" \
-  | stdbuf -o 0 fj -srj '.choices[0].delta.content'
+  | stdbuf -o 0 fj -srj "$selector"
 
 if [ -n "$opt_append_newline" ]; then
   echo

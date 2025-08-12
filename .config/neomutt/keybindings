@@ -43,6 +43,9 @@ bind index,pager    A               what-key
 
 bind index                         <enter>     display-message
 bind index                         <return>    display-message
+bind generic                       <enter>     noop
+bind generic                       <return>    noop
+bind generic                       l           select-entry
 bind index                         l           display-message
 bind pager,attach,compose,query    h           exit
 bind pager                         l           view-attachments

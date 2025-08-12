@@ -12,7 +12,7 @@ opt_encryption_method=
 opt_gpg_recipient=
 
 dotfiles() {
-  cd "$HOME"
+  cd -- "$HOME"
   git --git-dir="$HOME/dotfiles.git" --work-tree="$HOME" "$@"
 }
 
@@ -91,14 +91,14 @@ if ! [ -f "$XDG_CONFIG_HOME/user-dirs.dirs" ]; then
   error "$XDG_CONFIG_HOME/user-dirs.dirs does not exist"
 fi
 . "$XDG_CONFIG_HOME/user-dirs.dirs"
-mkdir -p "$XDG_DESKTOP_DIR"
-mkdir -p "$XDG_MUSIC_DIR"
-mkdir -p "$XDG_TEMPLATES_DIR"
-mkdir -p "$XDG_PUBLICSHARE_DIR"
-mkdir -p "$XDG_DOCUMENTS_DIR"
-mkdir -p "$XDG_PICTURES_DIR"
-mkdir -p "$XDG_VIDEOS_DIR"
-mkdir -p "$XDG_DOWNLOAD_DIR"
+mkdir -p -- "$XDG_DESKTOP_DIR"
+mkdir -p -- "$XDG_MUSIC_DIR"
+mkdir -p -- "$XDG_TEMPLATES_DIR"
+mkdir -p -- "$XDG_PUBLICSHARE_DIR"
+mkdir -p -- "$XDG_DOCUMENTS_DIR"
+mkdir -p -- "$XDG_PICTURES_DIR"
+mkdir -p -- "$XDG_VIDEOS_DIR"
+mkdir -p -- "$XDG_DOWNLOAD_DIR"
 
 # Encrypt files using gpg
 if [ -z "$opt_gpg_recipient" ]; then
@@ -115,7 +115,7 @@ find "$XDG_DOCUMENTS_DIR" -type f -name '*.gpg' \
 # Create mail directories
 for f in "$XDG_DOCUMENTS_DIR"/accounts/*.gpg; do
   [ -f "$f" ] || continue
-  mkdir -p "$(echo "$f" | sed 's/accounts\/\([^\/]\+\)\.gpg/mail\/\1/')"
+  mkdir -p -- "$(echo "$f" | sed 's/accounts\/\([^\/]\+\)\.gpg/mail\/\1/')"
 done
 
 if ! grep '^Path' "$XDG_CONFIG_HOME/isyncrc" | grep "$XDG_DOCUMENTS_DIR" &&
@@ -125,8 +125,8 @@ then
 fi
 
 # Create wall paper directories for sway
-mkdir -p "$XDG_PICTURES_DIR/wallpaper"
-ln -srf "${opt_wallpaper:- }" "$XDG_PICTURES_DIR/wallpaper/current"
+mkdir -p -- "$XDG_PICTURES_DIR/wallpaper"
+ln -srf -- "${opt_wallpaper:- }" "$XDG_PICTURES_DIR/wallpaper/current"
 
 # Install Clash
 proxy-install
@@ -135,10 +135,10 @@ proxy-install
 proxy-config
 
 # Create repos
-mkdir -p "$HOME/repos"
+mkdir -p -- "$HOME/repos"
 
 # Install fj
-(cd "$HOME/repos/" && \
+(cd -- "$HOME/repos/" && \
   git clone git@github.com:kevin0x0/fuckjson && \
-  cd "$HOME/repos/fuckjson/" && \
+  cd -- "$HOME/repos/fuckjson/" && \
   make && make install)

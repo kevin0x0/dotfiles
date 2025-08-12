@@ -50,7 +50,7 @@ You are a Dictionary Assistant with precise word lookup and definition capabilit
 language=Chinese
 format=markdown
 extra_options=
-while [ $# -ne 0 ]; do
+while [ "$#" -ne 0 ]; do
   case "$1" in
     -L|--language)
       if [ $# -eq 1 ]; then
@@ -62,7 +62,7 @@ while [ $# -ne 0 ]; do
       language=$1
       ;;
     -F|--format)
-      if [ $# -eq 1 ]; then
+      if [ "$#" -eq 1 ]; then
         echo "Option $1 needs a value" >&2
         exit 1
       fi

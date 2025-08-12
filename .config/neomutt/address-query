@@ -4,18 +4,16 @@
 make_result() {
   IFS= read -r line
   if [ -z "$line" ]; then
-    echo "No matchs found"
+    printf "%s\n" "No matchs found"
     exit 1
   else
-    echo "Found"
+    printf "%s\n" "Found"
     printf "%s\n" "$line"
     exec cat
   fi
 }
 
-. "${XDG_CONFIG_HOME:-$HOME/.config}/user-dirs.dirs"
-
-gpg -q --decrypt "$(xdg-user-dir DOCUMENTS)"/addressbook.gpg 2>/dev/null \
+gpg -q --decrypt -- "$(xdg-user-dir DOCUMENTS)"/addressbook.gpg 2>/dev/null \
   | head -q -n -1 2>/dev/null \
   | fuzzy-query "$1" 2>/dev/null \
   | make_result

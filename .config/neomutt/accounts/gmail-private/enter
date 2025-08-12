@@ -22,8 +22,8 @@ set ssl_starttls = yes
 set smtp_authenticators = "plain"
 
 # PGP and SMIME
-set pgp_sign_as = $my_gmail_private_sign_keyid
-#set smime_sign_as = `decget $(xdg-user-dir DOCUMENTS)/accounts/gmail-private.gpg smime-sign-keyid`
+set pgp_sign_as = $my_gmail_private_pgp_sign_keyid
+set smime_sign_as = $my_gmail_private_smime_sign_keyid
 set pgp_use_gpg_agent = yes
 
 set pgp_self_encrypt = yes

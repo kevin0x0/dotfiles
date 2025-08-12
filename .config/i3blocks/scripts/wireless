@@ -13,7 +13,7 @@ ip_address=
 icon=🛜
 
 wpa_status=$(wpa_cli ${interface:+-i}$interface status 2>/dev/null)
-if [ $? -ne 0 ]; then
+if [ "$?" -ne 0 ]; then
   exit 0
 fi
 
@@ -66,4 +66,4 @@ printf "%s" "$icon"
 [ -n "$ssid" ] && printf " %s" "$ssid"
 echo
 
-echo $color
+echo "$color"

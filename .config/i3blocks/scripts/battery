@@ -15,7 +15,7 @@ if [ -z "$bat_sysdir" ]; then
   return 0
 fi
 
-status=$(tr 'a-z' 'A-Z' <"$bat_sysdir/status")
+status=$(LC_COLLATE= tr 'a-z' 'A-Z' <"$bat_sysdir/status")
 
 charge_now=$(cat "$bat_sysdir/charge_now")
 charge_full_design=$(cat "$bat_sysdir/charge_full_design")
@@ -32,10 +32,10 @@ percentage="$integral_part.$fractional_part%"
 
 color=
 icon=
-if [ "$status" = "CHARGING" -o "$status" = "FULL" ]; then
+if [ "$status" = "CHARGING" ] || [ "$status" = "FULL" ]; then
   icon=🔋
   color=$color_good
-elif [ "$permyriad" -gt "2000" ]; then
+elif [ "$permyriad" -gt 2000 ]; then
   icon=🔋
   color=$color_normal
 else
@@ -46,4 +46,4 @@ fi
 
 printf "%s %s %s\n" "$icon" "$status" "$percentage"
 printf "%s %s\n" "$icon" "${percentage%\%}"
-echo $color
+echo "$color"

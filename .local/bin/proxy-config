@@ -9,18 +9,18 @@ error() {
 
 CLASH_CONFIG_HOME=${XDG_CONFIG_HOME:=$HOME/.config}/clash
 
-if ! [ -d $CLASH_CONFIG_HOME ]; then
+if ! [ -d "$CLASH_CONFIG_HOME" ]; then
   error "$CLASH_CONFIG_HOME does not exist"
 fi
 
 XDG_DOCUMENTS_DIR=$(xdg-user-dir DOCUMENTS)
-DOWNLOAD_URL="$(decget $XDG_DOCUMENTS_DIR/url.gpg proxies-for-clash)"
+DOWNLOAD_URL=$(decget "$XDG_DOCUMENTS_DIR/url.gpg" proxies-for-clash)
 
 if [ -z "$DOWNLOAD_URL" ]; then
   error "Unable to find proxes-for-clash in $XDG_DOCUMENTS_DIR/url.gpg"
 fi
 
-curl "$DOWNLOAD_URL" | cat - "$CLASH_CONFIG_HOME/tun.yaml" >"$CLASH_CONFIG_HOME/config.yaml"
+curl -- "$DOWNLOAD_URL" | cat -- - "$CLASH_CONFIG_HOME/tun.yaml" >"$CLASH_CONFIG_HOME/config.yaml"
 
 # Notify clash to update config
 if sudo ps -A -o exe | grep --quiet "^$HOME/.local/bin/clash$"; then

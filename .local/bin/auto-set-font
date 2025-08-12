@@ -32,6 +32,7 @@ while [ $# -ne 0 ]; do
 done
 
 for f in "$CONFIG_DIR/"*; do
+  [ -e "$f" ] || continue
   (
     . "$f"
     set_font "$font" "$monofont"

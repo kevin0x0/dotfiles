@@ -2,13 +2,13 @@
 
 shopt -s extglob
 
-mime_type=$(file --mime-type --brief "$1" </dev/null)
+mime_type=$(file --mime-type --brief -- "$1" </dev/null)
 case "$mime_type" in
   text/plain)
-    cat "$1"
+    cat -- "$1"
     ;;
   @(application/@(yaml|toml|json)|text/*))
-    highlight -O ansi "$1"
+    highlight -O ansi -- "$1"
     ;;
   *)
     content=$(file --brief "$1")

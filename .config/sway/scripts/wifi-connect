@@ -5,6 +5,8 @@ if ! wifi-connect-gui; then
 fi
 
 i=0
-while [ $i -le 20 ]; do
-  pkill -RTMIN+3 i3blocks; i=$((i + 1)); sleep 0.5;
+while [ "$i" -le 20 ] && [ "$(wifi-connect-status)" != COMPLETED ]; do
+  pkill -RTMIN+3 i3blocks
+  i=$((i + 1))
+  sleep 0.5
 done

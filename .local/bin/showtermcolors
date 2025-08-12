@@ -1,11 +1,6 @@
-#!/usr/bin/bash
+#!/usr/bin/dash
 
 set -e
-set -o pipefail
-
-COLUMN=6
-BEGIN=0
-END=256
 
 error() {
   echo "$1" >&2
@@ -13,7 +8,11 @@ error() {
 }
 
 validate_number() {
-  [[ "$1" =~ [0-9]+ ]] || error "Need a number, got $1"
+  case "$1" in
+    *[^0-9]*)
+      error "Need a number, got $1"
+      ;;
+  esac
 }
 
 opt_show_number=
@@ -23,13 +22,13 @@ block_size=30
 delimiter='
 '
 max_block=1
-while [ $# -ne 0 ]; do
+while [ "$#" -ne 0 ]; do
   case "$1" in
     -N|--show-number)
       opt_show_number=yes
       ;;
     -F|--number-format)
-      [ $# -eq 1 ] && error "Option $1 needs a value."
+      [ "$#" -eq 1 ] && error "Option $1 needs a value."
       shift
       number_format=$1
       ;;
@@ -37,19 +36,19 @@ while [ $# -ne 0 ]; do
       opt_dont_append_newline=yes
       ;;
     -S|--block-size)
-      [ $# -eq 1 ] && error "Option $1 needs a value."
+      [ "$#" -eq 1 ] && error "Option $1 needs a value."
       shift
       validate_number "$1"
       block_size=$1
       ;;
     -C|--max-block)
-      [ $# -eq 1 ] && error "Option $1 needs a value."
+      [ "$#" -eq 1 ] && error "Option $1 needs a value."
       shift
       validate_number "$1"
       max_block=$1
       ;;
     -D|--delimiter)
-      [ $# -eq 1 ] && error "Option $1 needs a value."
+      [ "$#" -eq 1 ] && error "Option $1 needs a value."
       shift
       delimiter=$1
       ;;
@@ -65,8 +64,8 @@ while read number; do
   case ${#number} in
     6)
       printf "\033[48;2;%u;%u;%um%${block_size}s\033[0m$number_format" \
-        0x${number:0:2} 0x${number:2:2} 0x${number:4:2} "" \
-        ${opt_show_number:+$number}
+        "0x${number:0:2}" "0x${number:2:2}" "0x${number:4:2}" "" \
+        "${opt_show_number:+$number}"
       ;;
     1|2|3)
       case $number in
@@ -77,16 +76,16 @@ while read number; do
           number=${number#0}
           ;;
       esac
-      printf "\033[48;5;%um%${block_size}s\033[0m$number_format" $number "" \
-        ${opt_show_number:+$number}
+      printf "\033[48;5;%um%${block_size}s\033[0m$number_format" "$number" "" \
+        "${opt_show_number:+$number}"
       ;;
     *)
       printf "%${block_size}s$number_format" "Unknown: " \
-      ${opt_show_number:+$number}
+      "${opt_show_number:+$number}"
       ;;
   esac
   nblock=$((nblock + 1))
-  if [ $max_block -ne 0 -a $nblock -ge $max_block ]; then
+  if [ "$max_block" -ne 0 ] && [ "$nblock" -ge "$max_block" ]; then
     printf "%s" "$delimiter"
     nblock=0
   fi
@@ -96,6 +95,6 @@ if [ -n "$opt_dont_append_newline" ]; then
   exit
 fi
 
-if [ $nblock -ne 0 ]; then
+if [ "$nblock" -ne 0 ]; then
   printf "%s" "$delimiter"
 fi

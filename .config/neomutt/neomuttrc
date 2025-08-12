@@ -24,7 +24,7 @@ set crypt_verify_sig = yes
 
 source keybindings
 source "colors/`termcolors`"
-set query_command = "${XDG_CONFIG_HOME:-$HOME/.config}/neomutt/address-query %s"
+set query_command = '${XDG_CONFIG_HOME:-$HOME/.config}/neomutt/address-query %s'
 
 # Synchronize
 macro index,pager $ "<shell-escape>mbsync -a<enter>" "Sync mailbox"

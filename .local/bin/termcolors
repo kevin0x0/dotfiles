@@ -17,4 +17,4 @@ case "$colors" in
     ;;
 esac
 
-echo "$output_colors"
+printf "%s\n" "$output_colors"

@@ -33,7 +33,7 @@ else
   [ -z "$interface" ] && exit 0
 fi
 
-# Now en_sysdir is valid
+# Now $interface is valid
 
 data=$(ip -o link show "$interface")
 data=${data#*<}
@@ -46,10 +46,10 @@ speed=
 
 status_h=DOWN
 status_l=NO-CARRIER
-while [ ${#data} -ne 0 ]; do
+while [ "${#data}" -ne 0 ]; do
   flag=${data%%,*}
   data=${data#*,}
-  case $flag in
+  case "$flag" in
     UP)
       status_h=$flag
       ;;
@@ -81,7 +81,7 @@ case "$status" in
 esac
 
 ip_address=
-if [ -n "$verbose" -a "$status" = "UP:LOWER_UP" ]; then
+if [ -n "$verbose" ] && [ "$status" = "UP:LOWER_UP" ]; then
   ip_address=$(ip -o -4 addr show "$interface" | awk '{print $4}')
   ip_address=${ip_address%%/??}
 

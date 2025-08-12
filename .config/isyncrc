@@ -19,8 +19,8 @@ Channel gmail-private
 Far :gmail-private-remote:
 Near :gmail-private-local:
 Patterns *
-Expunge both
+Expunge Near
 CopyArrivalDate yes
-Sync All
-Create both
+Sync Full
+Create Near
 SyncState *

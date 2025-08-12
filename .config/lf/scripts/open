@@ -13,10 +13,10 @@ OTHERS=()
 
 for f in "$@"; do
   if [ -L "$f" ]; then
-    f=$(readlink "$f" 2>/dev/null)
+    f=$(readlink -- "$f" 2>/dev/null)
     [ -e "$f" ] || continue
   fi
-  case $(file --brief --mime-type "$f" 2>/dev/null) in
+  case $(file --brief --mime-type -- "$f" 2>/dev/null) in
     image/*)
       IMAGES+=("$f")
       ;;
@@ -59,24 +59,24 @@ if [ ${#IMAGES[@]} -ne 0 ]; then
       fi
     done
 
-    swayimg $flags "${IMAGES[@]}" </dev/null &>/dev/null &
+    swayimg $flags -- "${IMAGES[@]}" </dev/null &>/dev/null &
   else
-    setsid xdg-open "${IMAGES[@]}" </dev/null &>/dev/null
+    setsid xdg-open -- "${IMAGES[@]}" </dev/null &>/dev/null
   fi
 fi
 
 if [ ${#MEDIA[@]} -ne 0 ]; then
   if type -P mpv &>/dev/null; then
-    mpv "${MEDIA[@]}" </dev/null &>/dev/null &
+    mpv -- "${MEDIA[@]}" </dev/null &>/dev/null &
   else
-    setsid xdg-open "${MEDIA[@]}" </dev/null &>/dev/null
+    setsid xdg-open -- "${MEDIA[@]}" </dev/null &>/dev/null
   fi
 fi
 
 if [ ${#OTHERS[@]} -ne 0 ]; then
-  setsid xdg-open "${OTHERS[@]}" </dev/null &>/dev/null
+  setsid xdg-open -- "${OTHERS[@]}" </dev/null &>/dev/null
 fi
 
 if [ ${#TEXTS[@]} -ne 0 ]; then
-  ${EDITOR:-nvim} "${TEXTS[@]}" </dev/null 2>/dev/null
+  ${EDITOR:-nvim} -- "${TEXTS[@]}" </dev/null 2>/dev/null
 fi

@@ -14,13 +14,13 @@ if ! [ -d "$BIN_DIR" ]; then
 fi
 
 XDG_DOCUMENTS_DIR=$(xdg-user-dir DOCUMENTS)
-DOWNLOAD_URL="$(decget $XDG_DOCUMENTS_DIR/url.gpg clash-premium)"
+DOWNLOAD_URL=$(decget "$XDG_DOCUMENTS_DIR/url.gpg" clash-premium)
 if [ -z "$DOWNLOAD_URL" ]; then
   error "Unable to find clash-premium in $XDG_DOCUMENTS_DIR/url.gpg"
 fi
 
-if ! curl "$DOWNLOAD_URL" | gunzip >"$BIN_DIR/clash"; then
-  [ -e "$BIN_DIR/clash" ] && rm "$BIN_DIR/clash" 
+if ! curl -- "$DOWNLOAD_URL" | gunzip >"$BIN_DIR/clash"; then
+  [ -e "$BIN_DIR/clash" ] && rm -- "$BIN_DIR/clash" 
 fi
 
-chmod u+x "$BIN_DIR/clash"
+chmod u+x -- "$BIN_DIR/clash"
