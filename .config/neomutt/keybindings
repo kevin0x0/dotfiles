@@ -54,6 +54,7 @@ bind compose                       l           view-attach
 bind query                         l           mail
 
 bind generic,index,pager        \Ch         help
+bind index                      \Cr         imap-fetch-mail
 
 # Query
 bind editor                     <tab>       complete-query
