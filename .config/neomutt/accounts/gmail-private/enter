@@ -36,4 +36,10 @@ mailboxes +INBOX "+[Gmail]/Sent Mail" +[Gmail]/Starred
 mailboxes "+[Gmail]/All Mail" +[Gmail]/Important
 # mailboxes +[Gmail]/Trash +[Gmail]/Drafts 
 
+unsubscribe *
+
+# Key bindings and macros
+# Synchronize
+macro index,pager $ "<shell-escape>mbsync -a<enter>" "Sync mailbox"
+
 # vim: ft=neomuttrc
