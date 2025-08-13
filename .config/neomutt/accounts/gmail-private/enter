@@ -13,7 +13,7 @@ unset imap_pass
 unset imap_send_id
 
 #SMTP
-set real_name = 'kevin'
+set real_name = 'Ji Kaiwen'
 set from = $my_gmail_private_address
 set smtp_url = "smtps://$my_gmail_private_address@smtp.gmail.com:465/"
 set smtp_pass = $my_gmail_private_smtp_pass
