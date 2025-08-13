@@ -1,7 +1,5 @@
 #!/usr/bin/dash
 
-set -e
-
 # Decrypt a GPG file and extract the value for a given key.
 # 
 # Usage:

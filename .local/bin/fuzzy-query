@@ -1,7 +1,5 @@
 #!/usr/bin/dash
 
-set -e
-
 case "$(command -v fzf)" in
   *fzf)
     # Find fzf, just use it

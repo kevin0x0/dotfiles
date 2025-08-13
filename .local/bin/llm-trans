@@ -1,7 +1,5 @@
 #!/usr/bin/dash
 
-set -e
-
 PROMPT_TEMPLATE=\
 "# Role
 
