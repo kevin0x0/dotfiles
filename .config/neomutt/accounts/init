@@ -1,0 +1,11 @@
+
+set my_documents_dir = `xdg-user-dir DOCUMENTS`
+
+set my_none = `printf "%s" "${XDG_CONFIG_HOME:-$HOME/.config}/neomutt/none"`
+set my_never_used = ''
+set my_last_source_variable = 'my_never_used'
+
+source "gmail-private/on-startup"
+source "163-private/on-startup"
+
+# vim: ft=neomuttrc

@@ -1,5 +1,3 @@
-unalternates *
-alternates $my_163_private_address
 
 set spool_file = +INBOX
 set postponed = +草稿箱
@@ -23,7 +21,6 @@ set smtp_authenticators = "plain"
 # PGP and SMIME
 set pgp_sign_as = $my_163_private_pgp_sign_keyid
 set smime_sign_as = $my_163_private_smime_sign_keyid
-set pgp_use_gpg_agent = yes
 
 set pgp_self_encrypt = yes
 set smime_self_encrypt = yes
@@ -37,5 +34,13 @@ mailboxes +垃圾邮件 +广告邮件 +病毒文件夹 +草稿箱
 
 unsubscribe *
 subscribe Gnupg-devel@gnupg.org Gnupg-users@gnupg.org
+
+unalternates *
+alternates $my_163_private_address
+
+set my_163_private_source = "$my_none"
+
+set $my_last_source_variable = enter
+set my_last_source_variable = my_163_private_source
 
 # vim: ft=neomuttrc

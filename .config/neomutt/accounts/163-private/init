@@ -7,7 +7,6 @@ set my_163_private_pgp_self_encrypt_keyid = "`decget \"$my_163_private_data\" pg
 set my_163_private_smime_sign_keyid = "`decget \"$my_163_private_data\" smime-sign-keyid`"
 set my_163_private_smime_self_encrypt_keyid = "`decget \"$my_163_private_data\" smime-self-encrypt-keyid`"
 
-set my_163_private_source = enter
 source enter
 
 # vim: ft=neomuttrc

@@ -6,7 +6,6 @@ set my_gmail_private_pgp_self_encrypt_keyid = "`decget \"$my_gmail_private_data\
 set my_gmail_private_smime_sign_keyid = "`decget \"$my_gmail_private_data\" smime-sign-keyid`"
 set my_gmail_private_smime_self_encrypt_keyid = "`decget \"$my_gmail_private_data\" smime-self-encrypt-keyid`"
 
-set my_gmail_private_source = enter
 source enter
 
 # vim: ft=neomuttrc

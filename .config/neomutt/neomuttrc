@@ -1,13 +1,14 @@
+set my_cache_home = `printf "%s" "${XDG_CACHE_HOME:-$HOME/.cache}"`
+
 set mbox_type = Maildir
-set header_cache = "~/.cache/neomutt/header/"
-set message_cache_dir = "~/.cache/neomutt/message/"
+set header_cache = "$my_cache_home/neomutt/header/"
+set message_cache_dir = "$my_cache_home/neomutt/message/"
 
 set use_threads = yes
 set sort = date
 set sort_aux = date
 
 set editor = "nvim"
-set my_documents_dir = `xdg-user-dir DOCUMENTS`
 
 set crypt_auto_smime = no
 set crypt_auto_pgp = no
@@ -19,13 +20,12 @@ set crypt_reply_sign_encrypted = yes
 set crypt_use_gpgme = yes
 set crypt_verify_sig = yes
 
-source "accounts/gmail-private/on-startup"
-source "accounts/163-private/on-startup"
+set pgp_use_gpg_agent = yes
 
-source "mailinglists"
-
+source accounts/init
+source mailinglists
 source keybindings
 source "colors/`termcolors`"
 
-set query_command = '${XDG_CONFIG_HOME:-$HOME/.config}/neomutt/address-query %s'
+set query_command = "${XDG_CONFIG_HOME:-$HOME/.config}/address-query %s"
 set new_mail_command = "notify-send --icon='/usr/share/neomutt/logo/neomutt.svg' 'New Email' '%n new messages, %u unread.' &"
