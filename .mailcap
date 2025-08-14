@@ -1,0 +1,5 @@
+text/html; swaymsg -- set '$float' enable , exec firefox --new-window %s; \
+  test=command -v -- firefox >/dev/null && pgrep sway >/dev/null
+
+text/html; cat %s; copiousoutput; \
+  test=! command -v -- firefox || ! pgrep sway >/dev/null

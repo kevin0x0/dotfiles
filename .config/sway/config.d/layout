@@ -4,10 +4,14 @@ set $down j
 set $up k
 set $right l
 
+set $float disable
 
 for_window [app_id=mpv] floating enable
 for_window [app_id=gcr-prompter] floating enable
 for_window [app_id=swayimg] floating enable
+for_window [app_id=firefox] floating $$float; \
+                   resize set 1000 800; \
+                   set $$float disable
 
 # Toggle border
 bindsym $mod+bracketright border normal
