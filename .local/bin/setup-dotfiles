@@ -84,6 +84,8 @@ fi
 dotfiles checkout -q
 
 : ${XDG_CONFIG_HOME:=$HOME/.config}
+: ${XDG_CACHE_HOME:=$HOME/.cache}
+
 # Create XDG user directories
 if ! [ -f "$XDG_CONFIG_HOME/user-dirs.dirs" ]; then
   error "$XDG_CONFIG_HOME/user-dirs.dirs does not exist"
@@ -115,6 +117,8 @@ for f in "$XDG_DOCUMENTS_DIR"/accounts/*.gpg; do
   [ -f "$f" ] || continue
   mkdir -p -- "$(echo "$f" | sed 's/accounts\/\([^\/]\+\)\.gpg/mail\/\1/')"
 done
+mkdir -p -- "$XDG_CACHE_HOME/neomutt/header/"
+mkdir -p -- "$XDG_CACHE_HOME/neomutt/message/"
 
 if ! grep '^Path' "$XDG_CONFIG_HOME/isyncrc" | grep "$XDG_DOCUMENTS_DIR" &&
    ! grep '^Path' "$XDG_CONFIG_HOME/isyncrc" | grep "~/${XDG_DOCUMENTS_DIR##~/}"
