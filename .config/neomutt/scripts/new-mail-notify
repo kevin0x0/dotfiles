@@ -1,0 +1,4 @@
+#!/usr/bin/dash
+
+notify-send --icon=/usr/share/neomutt/logo/neomutt.svg 'New Email' \
+  "$1 new messages, $2 unread." 1>/dev/null 2>&1

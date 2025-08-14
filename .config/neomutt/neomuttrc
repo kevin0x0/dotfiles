@@ -1,4 +1,5 @@
 set my_cache_home = `printf "%s" "${XDG_CACHE_HOME:-$HOME/.cache}"`
+set my_config_home = `printf "%s" "${XDG_CONFIG_HOME:-$HOME/.config}"`
 
 set mbox_type = Maildir
 set header_cache = "$my_cache_home/neomutt/header/"
@@ -27,5 +28,5 @@ source mailinglists
 source keybindings
 source "colors/`termcolors`"
 
-set query_command = "${XDG_CONFIG_HOME:-$HOME/.config}/address-query %s"
-set new_mail_command = "notify-send --icon='/usr/share/neomutt/logo/neomutt.svg' 'New Email' '%n new messages, %u unread.' &"
+set query_command = "$my_config_home/neomutt/scripts/address-query %s"
+set new_mail_command = "$my_config_home/neomutt/scripts/new-mail-notify %n %u &"
