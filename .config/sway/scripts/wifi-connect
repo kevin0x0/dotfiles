@@ -10,3 +10,5 @@ while [ "$i" -le 20 ] && [ "$(wifi-connect-status)" != COMPLETED ]; do
   i=$((i + 1))
   sleep 0.5
 done
+
+pkill -RTMIN+3 i3blocks
