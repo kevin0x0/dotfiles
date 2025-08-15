@@ -1,0 +1,3 @@
+
+for_window [class="wechat"] floating enable
+# vim: ft=swayconfig
