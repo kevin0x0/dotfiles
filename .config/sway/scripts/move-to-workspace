@@ -3,7 +3,7 @@
 PROMPT="Workspace: "
 [ "$LANG" = zh_CN.UTF-8 ] && PROMPT="工作区名："
 
-workspace=$(swaymsg -st get_workspaces \
+workspace=$(swaymsg -rt get_workspaces \
   | fj -r '[*].name' \
   | riced-menu -p "$PROMPT")
 
