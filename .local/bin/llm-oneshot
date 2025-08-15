@@ -101,7 +101,7 @@ fi
 
 do_curl "$URL" "$DEEPSEEK_API_KEY" "$MODEL" "$prompt" "$input" "$opt_stream" \
   | make_valid_json "$opt_stream" \
-  | stdbuf -o 0 fj -srj "$selector"
+  | stdbuf -o 0 fj -srd '' "$selector"
 
 if [ -n "$opt_append_newline" ]; then
   echo
