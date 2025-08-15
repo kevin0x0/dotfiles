@@ -1,0 +1,12 @@
+#!/usr/bin/dash
+
+if ! clash-api >/dev/null 2>&1; then
+  echo "Clash is not started yet!"
+  exit 1
+fi
+
+if ! current="$(clash-api "proxies/🔰 选择节点" | fj -r '.now')"; then
+  exit 1
+fi
+
+printf "%s\n" "$current"
