@@ -108,7 +108,9 @@ find "$XDG_DOCUMENTS_DIR" -type f -name '*.gpg' \
   | sed 's/\.gpg$//' \
   | { 
     IFS= read -r file
-    [ -e "$file" ] || error "$file does not exist"
+    if ! [ -e "$file" ]; then
+      printf "%s does not exist, skip" "$file"
+    fi
     gpg -qe --yes "$opt_encryption_method" "$opt_gpg_recipient" "$file"
   }
 
