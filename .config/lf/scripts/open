@@ -1,8 +1,5 @@
 #!/usr/bin/bash
 
-set -e
-set -o pipefail
-
 shopt -s extglob
 
 IMAGES=()
@@ -10,6 +7,14 @@ MEDIA=()
 TEXTS=()
 DIRS=()
 OTHERS=()
+
+xdg_open_files() {
+  while [ "$#" -ne 0 ]; do
+    filepath=$(realpath -- "$1"; printf x)
+    setsid xdg-open "${filepath%x}" </dev/null &>/dev/null
+    shift
+  done
+}
 
 for f in "$@"; do
   if [ -L "$f" ]; then
@@ -61,7 +66,7 @@ if [ ${#IMAGES[@]} -ne 0 ]; then
 
     swayimg $flags -- "${IMAGES[@]}" </dev/null &>/dev/null &
   else
-    setsid xdg-open -- "${IMAGES[@]}" </dev/null &>/dev/null
+    xdg_open_files "${IMAGES[@]}"
   fi
 fi
 
@@ -69,12 +74,12 @@ if [ ${#MEDIA[@]} -ne 0 ]; then
   if type -P mpv &>/dev/null; then
     mpv -- "${MEDIA[@]}" </dev/null &>/dev/null &
   else
-    setsid xdg-open -- "${MEDIA[@]}" </dev/null &>/dev/null
+    xdg_open_files "${MEDIA[@]}"
   fi
 fi
 
 if [ ${#OTHERS[@]} -ne 0 ]; then
-  setsid xdg-open -- "${OTHERS[@]}" </dev/null &>/dev/null
+  xdg_open_files "${OTHERS[@]}"
 fi
 
 if [ ${#TEXTS[@]} -ne 0 ]; then
