@@ -84,10 +84,10 @@ bindsym $mod+Shift+a exec makoctl menu -- riced-menu -l 2
 #
 # Utilities:
 #
-# Special keys to adjust volume via amixer
-bindsym --locked XF86AudioLowerVolume exec amixer set Master 5%- && pkill -RTMIN+1 i3blocks
-bindsym --locked XF86AudioRaiseVolume exec amixer set Master 5%+ && pkill -RTMIN+1 i3blocks
-bindsym --locked XF86AudioMute exec amixer set Master toggle && pkill -RTMIN+1 i3blocks
+# Special keys to adjust volume
+bindsym --locked XF86AudioLowerVolume exec audioctl set pvolume 5%- && pkill -RTMIN+1 i3blocks
+bindsym --locked XF86AudioRaiseVolume exec audioctl set pvolume 5%+ && pkill -RTMIN+1 i3blocks
+bindsym --locked XF86AudioMute exec audioctl set pswitch toggle && pkill -RTMIN+1 i3blocks
 
 # Special keys to adjust brightness via brightnessctl
 # bindsym --locked XF86MonBrightnessDown exec brightnessctl set 5%-

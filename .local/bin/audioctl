@@ -1,0 +1,80 @@
+#!/usr/bin/dash
+
+if ! [ -f "${XDG_CONFIG_HOME:-$HOME/.config}/audioctl/config" ]; then
+  if ! mkdir -p "${XDG_CONFIG_HOME:-$HOME/.config}/audioctl/"; then
+    exit 1
+  fi
+
+  audioctl-config >"${XDG_CONFIG_HOME:-$HOME/.config}/audioctl/config"
+  if ! [ -f "${XDG_CONFIG_HOME:-$HOME/.config}/audioctl/config" ]; then
+    echo "Failed to create config file"
+    exit 1
+  fi
+fi
+
+. "${XDG_CONFIG_HOME:-$HOME/.config}/audioctl/config"
+
+command_set() {
+  case "$1" in
+    pvolume)
+      shift
+      amixer set "$PVOLUME" "$@"
+      ;;
+    cvolume)
+      shift
+      amixer set "$CVOLUME" "$@"
+      ;;
+    pswitch)
+      shift
+      amixer set "$PSWITCH" "$@"
+      ;;
+    cswitch)
+      shift
+      amixer set "$CSWITCH" "$@"
+      ;;
+    *)
+      echo "Unknown command: $1"
+      exit 1
+      ;;
+  esac
+}
+
+command_get() {
+  case "$1" in
+    pvolume)
+      shift
+      amixer get "$PVOLUME"
+      ;;
+    cvolume)
+      shift
+      amixer get "$CVOLUME"
+      ;;
+    pswitch)
+      shift
+      amixer get "$PSWITCH"
+      ;;
+    cswitch)
+      shift
+      amixer get "$CSWITCH"
+      ;;
+    *)
+      echo "Unknown command: $1"
+      exit 1
+      ;;
+  esac
+}
+
+case "$1" in
+  set)
+    shift
+    command_set "$@"
+    ;;
+  get)
+    shift
+    command_get "$@"
+    ;;
+  *)
+    echo "Unknown command: $1"
+    exit 1
+    ;;
+esac

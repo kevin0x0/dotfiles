@@ -2,51 +2,84 @@
 
 . "${XDG_CONFIG_HOME:-$HOME/.config}/i3blocks/scripts/colors"
 
-: ${control:=Master}
-
 : ${button:-0}
 case "$button" in
   4)
-    amixer set "$control" 2%+ >/dev/null 2>&1
+    audioctl set pvolume 2%+ >/dev/null 2>&1
     ;;
   5)
-    amixer set "$control" 2%- >/dev/null 2>&1
+    audioctl set pvolume 2%- >/dev/null 2>&1
     ;;
   2)
-    amixer set "$control" toggle >/dev/null 2>&1
+    audioctl set pswitch toggle >/dev/null 2>&1
+    ;;
+  1)
+    verbose=1
     ;;
 esac
 
+status=
 
-data=$(amixer get "$control" \
-  | sed -En '/^\s*Mono:/s/^.*\[(.*)\]\s*\[.*\]\s*\[(.*)\]$/\1 \2/p')
+{
+  IFS= read -r line
+  scontrol=${line#Simple mixer control }
+  if [ -z "$verbose" ]; then
+    scontrol=${scontrol#*\'}
+    scontrol=${scontrol%\'*}
+  fi
+  while IFS= read -r line; do
+    case "$line" in
+      *Playback*\[*\]*\[*\]*\[*\]*)
+        if [ -z "$verbose" ]; then
+          status=$(printf "%s" "$line" | \
+            sed -E 's/^.*\[(.*)\]\s*\[.*\]\s*\[(.*)\]$/\1 \2/')
+          break
+        else
+          status=$status${status:+, }$(printf "%s" "$line" | \
+            sed -E 's/^\s*(.*):.*\[(.*)\]\s*\[.*\]\s*\[(.*)\]$/\1: \2 \3/')
+        fi
+        ;;
+    esac
+  done
+} <<EOF
+$(audioctl get pvolume)
+EOF
 
-percent=${data%% *}
-status=${data##* }
 
-icon=
-if [ "$status" = "off" ]; then
-  icon=🔇
-else
-  case ${percent%\%} in
-    [0-3]?|[0-9])
-      icon=🔈
-      ;;
-    [4-7]?)
-      icon=🔉
-      ;;
-    [8-9]?|100)
-      icon=🔊
-      ;;
-  esac
-fi
+icon=🔇
+color=$color_normal
 
-if [ "$status" = "on" ]; then
-  color=$color_normal
-else
-  color=$color_bad
-fi
+case "$status" in
+  *off*)
+    color=$color_bad
+    ;;
+  *)
+    volume=${status% *}
+    if [ -n "$verbose" ]; then
+      volume=$(printf "%s" "$status" | grep -o '[[:digit:]]*' | \
+        {
+          max=0
+          while read num; do
+            max=$((num > max ? num : max))
+          done
+          printf "%u" "$max"
+        })%
+    fi
 
-printf "%s %s %s\n" "$icon" "$control" "$percent"
-printf "%s %s\n" "$icon" "${percent%\%}"
+    case "$volume" in
+      [0-3]?%|[0-9]%)
+        icon=🔈
+        ;;
+      [4-7]?%)
+        icon=🔉
+        ;;
+      [8-9]?%|100%)
+        icon=🔊
+        ;;
+    esac
+    ;;
+esac
+
+printf "%s %s %s\n" "$icon" "$scontrol" "$status"
+printf "%s %s\n" "$icon" "$status"
 echo "$color"
