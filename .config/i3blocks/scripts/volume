@@ -19,6 +19,10 @@ case "$button" in
 esac
 
 status=
+scontrol=
+average_volume=
+mute=off
+nchannel=0
 
 {
   IFS= read -r line
@@ -30,14 +34,24 @@ status=
   while IFS= read -r line; do
     case "$line" in
       *Playback*\[*\]*\[*\]*\[*\]*)
+        nchannel=$((nchannel + 1))
+
         if [ -z "$verbose" ]; then
-          status=$(printf "%s" "$line" | \
+          data=$(printf "%s" "$line" | \
             sed -E 's/^.*\[(.*)\]\s*\[.*\]\s*\[(.*)\]$/\1 \2/')
-          break
         else
-          status=$status${status:+, }$(printf "%s" "$line" | \
+          data=$(printf "%s" "$line" | \
             sed -E 's/^\s*(.*):.*\[(.*)\]\s*\[.*\]\s*\[(.*)\]$/\1: \2 \3/')
+          status=$status${status:+, }$data
+          data=${data##*: }
         fi
+
+        average_volume=$((average_volume + ${data%\%*}))
+        case "$data" in
+          *" on")
+            mute=on
+            ;;
+        esac
         ;;
     esac
   done
@@ -45,40 +59,32 @@ status=
 $(audioctl get pvolume)
 EOF
 
+average_volume=$((average_volume / nchannel))
 
-icon=🔇
-color=$color_normal
+if [ -z "$verbose" ]; then
+  status="$average_volume% $mute"
+fi
 
-case "$status" in
-  *off*)
-    color=$color_bad
-    ;;
-  *)
-    volume=${status% *}
-    if [ -n "$verbose" ]; then
-      volume=$(printf "%s" "$status" | grep -o '[[:digit:]]*' | \
-        {
-          max=0
-          while read num; do
-            max=$((num > max ? num : max))
-          done
-          printf "%u" "$max"
-        })%
-    fi
+icon=
+color=
 
-    case "$volume" in
-      [0-3]?%|[0-9]%)
-        icon=🔈
-        ;;
-      [4-7]?%)
-        icon=🔉
-        ;;
-      [8-9]?%|100%)
-        icon=🔊
-        ;;
-    esac
-    ;;
-esac
+if [ "$mute" = off ]; then
+  color=$color_bad
+  icon=🔇
+else
+  color=$color_normal
+  case "$average_volume" in
+    [0-3]?|[0-9])
+      icon=🔈
+      ;;
+    [4-7]?)
+      icon=🔉
+      ;;
+    [8-9]?|100)
+      icon=🔊
+      ;;
+  esac
+fi
 
 printf "%s %s %s\n" "$icon" "$scontrol" "$status"
 printf "%s %s\n" "$icon" "$status"
