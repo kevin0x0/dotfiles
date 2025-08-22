@@ -1,0 +1,42 @@
+@hooks [
+  {
+    func load
+    files [
+      {
+        @func concat
+        strings [
+          {
+            @func getenv
+            vars [
+              XDG_CONFIG_HOME
+            ]
+            default "~/.config"
+          }
+          "/alsa/asoundrc.extra"
+        ]
+      }
+    ]
+    errors false
+  }
+]
+
+# allow other users
+defaults.pcm.ipc_perm 0666
+
+pcm.playback {
+	type plug
+	slave.pcm "dmix"
+}
+
+pcm.capture {
+	type plug
+	slave.pcm "dsnoop"
+}
+
+pcm.!default {
+	type asym
+	playback.pcm "playback"
+	capture.pcm "capture"
+}
+
+# vim: ft=alsaconf
