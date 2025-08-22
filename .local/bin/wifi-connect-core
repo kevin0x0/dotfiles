@@ -10,12 +10,15 @@ if [ -z "$interface" ]; then
     wifi-connect-generate-config >"$configfile"
 
     if ! [ -f "$configfile" ]; then
-      echo "Unable to create config file" >&2
-      exit 1
+      exit 65
     fi
   fi
 
   . "$configfile"
+fi
+
+if [ -z "$interface" ]; then
+  exit 64
 fi
 
 ifindex=$(cat "/sys/class/net/$interface/ifindex")
