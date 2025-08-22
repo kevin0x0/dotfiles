@@ -1,0 +1,10 @@
+#!/usr/bin/dash
+
+for interface in /sys/class/net/*; do
+  [ -d "$interface" ] || continue
+  if [ -d "$interface/wireless" ]; then
+    interface=${interface##*/}
+    printf "interface=%s\n# vim: ft=sh\n" "$interface"
+    break
+  fi
+done
