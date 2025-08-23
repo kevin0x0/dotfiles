@@ -1,5 +1,7 @@
 #!/usr/bin/dash
 
+# vim: nomodeline
+
 for interface in /sys/class/net/*; do
   [ -d "$interface" ] || continue
   if [ -d "$interface/wireless" ]; then
