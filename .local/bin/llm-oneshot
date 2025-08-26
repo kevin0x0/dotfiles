@@ -42,7 +42,7 @@ URL=https://api.deepseek.com/chat/completions
 MODEL=deepseek-chat
 DEEPSEEK_API_KEY=$(decget "$(xdg-user-dir DOCUMENTS)/api_keys.gpg" DEEPSEEK_API_KEY)
 if [ "$?" -ne 0 ]; then
-  exit $?
+  exit 1
 fi
 
 input=
