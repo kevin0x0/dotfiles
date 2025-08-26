@@ -39,8 +39,11 @@ make_valid_json() {
 }
 
 URL=https://api.deepseek.com/chat/completions
-DEEPSEEK_API_KEY=$(decget "$(xdg-user-dir DOCUMENTS)/api_keys.gpg" DEEPSEEK_API_KEY)
 MODEL=deepseek-chat
+DEEPSEEK_API_KEY=$(decget "$(xdg-user-dir DOCUMENTS)/api_keys.gpg" DEEPSEEK_API_KEY)
+if [ "$?" -ne 0 ]; then
+  exit $?
+fi
 
 input=
 opt_append_newline=yes
