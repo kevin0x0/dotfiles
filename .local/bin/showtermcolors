@@ -61,9 +61,12 @@ nblock=0
 while read number; do
   case ${#number} in
     6)
+      r=${number%????}
+      gb=${number#??}
+      g=${gb%??}
+      b=${gb#??}
       printf "\033[48;2;%u;%u;%um%${block_size}s\033[0m$number_format" \
-        "0x${number:0:2}" "0x${number:2:2}" "0x${number:4:2}" "" \
-        "${opt_show_number:+$number}"
+        "0x$r" "0x$g" "0x$b" "" "${opt_show_number:+$number}"
       ;;
     1|2|3)
       case $number in
