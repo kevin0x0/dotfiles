@@ -19,9 +19,3 @@ if [ -z "$DOWNLOAD_URL" ]; then
 fi
 
 curl -- "$DOWNLOAD_URL" | cat -- - "$CLASH_CONFIG_HOME/tun.yaml" >"$CLASH_CONFIG_HOME/config.yaml"
-
-# Notify clash to update config
-if sudo ps -A -o exe | grep --quiet "^$HOME/.local/bin/clash$"; then
-  proxy-stop
-  proxy-start
-fi
