@@ -53,9 +53,9 @@ list_network() {
           break
         fi
       else
-        local connected=$(busctl --json short --system get-property \
+        local connected="$(busctl --json short --system get-property \
           net.connman.iwd "$object" \
-          net.connman.iwd.Network Connected 2>/dev/null | fj -r '.data')
+          net.connman.iwd.Network Connected 2>/dev/null | fj -r '.data')"
 
         if [ "$connected" = true ]; then
           printf "> "
