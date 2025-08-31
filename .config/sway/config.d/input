@@ -8,12 +8,10 @@ input type:touchpad {
     natural_scroll enabled
     middle_emulation enabled
     drag_lock disabled
+    dwt disabled
 }
 
 input type:pointer {
-    tap enabled
-    natural_scroll disabled
-    middle_emulation enabled
 }
 
 # vim: ft=swayconfig
