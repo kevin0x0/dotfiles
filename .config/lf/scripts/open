@@ -11,7 +11,7 @@ OTHERS=()
 xdg_open_files() {
   while [ "$#" -ne 0 ]; do
     filepath=$(realpath -- "$1"; printf x)
-    setsid xdg-open "${filepath%x}" </dev/null &>/dev/null
+    nohup xdg-open "${filepath%x}" </dev/null &>/dev/null &
     shift
   done
 }
