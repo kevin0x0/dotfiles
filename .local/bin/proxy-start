@@ -1,12 +1,20 @@
 #!/usr/bin/dash
 
-# If then clash is already started, exit with code 64
+if ! (umask 0077; set -C; : >"$XDG_RUNTIME_DIR/clash.pid.lock"); then
+  echo "Another operation is in progress." >&2
+  sleep 0.3
+fi
 
-if sudo "$@" ps -A -o exe | grep --quiet "^$HOME/.local/bin/clash$"; then
+trap 'rm "$XDG_RUNTIME_DIR/clash.pid.lock"' EXIT
+
+# If then clash is already started, exit with code 64
+if ! (umask 0077; set -C; : >"$XDG_RUNTIME_DIR/clash.pid"); then
   echo "An instance of proxy is already running." >&2
   exit 64
 fi
 
 CLASH_CONFIG_HOME=${XDG_CONFIG_HOME:=$HOME/.config}/clash
 
-sudo --background "$@" nohup ~/.local/bin/clash -d "$CLASH_CONFIG_HOME" >/dev/null 2>&1
+sudo --preserve-env=CLASH_CONFIG_HOME,HOME,XDG_RUNTIME_DIR --background \
+  "$@" sh -c 'printf "%d" "$$" >"$XDG_RUNTIME_DIR/clash.pid"
+  exec nohup "$HOME/.local/bin/clash" -d "$CLASH_CONFIG_HOME" >/dev/null 2>&1'
