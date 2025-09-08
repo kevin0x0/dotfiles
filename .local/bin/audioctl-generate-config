@@ -1,4 +1,5 @@
 #!/usr/bin/dash
+# vim: nomodeline
 
 scontrol_priority() {
   case "$1" in
