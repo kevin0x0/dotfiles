@@ -39,7 +39,7 @@ list_diff() {
        continue
        ;;
      *)
-       echo "$line"
+       printf "%s\n" "$line"
        ;;
    esac
  done
@@ -117,7 +117,7 @@ find "$XDG_DOCUMENTS_DIR" -type f -name '*.gpg' \
 # Create mail directories
 for f in "$XDG_DOCUMENTS_DIR"/accounts/*.gpg; do
   [ -f "$f" ] || continue
-  mkdir -p -- "$(echo "$f" | sed 's/accounts\/\([^\/]\+\)\.gpg/mail\/\1/')"
+  mkdir -p -- "$(printf "%s" "$f" | sed 's/accounts\/\([^\/]\+\)\.gpg/mail\/\1/')"
 done
 mkdir -p -- "$XDG_CACHE_HOME/neomutt/header/"
 mkdir -p -- "$XDG_CACHE_HOME/neomutt/message/"

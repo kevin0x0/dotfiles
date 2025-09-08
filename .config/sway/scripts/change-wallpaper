@@ -1,6 +1,6 @@
 #!/usr/bin/dash
 
-wallpaper_dir="$(xdg-user-dir PICTURES)/wallpaper"
+wallpaper_dir=$(realpath -- "$(xdg-user-dir PICTURES)/wallpaper")
 
 imgfile=$(find "$wallpaper_dir" -type f -print0 \
   | xargs -0 swayimg -g --config=general.overlay=no --)

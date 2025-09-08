@@ -10,17 +10,14 @@ OTHERS=()
 
 xdg_open_files() {
   while [ "$#" -ne 0 ]; do
-    filepath=$(realpath -- "$1"; printf x)
+    filepath=$(printf "%sx" "$1")
     nohup xdg-open "${filepath%x}" </dev/null &>/dev/null &
     shift
   done
 }
 
 for f in "$@"; do
-  if [ -L "$f" ]; then
-    f=$(readlink -- "$f" 2>/dev/null)
-    [ -e "$f" ] || continue
-  fi
+  f=$(realpath -- "$f")
   case $(file --brief --mime-type -- "$f" 2>/dev/null) in
     image/*)
       IMAGES+=("$f")
