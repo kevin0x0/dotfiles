@@ -1,14 +1,15 @@
 #!/usr/bin/dash
 
-if ! (umask 0077; set -C; : >"$XDG_RUNTIME_DIR/clash.pid.lock"); then
+lockfile="$XDG_RUNTIME_DIR/clash.pid.lock"
+while ! (umask 0077; set -C; : >"$lockfile") 2>/dev/null; do
   echo "Another operation is in progress." >&2
   sleep 0.3
-fi
+done
 
-trap 'rm "$XDG_RUNTIME_DIR/clash.pid.lock"' EXIT
+trap "rm \"$lockfile\"" EXIT
 
 # If no clash process is running, exit with code 64
-if ! pid=$(cat "$XDG_RUNTIME_DIR/clash.pid"); then
+if ! pid=$(cat "$XDG_RUNTIME_DIR/clash.pid") >/dev/null; then
   echo "There are no instance of proxy is running." >&2
   exit 64
 fi
