@@ -2,11 +2,12 @@
 
 shopt -s extglob
 
-file=$(realpath -- "$1")
+file=$(realpath -e -- "$1") || exit 1
+file=${file#x}
 mime_type=$(file --mime-type --brief -- "$f" </dev/null)
 case "$mime_type" in
   text/plain)
-    cat -- "$(realpath -- "$1")"
+    cat -- "$file"
     ;;
   @(application/@(yaml|toml|json)|text/*))
     highlight -O ansi -- "$f"
