@@ -122,8 +122,8 @@ done
 mkdir -p -- "$XDG_CACHE_HOME/neomutt/header/"
 mkdir -p -- "$XDG_CACHE_HOME/neomutt/message/"
 
-if ! grep '^Path' "$XDG_CONFIG_HOME/isyncrc" | grep -qF "$XDG_DOCUMENTS_DIR" &&
-   ! grep '^Path' "$XDG_CONFIG_HOME/isyncrc" | grep -qF "~/${XDG_DOCUMENTS_DIR##~/}"
+if ! grep '^Path' "$XDG_CONFIG_HOME/isyncrc" | \
+   grep -qF -e "$XDG_DOCUMENTS_DIR" -e "~/${XDG_DOCUMENTS_DIR##~/}"
 then
   echo "Should manually update $XDG_CONFIG_HOME/isyncrc."
 fi
