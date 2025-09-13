@@ -105,14 +105,14 @@ if [ -z "$opt_gpg_recipient" ]; then
   error "You should specify a recipient for encryption."
 fi
 find "$XDG_DOCUMENTS_DIR" -type f -name '*.gpg' \
-  | sed 's/\.gpg$//' \
-  | { 
-    IFS= read -r file
-    if ! [ -e "$file" ]; then
-      printf "%s does not exist, skip" "$file"
+  | while IFS= read -r file; do
+    if ! [ -e "${file%.gpg}" ]; then
+      printf "%s does not exist, skip\n" "${file%.gpg}"
+      continue
     fi
-    gpg -qe --yes "$opt_encryption_method" "$opt_gpg_recipient" "$file"
-  }
+    gpg -qe --yes --output "$file" \
+      "$opt_encryption_method" "$opt_gpg_recipient" "${file%.gpg}"
+  done
 
 # Create mail directories
 for f in "$XDG_DOCUMENTS_DIR"/accounts/*.gpg; do
@@ -122,8 +122,8 @@ done
 mkdir -p -- "$XDG_CACHE_HOME/neomutt/header/"
 mkdir -p -- "$XDG_CACHE_HOME/neomutt/message/"
 
-if ! grep '^Path' "$XDG_CONFIG_HOME/isyncrc" | grep "$XDG_DOCUMENTS_DIR" &&
-   ! grep '^Path' "$XDG_CONFIG_HOME/isyncrc" | grep "~/${XDG_DOCUMENTS_DIR##~/}"
+if ! grep '^Path' "$XDG_CONFIG_HOME/isyncrc" | grep -qF "$XDG_DOCUMENTS_DIR" &&
+   ! grep '^Path' "$XDG_CONFIG_HOME/isyncrc" | grep -qF "~/${XDG_DOCUMENTS_DIR##~/}"
 then
   echo "Should manually update $XDG_CONFIG_HOME/isyncrc."
 fi
