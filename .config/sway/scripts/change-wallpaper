@@ -14,5 +14,5 @@ fi
 swaymsg output '*' bg "$imgfile" stretch
 
 if [ "$1" = "--persist" ]; then
-  ln -srf -- "$imgfile" "$wallpaper_dir/current"
+  ln -sf -- "$imgfile" "$wallpaper_dir/current"
 fi
