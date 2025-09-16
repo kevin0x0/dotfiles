@@ -31,13 +31,15 @@ while [ $# -ne 0 ]; do
   shift
 done
 
+tmpfile=$(mktemp)
 for f in "$CONFIG_DIR/"*; do
   [ -e "$f" ] || continue
   (
     . "$f"
-    set_font "$font" "$monofont"
+    set_font
     if [ -n "$reload" ]; then
       reload
     fi
   )
 done
+rm -- "$tmpfile"

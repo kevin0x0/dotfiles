@@ -21,11 +21,10 @@ if [ -z "$interface" ]; then
   exit 64
 fi
 
-ifindex=$(cat "/sys/class/net/$interface/ifindex")
-phyx=$(cat "/sys/class/net/$interface/phy80211/index")
+ifindex=$(cat "/sys/class/net/$interface/ifindex") || exit 1
+phyx=$(cat "/sys/class/net/$interface/phy80211/index") || exit 1
 
-print_if_is_network() {
-  local name
+print_if_is_network() (
   name=$(busctl --json short --system get-property \
     net.connman.iwd "$1" \
     net.connman.iwd.Network Name 2>/dev/null | fj -r '.data' 2>/dev/null)
@@ -36,9 +35,9 @@ print_if_is_network() {
   else
     return 1
   fi
-}
+)
 
-list_network() {
+list_network() (
   busctl --system tree net.connman.iwd \
     | sed -n 's@^.* \(/net/connman/iwd/'"$phyx/$ifindex"'/.*\)$@\1@p' \
     | \
@@ -53,7 +52,7 @@ list_network() {
           break
         fi
       else
-        local connected="$(busctl --json short --system get-property \
+        connected="$(busctl --json short --system get-property \
           net.connman.iwd "$object" \
           net.connman.iwd.Network Connected 2>/dev/null | fj -r '.data')"
 
@@ -66,7 +65,7 @@ list_network() {
         printf "%s\n" "$name"
       fi
     done
-  }
+  )
 
 if ! selected=$(list_network | "$@"); then
   exit 1

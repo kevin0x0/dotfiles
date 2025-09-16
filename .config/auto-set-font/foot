@@ -1,10 +1,8 @@
 
 set_font() {
-  local font="$1" monofont="$2"
-  local f="${XDG_CONFIG_HOME:-$HOME/.config}/foot/foot.ini"
-  local tmpfile="$(mktemp)"
-  sed 's/^\(font=\)[^-:]*\([-:]\)/\1'"$monofont"'\2/' -- "$f" \
-    >"$tmpfile" && mv -- "$tmpfile" "$f"
+  f=${XDG_CONFIG_HOME:-$HOME/.config}/foot/foot.ini
+  sed 's/^\(font=\)[^-:]*\([-:]\)/\1'"$monofont"'\2/' -- "$f" >"$tmpfile" \
+    && cp -- "$tmpfile" "$f"
 }
 
 reload() {

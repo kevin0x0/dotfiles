@@ -49,20 +49,21 @@ prefer_name() {
   return 1
 }
 
-prefer_scontrol() {
+prefer_scontrol() (
   if [ -z "$2" ]; then
     return 0
   fi
   if [ -z "$1" ]; then
     return 1
   fi
-  local lprio="$(scontrol_priority "$1")" rprio="$(scontrol_priority "$2")"
+  lprio=$(scontrol_priority "$1")
+  rprio=$(scontrol_priority "$2")
   if [ "$lprio" -eq "$rprio" ]; then
     prefer_name "$3" "$4"
     return "$?"
   fi
   [ "$lprio" -lt "$rprio" ]
-}
+)
 
 scontrol_fold_capability() {
   if [ -z "$2" ]; then
@@ -72,31 +73,26 @@ scontrol_fold_capability() {
 }
 
 strip_leading_and_trailing_space() {
-  local arg="$1"
   while :; do
-    case "$arg" in
-      " "*)
-        arg=${arg# }
-        ;;
-      *" ")
-        arg=${arg% }
-        ;;
-      *)
-        break
-        ;;
+    case "$1" in
+      " "*) set -- "${1# }";;
+      *" ") set -- "${1% }";;
+      *) break;;
     esac
   done
-  printf "%s" "$arg"
+  printf "%s" "$1"
 }
 
 parse_capabilities() {
-  line="$(strip_leading_and_trailing_space "$1") "
+  line="$(strip_leading_and_trailing_space "$line") "
 
-  local this_pvolume_cap this_pswitch_cap
-  local this_cvolume_cap this_cswitch_cap
+  this_pvolume_cap=
+  this_pswitch_cap=
+  this_cvolume_cap=
+  this_cswitch_cap=
 
   while [ "${#line}" -ne 0 ]; do
-    local cap="${line%% *}"
+    cap=${line%% *}
     line=${line#* }
     case "$cap" in
       pvolume|pvolume-joined)
@@ -161,16 +157,24 @@ parse_capabilities() {
 }
 
 parse_and_set_config() {
-  local pvolume pswitch cvolume cswitch
-  local pvolume_cap pswitch_cap cvolume_cap cswitch_cap
-  local scontrol_name=
+  pvolume=
+  pswitch=
+  cvolume=
+  cswitch=
+
+  pvolume_cap=
+  pswitch_cap=
+  cvolume_cap=
+  cswitch_cap=
+  scontrol_name=
+
   while IFS= read -r line; do
     case "$line" in
       "Simple mixer control"*)
         scontrol_name=$(strip_leading_and_trailing_space "${line#Simple mixer control}")
         ;;
       "  Capabilities:"*)
-        parse_capabilities "${line#  Capabilities: }"
+        line=${line#  Capabilities: } parse_capabilities
         ;;
     esac
   done
