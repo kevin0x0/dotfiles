@@ -16,10 +16,10 @@ ignore_case=
 # otherwise case-insensitive search. This behaviour is to mimic fzf smart-case.
 case "$pattern" in
   *[A-Z]*)
-    ignore_case=--no-ignore-case
+    ignore_case=
     ;;
   *)
-    ignore_case=--ignore-case
+    ignore_case=-i
     ;;
 esac
 
@@ -30,4 +30,4 @@ if [ -z "$pattern" ]; then
 else
   pattern=$(printf "%s" "$1" | sed 's/./&.*/g')
 fi
-exec grep "$ignore_case" --regexp="$pattern"
+exec grep "$ignore_case" -e "$pattern"
