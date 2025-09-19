@@ -1,0 +1,5 @@
+#!/usr/bin/dash
+
+f=$XDG_RUNTIME_DIR/firefox-mailcap-wrapper.tmp
+cp -- "$1" "$f"
+firefox --new-window -- "$f"

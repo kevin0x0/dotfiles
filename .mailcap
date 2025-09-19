@@ -1,5 +1,5 @@
-text/html; swaymsg -- set '$float' enable , exec firefox --new-window %s; \
-  test=command -v -- firefox >/dev/null && [ -e "$SWAYSOCK" ] >/dev/null
+text/html; firefox-mailcap-wrapper %s; \
+  test=command -v firefox >/dev/null && [ -n "$WAYLAND_DISPLAY$DISPLAY" ]
 
 text/html; cat %s; copiousoutput; \
-  test=! command -v -- firefox >/dev/null || ! [ -e "$SWAYSOCK" ] >/dev/null
+  test=! command -v firefox >/dev/null || [ -z "$WAYLAND_DISPLAY$DISPLAY" ]
