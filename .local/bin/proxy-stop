@@ -14,6 +14,11 @@ if ! pid=$(cat "$XDG_RUNTIME_DIR/clash.pid" 2>/dev/null); then
   exit 64
 fi
 
-rm "$XDG_RUNTIME_DIR/clash.pid"
-
 sudo "$@" kill "$pid"
+exitcode=$?
+if [ "$exitcode" -eq 0 ]; then
+  rm "$XDG_RUNTIME_DIR/clash.pid"
+  exit 0
+else
+  exit "$exitcode"
+fi
