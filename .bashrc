@@ -10,10 +10,11 @@ alias grep='grep --color=auto'
 
 # my PS1
 ps1_exitcode() {
-  if [ $? -eq 0 ]; then
+  local exitcode=$?
+  if (( exitcode == 0 )); then
     echo ""
   else
-    echo " [$?]"
+    echo " [$exitcode]"
   fi
 }
 ps1_njob() {
