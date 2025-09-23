@@ -28,4 +28,4 @@ if [ -z "$pattern" ]; then
 else
   pattern=$(printf "%s" "$1" | sed 's/./&.*/g')
 fi
-exec grep "$ignore_case" -e "$pattern"
+exec grep $ignore_case -e "$pattern"
