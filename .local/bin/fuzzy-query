@@ -1,11 +1,9 @@
 #!/usr/bin/dash
 
-case "$(command -v fzf)" in
-  *fzf)
-    # Find fzf, just use it
-    exec fzf -f "$1"
-    ;;
-esac
+if command -v fzf >/dev/null 2>&1; then
+  # Find fzf, just use it
+  exec fzf -f "$1"
+fi
 
 # Using grep to simulate fuzzy find
 
