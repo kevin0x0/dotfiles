@@ -7,7 +7,7 @@ error() {
 
 validate_number() {
   case "$1" in
-    *[^0-9]*)
+    *[!0-9]*)
       error "Need a number, got $1"
       ;;
   esac
