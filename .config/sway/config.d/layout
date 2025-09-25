@@ -114,15 +114,19 @@ bindsym $mod+c focus child
 
 bindsym {
   # Move the currently focused window to the scratchpad
-  $mod+Shift+minus move scratchpad
+  $mod+Shift+Minus move scratchpad
   # Show the next scratchpad window or hide the focused scratchpad window.
   # If there are multiple scratchpad windows, this command cycles through them.
-  $mod+minus scratchpad show
+  $mod+Shift+Equal scratchpad show
 }
 #
 # Resizing containers:
 #
 mode "resize" {
+  bindsym $mod+$left move left
+  bindsym $mod+$down move down
+  bindsym $mod+$up move up
+  bindsym $mod+$right move right
 # left will shrink the containers width
 # right will grow the containers width
 # up will shrink the containers height
@@ -132,11 +136,11 @@ mode "resize" {
   bindsym $up resize shrink height 10px
   bindsym $right resize grow width 10px
 
-  bindsym $mod+Shift+$left resize set width 40 ppt
-  bindsym $mod+Shift+$right resize set width 60 ppt
-  bindsym $mod+Shift+m resize set width 50 ppt height 50 ppt
-  bindsym $mod+Shift+$down resize set height 60 ppt
-  bindsym $mod+Shift+$up resize set height 40 ppt
+  bindsym Shift+$left resize set width 40 ppt
+  bindsym Shift+$right resize set width 60 ppt
+  bindsym Shift+m resize set width 50 ppt height 50 ppt
+  bindsym Shift+$down resize set height 60 ppt
+  bindsym Shift+$up resize set height 40 ppt
 
 # Return to default mode
   bindsym Return mode "default"
@@ -144,5 +148,10 @@ mode "resize" {
   bindsym $mod+r mode "default"
 }
 bindsym $mod+r mode "resize"
+
+# Quick resize
+bindsym $mod+Control+s resize set width 60 ppt; resize set height 60 ppt
+bindsym $mod+Minus exec sh -c 'swaymsg resize shrink width 10; swaymsg resize shrink height 10'
+bindsym $mod+Equal exec sh -c 'swaymsg resize grow width 10; swaymsg resize grow height 10'
 
 # vim: ft=swayconfig
