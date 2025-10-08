@@ -2,7 +2,6 @@
 set $term foot
 set $menu riced-menu-run
 set $broswer firefox
-set $musicplayer /opt/YesPlayMusic/yesplaymusic
 
 # Fast start
 bindsym {
@@ -27,8 +26,6 @@ mode "start" {
     $mod+Shift+q mode "default"
     # Start proxy
     $mod+p exec proxy-start-gui; mode "default"
-    # Start music player
-    $mod+m exec $musicplayer; mode "default"
   }
 }
 bindsym $mod+s mode "start"
@@ -41,8 +38,6 @@ mode "stop" {
     $mod+Shift+q mode "default"
     # Kill proxy
     $mod+Shift+p exec proxy-stop-gui; mode "default"
-    # Kill music player
-    $mod+Shift+m exec $musicplayer; mode "default"
   }
 }
 bindsym $mod+Shift+s mode "stop"
