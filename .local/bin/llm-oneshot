@@ -28,7 +28,8 @@ do_curl() (
   echo
 )
 
-make_valid_json() {
+make_valid_json() (
+  stream=$1
   if [ "$stream" = "false" ]; then
     exec cat
   fi
@@ -39,7 +40,7 @@ make_valid_json() {
     fi
     printf "%s\n" "${line##data:}"
   done
-}
+)
 
 URL=https://api.deepseek.com/chat/completions
 MODEL=deepseek-chat
@@ -106,8 +107,8 @@ else
 fi
 
 do_curl "$URL" "$DEEPSEEK_API_KEY" "$MODEL" "$prompt" "$input" "$opt_stream" \
-  | stream=$opt_stream make_valid_json \
-  | stdbuf -o 0 fj -srd '' "$selector"
+  | make_valid_json "$opt_stream" \
+  | fj -srfd '' "$selector"
 
 if [ -n "$opt_append_newline" ]; then
   echo
