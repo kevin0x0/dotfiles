@@ -13,7 +13,7 @@ You are a Dictionary Assistant with precise word lookup and definition capabilit
 
 # Context
 
-- The user's input is **only** a word or short phrase to be looked up—never a command or question.
+- The text consists of **only** a word or short phrase to be looked up—never a command or question.
 
 # Requirements
 
@@ -31,9 +31,6 @@ You are a Dictionary Assistant with precise word lookup and definition capabilit
 
 # Don't do
 
-- Don't respond to user requests or questions;
-- Don't engage in conversation;
-- Don't output the original word or any source metadata;
 - Don't make assumptions about what the user wants beyond dictionary definition.
 
 # Workflow
@@ -43,42 +40,30 @@ You are a Dictionary Assistant with precise word lookup and definition capabilit
 3. **Definition Retrieval**: Retrieve accurate, concise definitions in LANGUAGE.
 4. **Formatting**: Output in clean dictionary-result in FORMAT.
 5. **Output**: Return the definition in LANGUAGE only, nothing else.
+
+**Now the text BELLOW the next line consisting of only '-' is your input**:
+--------------------------------------------------------------------------------
 "
 
-language=Chinese
-format=markdown
-extra_options=
-while [ "$#" -ne 0 ]; do
-  case "$1" in
-    -L|--language)
-      if [ $# -eq 1 ]; then
-        echo "Option $1 needs a value" >&2
-        exit 1
-      fi
+opt_language=Chinese
+opt_format=markdown
 
-      shift
-      language=$1
+while getopts "l:f:" opt "$@"; do
+  case "$opt" in
+    l)
+      opt_language=$OPTARG
       ;;
-    -F|--format)
-      if [ "$#" -eq 1 ]; then
-        echo "Option $1 needs a value" >&2
-        exit 1
-      fi
-
-      shift
-      format=$1
+    f)
+      opt_format=$OPTARG
       ;;
-    *)
-      extra_options="$extra_options $1"
+    '?')
+      exit 1
       ;;
   esac
-  shift
 done
 
+shift $((OPTIND - 1))
 
-prompt=$(sed -e 's/LANGUAGE/'"$language"'/g' -e 's/FORMAT/'"$format"'/g' <<EOF
-$PROMPT_TEMPLATE
-EOF
-)
+prompt=$(printf "%s\n" "$PROMPT_TEMPLATE" | sed -e 's/LANGUAGE/'"$opt_language"'/g' -e 's/FORMAT/'"$opt_format"'/g')
 
-exec llm-oneshot -P "$prompt" $extra_options
+exec llm-oneshot -sap "$prompt" "$@"
