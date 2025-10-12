@@ -1,4 +1,4 @@
-#!/usr/bin/dash
+#!/bin/sh
 
 if ! [ -f "${XDG_CONFIG_HOME:-$HOME/.config}/audioctl" ]; then
   if ! mkdir -p "${XDG_CONFIG_HOME:-$HOME/.config}"; then

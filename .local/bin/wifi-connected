@@ -1,4 +1,4 @@
-#!/usr/bin/dash
+#!/bin/sh
 
 if [ -z "$interface" ]; then
   configfile=${XDG_CONFIG_HOME:-$HOME/.config}/wifi-connect

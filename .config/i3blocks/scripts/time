@@ -1,4 +1,4 @@
-#!/usr/bin/dash
+#!/bin/sh
 
 now=$(date '+%H:%M')
 if [ "$now" = "00:00" ]; then

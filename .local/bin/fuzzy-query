@@ -1,4 +1,4 @@
-#!/usr/bin/dash
+#!/bin/sh
 
 if command -v fzf >/dev/null 2>&1; then
   # Find fzf, just use it

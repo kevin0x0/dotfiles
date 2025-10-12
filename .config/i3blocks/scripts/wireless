@@ -1,4 +1,4 @@
-#!/usr/bin/dash
+#!/bin/sh
 
 . "${XDG_CONFIG_HOME:-$HOME/.config}/i3blocks/scripts/colors"
 

@@ -1,4 +1,4 @@
-#!/usr/bin/dash
+#!/bin/sh
 
 PROMPT="Workspace: "
 [ "$LANG" = zh_CN.UTF-8 ] && PROMPT="工作区名："

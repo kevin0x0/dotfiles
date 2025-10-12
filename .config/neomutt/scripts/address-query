@@ -1,4 +1,4 @@
-#!/usr/bin/dash
+#!/bin/sh
 
 # Assume that there are no empty line
 make_result() {

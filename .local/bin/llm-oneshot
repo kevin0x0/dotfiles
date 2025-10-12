@@ -1,4 +1,4 @@
-#!/usr/bin/dash
+#!/bin/sh
 
 to_escaped_string() {
   sed 's/\\/\\\\/g; s/"/\\"/g; s/\t/\\t/g; s/\r/\\r/g; s/$/\\n/' | tr -d '\n'

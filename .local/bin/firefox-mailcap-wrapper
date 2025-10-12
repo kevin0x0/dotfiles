@@ -1,4 +1,4 @@
-#!/usr/bin/dash
+#!/bin/sh
 
 f=$XDG_RUNTIME_DIR/firefox-mailcap-wrapper.tmp
 cp -- "$1" "$f"

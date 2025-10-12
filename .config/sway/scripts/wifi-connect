@@ -1,4 +1,4 @@
-#!/usr/bin/dash
+#!/bin/sh
 
 if ! wifi-connect-gui; then
   exit 1

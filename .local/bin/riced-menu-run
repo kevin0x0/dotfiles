@@ -1,4 +1,4 @@
-#!/usr/bin/dash
+#!/bin/sh
 
 CONFIG_FILE=${XDG_CONFIG_HOME:-$HOME/.config}/riced-menu
 [ -f "$CONFIG_FILE" ] && . "$CONFIG_FILE"

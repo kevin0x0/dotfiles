@@ -1,4 +1,4 @@
-#!/usr/bin/dash
+#!/bin/sh
 
 wallpaper_dir=$(realpath -e -- "$(xdg-user-dir PICTURES)/wallpaper") \
   || exit 1

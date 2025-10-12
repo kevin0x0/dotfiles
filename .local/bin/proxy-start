@@ -1,4 +1,4 @@
-#!/usr/bin/dash
+#!/bin/sh
 
 lockfile="$XDG_RUNTIME_DIR/clash.pid.lock"
 while ! (umask 0077; set -C; : >"$lockfile") 2>/dev/null; do
