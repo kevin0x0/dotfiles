@@ -1,60 +1,48 @@
 #!/bin/sh
 
-error() {
-  echo "$1" >&2
-  exit 1
-}
-
 validate_number() {
   case "$1" in
     *[!0-9]*)
-      error "Need a number, got $1"
+      echo "Need a number, got $1" >&2
+      exit 1
       ;;
   esac
 }
 
 opt_show_number=
-number_format=%s
+opt_number_format=%s
 opt_dont_append_newline=
-block_size=30
-delimiter='
+opt_block_size=30
+opt_delimiter='
 '
-max_block=1
-while [ "$#" -ne 0 ]; do
-  case "$1" in
-    -N|--show-number)
+opt_max_block=1
+
+while getopts "naf:s:c:d:" opt; do
+  case "$opt" in
+    n)
       opt_show_number=yes
       ;;
-    -F|--number-format)
-      [ "$#" -eq 1 ] && error "Option $1 needs a value."
-      shift
-      number_format=$1
-      ;;
-    -A|--no-newline)
+    a)
       opt_dont_append_newline=yes
       ;;
-    -S|--block-size)
-      [ "$#" -eq 1 ] && error "Option $1 needs a value."
-      shift
-      validate_number "$1"
-      block_size=$1
+    f)
+      opt_number_format=$OPTARG
       ;;
-    -C|--max-block)
-      [ "$#" -eq 1 ] && error "Option $1 needs a value."
-      shift
-      validate_number "$1"
-      max_block=$1
+    s)
+      validate_number "$OPTARG"
+      opt_block_size=$OPTARG
       ;;
-    -D|--delimiter)
-      [ "$#" -eq 1 ] && error "Option $1 needs a value."
-      shift
-      delimiter=$1
+    c)
+      validate_number "$OPTARG"
+      opt_max_block=$OPTARG
       ;;
-    *)
-      error "Unknown option $1"
+    d)
+      opt_delimiter=$OPTARG
+      ;;
+    \?)
+      exit 1
       ;;
   esac
-  shift
 done
 
 nblock=0
@@ -65,7 +53,7 @@ while read number; do
       gb=${number#??}
       g=${gb%??}
       b=${gb#??}
-      printf "\033[48;2;%u;%u;%um%${block_size}s\033[0m$number_format" \
+      printf "\033[48;2;%u;%u;%um%${opt_block_size}s\033[0m$opt_number_format" \
         "0x$r" "0x$g" "0x$b" "" "${opt_show_number:+$number}"
       ;;
     1|2|3)
@@ -77,17 +65,17 @@ while read number; do
           number=${number#0}
           ;;
       esac
-      printf "\033[48;5;%um%${block_size}s\033[0m$number_format" "$number" "" \
+      printf "\033[48;5;%um%${opt_block_size}s\033[0m$opt_number_format" "$number" "" \
         "${opt_show_number:+$number}"
       ;;
     *)
-      printf "%${block_size}s$number_format" "Unknown: " \
+      printf "%${opt_block_size}s$opt_number_format" "Unknown: " \
       "${opt_show_number:+$number}"
       ;;
   esac
   nblock=$((nblock + 1))
-  if [ "$max_block" -ne 0 ] && [ "$nblock" -ge "$max_block" ]; then
-    printf "%s" "$delimiter"
+  if [ "$opt_max_block" -ne 0 ] && [ "$nblock" -ge "$opt_max_block" ]; then
+    printf "%s" "$opt_delimiter"
     nblock=0
   fi
 done
@@ -97,5 +85,5 @@ if [ -n "$opt_dont_append_newline" ]; then
 fi
 
 if [ "$nblock" -ne 0 ]; then
-  printf "%s" "$delimiter"
+  printf "%s" "$opt_delimiter"
 fi
