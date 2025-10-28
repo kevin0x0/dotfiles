@@ -21,4 +21,4 @@ if ! curl -- "$DOWNLOAD_URL" | gunzip >"$BIN_DIR/clash"; then
   [ -e "$BIN_DIR/clash" ] && rm -- "$BIN_DIR/clash" 
 fi
 
-chmod u+x -- "$BIN_DIR/clash"
+chmod u+x "$BIN_DIR/clash"

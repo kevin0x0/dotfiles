@@ -1,7 +1,7 @@
 
 set_font() {
   f=${XDG_CONFIG_HOME:-$HOME/.config}/foot/foot.ini
-  sed 's/^\(font=\)[^-:]*\([-:]\)/\1'"$monofont"'\2/' -- "$f" >"$tmpfile" \
+  sed -- 's/^\(font=\)[^-:]*\([-:]\)/\1'"$monofont"'\2/' "$f" >"$tmpfile" \
     && cp -- "$tmpfile" "$f"
 }
 
