@@ -102,9 +102,7 @@ mkdir -p -- "$XDG_VIDEOS_DIR"
 mkdir -p -- "$XDG_DOWNLOAD_DIR"
 
 # Encrypt files using gpg
-if [ -z "$opt_gpg_recipient" ]; then
-  error "You should specify a recipient for encryption."
-fi
+if [ -n "$opt_gpg_recipient" ]; then
 find "$XDG_DOCUMENTS_DIR" -type f -name '*.gpg' \
   | while IFS= read -r file; do
     if ! [ -e "${file%.gpg}" ]; then
@@ -114,11 +112,12 @@ find "$XDG_DOCUMENTS_DIR" -type f -name '*.gpg' \
     gpg -qe --yes --output "$file" \
       "$opt_encryption_method" "$opt_gpg_recipient" "${file%.gpg}"
   done
+fi
 
 # Create mail directories
 for f in "$XDG_DOCUMENTS_DIR"/accounts/*.gpg; do
   [ -f "$f" ] || continue
-  mkdir -p -- "$(printf "%s\n" "$f" | sed 's/accounts\/\([^\/]\+\)\.gpg/mail\/\1/')"
+  mkdir -p -- "$(printf "%s\n" "$f" | sed 's/accounts\/\([^\/]*\)\.gpg/mail\/\1/')"
 done
 mkdir -p -- "$XDG_CACHE_HOME/neomutt/header/"
 mkdir -p -- "$XDG_CACHE_HOME/neomutt/message/"
@@ -133,11 +132,12 @@ fi
 mkdir -p -- "$XDG_PICTURES_DIR/wallpaper"
 ln -sf -- "${opt_wallpaper:- }" "$XDG_PICTURES_DIR/wallpaper/current"
 
-# Install Clash
-proxy-install
-
-# Config Clash
-proxy-config
+if [ "$(uname -s)" = Linux ]; then
+  # Install Clash
+  proxy-install
+  # Config Clash
+  proxy-config
+fi
 
 # Create repos
 mkdir -p -- "$HOME/repos"
@@ -146,4 +146,4 @@ mkdir -p -- "$HOME/repos"
 (cd -- "$HOME/repos/" && \
   git clone git@github.com:kevin0x0/fuckjson && \
   cd -- "$HOME/repos/fuckjson/" && \
-  make && make install)
+  make dirs && make && make install)
