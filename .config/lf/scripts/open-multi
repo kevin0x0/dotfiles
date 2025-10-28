@@ -1,4 +1,4 @@
-#!/usr/bin/bash
+#!/usr/bin/env bash
 
 IFS=$'\n'
 exec "${XDG_CONFIG_HOME:-$HOME/.config}/lf/scripts/open" $*
