@@ -17,7 +17,7 @@ xdg_open_files() {
 }
 
 for f in "$@"; do
-  f=$(realpath -e -- "$f") || exit 1
+  f=$(realpath -- "$f") || exit 1
   f=${f#x}
   case $(file --brief --mime-type -- "$f" 2>/dev/null) in
     image/*)
