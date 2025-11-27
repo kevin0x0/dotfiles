@@ -23,6 +23,30 @@
 # allow other users
 defaults.pcm.ipc_perm 0666
 
+defaults.pcm.dmix {
+  !card {
+    @func getenv
+    vars [
+      ALSA_PCM_CARD
+      ALSA_CARD
+    ]
+    default {
+      @func refer
+      name defaults.pcm.card
+    }
+  }
+  !device {
+    @func igetenv
+    vars [
+      ALSA_PCM_DEVICE
+    ]
+    default {
+      @func refer
+      name defaults.pcm.device
+    }
+  }
+}
+
 pcm.playback {
 	type plug
 	slave.pcm "dmix"
