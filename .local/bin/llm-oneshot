@@ -102,7 +102,7 @@ opt_content_color='\u001b[1m'
 opt_delimiter_color='\u001b[31;1m'
 opt_0delimiter=false
 
-while getopts "aisp0f:m:n:c:" opt "$@"; do
+while getopts "aisp0f:m:c:" opt "$@"; do
    case "$opt" in
      a)
        opt_append_prompt=true
@@ -131,9 +131,6 @@ while getopts "aisp0f:m:n:c:" opt "$@"; do
        ;;
      m)
        opt_model=$OPTARG
-       ;;
-     n)
-       opt_output_reasoning=false
        ;;
      c)
        opt_reasoning_content_color='\u001b['${OPTARG%%,*}'m'
