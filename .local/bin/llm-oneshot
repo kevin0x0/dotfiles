@@ -44,17 +44,71 @@ make_valid_json() (
   done
 )
 
+get_content_delimiter() {
+  content_delimiter=
+  if [ "$1" = "$2" ] && [ "$opt_output_delimiter" = true ]; then
+    if [ "$opt_0delimiter" = true ]; then
+      content_delimiter='\u0000'
+    else
+      content_delimiter='================================================================================'
+      if [ -n "$opt_delimiter_color" ]; then
+        content_delimiter=$opt_delimiter_color$content_delimiter'\u001b[0m'
+      fi
+      content_delimiter='\n'$content_delimiter'\n'
+    fi
+  fi
+  printf "%s" "$content_delimiter"
+}
+
+make_output() (
+  last_output_type=none
+  while IFS= read -r reasoning_content; IFS= read -r content; do
+    content_delimiter=
+    if [ "$reasoning_content" != "null" ] && [ "$opt_output_reasoning" = true ]; then
+      content_delimiter=$(get_content_delimiter "$last_output_type" "content");
+      last_output_type=reasoning_content
+      reasoning_content=${reasoning_content#\"}
+      reasoning_content=${reasoning_content%\"}
+      printf "\"%s%s%s%s\"\n" "$content_delimiter" \
+        "$opt_reasoning_content_color" \
+        "$reasoning_content" \
+        "${opt_reasoning_content_color:+\\u001b[0m}"
+    fi
+
+    content_delimiter=
+    if [ "$content" != "null" ]; then
+      content_delimiter=$(get_content_delimiter "$last_output_type" "reasoning_content");
+      last_output_type=content
+      content=${content#\"}
+      content=${content%\"}
+      printf "\"%s%s%s%s\"\n" "$content_delimiter" \
+        "$opt_content_color" \
+        "$content" \
+        "${opt_content_color:+\\u001b[0m}"
+    fi
+  done | jq --unbuffered -j '.'
+)
+
 input=
 opt_model=deepseek-chat
 opt_append_newline=true
 opt_stream=false
 opt_append_prompt=false
 opt_prompt=
+opt_output_reasoning=true
+opt_output_delimiter=true
+opt_reasoning_content_color='\u001b[37;2m'
+opt_content_color='\u001b[1m'
+opt_delimiter_color='\u001b[31;1m'
+opt_0delimiter=false
 
-while getopts "aisp:m:" opt "$@"; do
+while getopts "aisp0f:m:n:c:" opt "$@"; do
    case "$opt" in
      a)
        opt_append_prompt=true
+       ;;
+     i)
+       opt_no_input=true
        ;;
      s)
        opt_stream=true
@@ -62,17 +116,42 @@ while getopts "aisp:m:" opt "$@"; do
      p)
        opt_prompt=$(printf "%s\n" "$OPTARG" | to_escaped_string)
        ;;
-     i)
-       opt_no_input=true
+     0)
+       opt_0delimiter=true
+       ;;
+     f)
+       opt_output_delimiter=false
+       opt_output_reasoning=false
+       case "$OPTARG" in
+         *d*) opt_output_delimiter=true;;
+       esac
+       case "$OPTARG" in
+         *r*) opt_output_reasoning=true;;
+       esac
        ;;
      m)
        opt_model=$OPTARG
+       ;;
+     n)
+       opt_output_reasoning=false
+       ;;
+     c)
+       opt_reasoning_content_color='\u001b['${OPTARG%%,*}'m'
+       opt_delimiter_color='\u001b['${OPTARG##*,}'m'
+       opt_content_color=${OPTARG#*,}
+       opt_content_color='\u001b['${opt_content_color%,*}'m'
        ;;
      '?')
        exit 1
        ;;
    esac
 done
+
+if ! [ -t 1 ]; then
+  opt_reasoning_content_color=
+  opt_content_color=
+  opt_delimiter_color=
+fi
 
 shift $((OPTIND - 1))
 
@@ -97,9 +176,9 @@ if [ "$opt_append_prompt" = false ]; then
 fi
 
 if [ "$opt_stream" = false ]; then
-  selector='.choices[0].message.content'
+  selector_prefix='.choices[0].message'
 else
-  selector='.choices[0].delta.content'
+  selector_prefix='.choices[0].delta'
 fi
 
 URL=https://api.deepseek.com/chat/completions
@@ -110,7 +189,8 @@ fi
 
 do_curl "$URL" "$DEEPSEEK_API_KEY" \
   | make_valid_json \
-  | fj -srfd '' "$selector"
+  | jq --unbuffered "$selector_prefix.reasoning_content?,$selector_prefix.content?" \
+  | make_output
 
 if [ "$opt_append_newline" = true ]; then
   echo
