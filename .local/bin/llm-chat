@@ -1,0 +1,47 @@
+#!/bin/sh
+
+to_escaped_string() {
+  sed 's/\\/\\\\/g; s/"/\\"/g; s/\t/\\t/g; s/\r/\\r/g; s/$/\\n/' | tr -d '\n'
+}
+
+opt_history_file=/dev/null
+opt_write_back=false
+
+while getopts "wh:" opt "$@"; do
+  case "$opt" in
+    w)
+      opt_write_back=true
+      ;;
+    h)
+      opt_history_file=$OPTARG
+      ;;
+    '?')
+      exit 1
+      ;;
+  esac
+done
+
+conversation=$(cat -- "$opt_history_file")
+
+shift $((OPTIND - 1))
+
+tmpfile=${XDG_RUNTIME_DIR:?"environment variable XDG_RUNTIME_DIR is unset or empty."}/llm-chat.$$
+if ! (set -C; : >"$tmpfile"); then
+  echo "failed to create temporary file"
+  exit 1
+fi
+trap "rm -- '$tmpfile'" EXIT
+
+while input=$(to_escaped_string) && [ "${#input}" -ne 0 ]; do
+  input='{"role": "user", "content": "'"$input"'"}'
+  conversation=$conversation${conversation:+,}$input
+  printf "%s" "$conversation" | llm-oneshot -jd "$tmpfile" "$@"
+  output=$(cat -- "$tmpfile"; echo x)
+  output=${output%x}
+  output='{"role": "assistant", "content": "'"$output"'"}'
+  conversation=$conversation${conversation:+,}$output
+done
+
+if [ "$opt_write_back" = true ]; then
+  printf "%s" "$conversation" >"$opt_history_file"
+fi
