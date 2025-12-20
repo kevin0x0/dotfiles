@@ -141,9 +141,3 @@ fi
 
 # Create repos
 mkdir -p -- "$HOME/repos"
-
-# Install fj
-(cd -- "$HOME/repos/" && \
-  git clone git@github.com:kevin0x0/fuckjson && \
-  cd -- "$HOME/repos/fuckjson/" && \
-  make dirs && make && make install)

@@ -7,7 +7,7 @@ fi
 
 node="🔰 选择节点"
 
-if ! selected="$(clash-api "proxies/$node" | fj -r0 '.all[*]' | \
+if ! selected="$(clash-api "proxies/$node" | jq --raw-output0 '.all[]' | \
       fzf --read0 --print0 | xargs -r0 printf '%sx')"; then
   exit 1
 fi

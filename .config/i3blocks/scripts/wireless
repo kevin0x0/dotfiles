@@ -47,14 +47,14 @@ if [ "$?" -ne 0 ]; then
 fi
 
 status=$(printf "%s" "$dbus_response" \
-  | fj -r '.data[0].State.data' \
+  | jq -r '.data.[0].State.data' \
   | tr 'a-z' 'A-Z')
 
 ssid=$(busctl --json short --system get-property \
   net.connman.iwd \
-  "$(printf "%s" "$dbus_response" | fj -r '.data[0].ConnectedNetwork.data')" \
+  "$(printf "%s" "$dbus_response" | jq -r '.data.[0].ConnectedNetwork.data')" \
   net.connman.iwd.Network \
-  Name 2>/dev/null | fj -r '.data')
+  Name 2>/dev/null | jq -r '.data')
 
 case "$status" in
   CONNECTED)

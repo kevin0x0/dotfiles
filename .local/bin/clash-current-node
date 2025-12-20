@@ -7,8 +7,8 @@ fi
 
 node="🔰 选择节点"
 
-if ! current_x="$(clash-api "proxies/$node" | fj -rd 'x' '.now')"; then
+if ! current="$(clash-api "proxies/$node" | jq -r '.now')"; then
   exit 1
 fi
 
-printf "%s\n" "${current_x%x}"
+printf "%s\n" "$current"

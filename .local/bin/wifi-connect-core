@@ -25,12 +25,12 @@ ifindex=$(cat "/sys/class/net/$interface/ifindex") || exit 1
 phyx=$(cat "/sys/class/net/$interface/phy80211/index") || exit 1
 
 print_if_is_network() (
-  name=$(busctl --json short --system get-property \
+  name_json=$(busctl --json short --system get-property \
     net.connman.iwd "$1" \
-    net.connman.iwd.Network Name 2>/dev/null | fj -r '.data' 2>/dev/null)
+    net.connman.iwd.Network Name 2>/dev/null)
 
   if [ "$?" -eq 0 ]; then
-    printf "%s" "$name"
+    printf "%s" "$name_json" | jq -r '.data'
     return 0
   else
     return 1
@@ -54,7 +54,7 @@ list_network() (
       else
         connected="$(busctl --json short --system get-property \
           net.connman.iwd "$object" \
-          net.connman.iwd.Network Connected 2>/dev/null | fj -r '.data')"
+          net.connman.iwd.Network Connected 2>/dev/null | jq -r '.data')"
 
         if [ "$connected" = true ]; then
           printf "> "
