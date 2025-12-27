@@ -57,10 +57,18 @@ pcm.capture {
 	slave.pcm "dsnoop"
 }
 
-pcm.!default {
+pcm.general {
 	type asym
 	playback.pcm "playback"
 	capture.pcm "capture"
+}
+
+pcm.!default {
+  @func getenv
+  vars [
+    ALSA_PCM
+  ]
+  default "general"
 }
 
 # vim: ft=alsaconf
