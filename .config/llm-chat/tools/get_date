@@ -1,0 +1,31 @@
+#!/bin/sh
+
+call() {
+  tz=$(jq -r ".timezone")
+  if [ "$tz" = UTC ]; then
+    date -u
+  else
+    date
+  fi
+  date
+}
+
+case "$1" in
+  call)
+    call
+    ;;
+  description)
+    printf '"Get current date and time."'
+    ;;
+  parameters)
+    printf '{
+      "timezone": {
+        "type": "string",
+        "description": "CST or UTC."
+      }
+    }'
+    ;;
+  *)
+    printf "Unknown subcommand: %s\n" "$1" >&2
+    ;;
+esac

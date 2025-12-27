@@ -1,0 +1,27 @@
+#!/bin/sh
+
+call() {
+  jq -r '.code' >"$LLM_CHAT_TMPFILE"
+  klang "$LLM_CHAT_TMPFILE" 2>&1
+}
+
+case "$1" in
+  call)
+    call
+    ;;
+  description)
+    printf '"Execute klang script and output its result."'
+    ;;
+  parameters)
+    printf '{
+      "code": {
+        "type": "string",
+        "description": "klang script code to to executed."
+      }
+    }'
+    ;;
+  *)
+    printf "Unknown subcommand: %s\n" "$1" >&2
+    ;;
+esac
+

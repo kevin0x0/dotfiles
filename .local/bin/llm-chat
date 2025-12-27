@@ -4,16 +4,150 @@ to_escaped_string() {
   sed 's/\\/\\\\/g; s/"/\\"/g; s/\t/\\t/g; s/\r/\\r/g; s/$/\\n/' | tr -d '\n'
 }
 
-opt_history_file=/dev/null
-opt_write_back=false
+put_file() {
+  if [ -s "$1" ] && [ "$not_empty" = true ]; then
+    printf ","
+  fi
+  cat -- "$1"
+}
 
-while getopts "wh:" opt "$@"; do
+make_input() (
+  not_empty=false
+  for f in "$opt_history_file" "$session" "$this_turn"; do
+    if [ -s "$f" ] && [ "$not_empty" = true ]; then
+      printf ","
+    fi
+    cat -- "$f"
+    [ -s "$f" ] && not_empty=true
+  done
+)
+
+separate_by_comma() {
+  if IFS= read -r line; then
+    printf "%s" "$line"
+    while IFS= read -r line; do
+      printf ",%s" "$line"
+    done
+  fi
+  echo
+}
+
+merge_tool_calls() {
+  jq -cs 'group_by(.index) | .[] | reduce .[] as $tool_call (
+    {
+      "index": null,
+      "id": null,
+      "type": null,
+      "function": {
+        "name": null,
+        "arguments": null
+      }
+    };
+    {
+      "index": $tool_call.index,
+      "id": if .id != null then .id else $tool_call.id? end,
+      "type": if .type != null then .type else $tool_call.type? end,
+      "function": {
+        "name": if .function.name != null then .function.name else $tool_call.function.name? end,
+        "arguments": (.function.arguments // "") + ($tool_call.function.arguments? // "")
+      }
+    })' <"$tool_calls" >"$tmp"
+
+  cat -- "$tmp" >"$tool_calls"
+
+  # Empty the tmp file
+  : >"$tmp"
+}
+
+call_tool() {
+  if [ -x "$1" ]; then
+    LLM_CHAT_TMPFILE=$tmp "$@"
+  else
+    LLM_CHAT_TMPFILE=$tmp sh -- "$@"
+  fi
+
+  # Empty the tmp file
+  : >"$tmp"
+}
+
+call_tools() (
+  delimiter=
+  while IFS= read -r call; do
+    tool_name=$(printf "%s\n" "$call" | jq -r ".function.name")
+    id=$(printf "%s\n" "$call" | jq ".id")
+    arguments=$(printf "%s\n" "$call" | jq -r ".function.arguments")
+    printf '%s{"role":"tool","tool_call_id":%s,"content":"' "$delimiter" "$id"
+
+    tool=$opt_tool_dir/$tool_name
+
+    if [ -x "$tool" ] || [ -r "$tool" ]; then
+      printf "%s\n" "$arguments" | call_tool "$tool" call
+    else
+      printf "llm-chat: failed to call tools: " >&2
+      if [ -e "$tool"]; then
+        printf "%s doesn't exist.\n" "$tool" >&2
+      else
+        printf "%s is not executable or readable.\n" "$tool" >&2
+      fi
+      printf "FAILED TO CALL THIS TOOL"
+    fi | to_escaped_string
+
+    printf '"}\n'
+    delimiter=,
+  done <"$tool_calls"
+)
+
+generate_tool_list() (
+  for f in "$opt_tool_dir"/*; do
+    if [ ! -f "$f" ]; then
+      return
+    fi
+  done
+
+  printf "["
+  delimiter=
+  for f in "$opt_tool_dir"/*; do
+    [ -x "$f" ] || [ -r "$f" ] || continue
+    printf '%s{"type": "function","function":{' "$delimiter"
+    printf '"name":"%s"' "${f##*/}"
+    printf ',"description":'
+    call_tool "$f" description
+    printf ',"parameters":{"type":"object","properties":'
+    call_tool "$f" parameters
+    printf '}}}'
+    delimiter=,
+  done
+  printf ']'
+)
+
+oneshot() {
+  [ "$opt_hot_reload_tools" = true ] && tool_list=$(generate_tool_list)
+  make_input | llm-oneshot -jd "$dump_file_spec" ${tool_list:+-t} "$tool_list" "$@"
+}
+
+opt_history_file=/dev/null
+opt_hot_reload_tools=false
+opt_write_back=false
+opt_tool_dir=${XDG_CONFIG_HOME:-$HOME/.config}/llm-chat/tools
+opt_input_reader=cat
+
+if command -v rlwrap 1>/dev/null 2>&1; then
+  opt_input_reader='rlwrap cat'
+fi
+
+while getopts "rwh:i:" opt "$@"; do
   case "$opt" in
+    r)
+      opt_hot_reload_tools=true
+      ;;
     w)
       opt_write_back=true
       ;;
     h)
       opt_history_file=$OPTARG
+      ;;
+    i)
+      opt_input_reader=$OPTARG
       ;;
     '?')
       exit 1
@@ -21,27 +155,73 @@ while getopts "wh:" opt "$@"; do
   esac
 done
 
-conversation=$(cat -- "$opt_history_file")
-
 shift $((OPTIND - 1))
 
-tmpfile=${XDG_RUNTIME_DIR:?"environment variable XDG_RUNTIME_DIR is unset or empty."}/llm-chat.$$
-if ! (set -C; : >"$tmpfile"); then
-  echo "failed to create temporary file"
-  exit 1
-fi
-trap "rm -- '$tmpfile'" EXIT
+: ${XDG_RUNTIME_DIR:?"environment variable XDG_RUNTIME_DIR is unset or empty."}
+reasoning=$XDG_RUNTIME_DIR/llm-chat.reasoning.$$
+content=$XDG_RUNTIME_DIR/llm-chat.content.$$
+tool_calls=$XDG_RUNTIME_DIR/llm-chat.tool_calls.$$
+input=$XDG_RUNTIME_DIR/llm-chat.input.$$
+session=$XDG_RUNTIME_DIR/llm-chat.session.$$
+this_turn=$XDG_RUNTIME_DIR/llm-chat.this_turn.$$
+tmp=$XDG_RUNTIME_DIR/llm-chat.tmp.$$
 
-while input=$(to_escaped_string) && [ "${#input}" -ne 0 ]; do
-  input='{"role": "user", "content": "'"$input"'"}'
-  conversation=$conversation${conversation:+,}$input
-  printf "%s" "$conversation" | llm-oneshot -jd "$tmpfile" "$@"
-  output=$(cat -- "$tmpfile"; echo x)
-  output=${output%x}
-  output='{"role": "assistant", "content": "'"$output"'"}'
-  conversation=$conversation${conversation:+,}$output
+clean_command=
+for f in "$reasoning" "$content" "$tool_calls" "$input" "$session" \
+  "$this_turn" "$tmp"; do
+  if ! (set -C; : >"$f"); then
+    echo "failed to create file: $f"
+    eval "$clean_command"
+    exit 1
+  fi
+  clean_command=$clean_command${clean_command:+\;}$(printf "rm -- $f\n" | sed "s/'/\\'/g")
+done
+
+trap "$clean_command" EXIT
+
+tool_list=$(generate_tool_list)
+dump_file_spec=reasoning_content="$reasoning",content="$content",tool_calls="$tool_calls"
+
+while $opt_input_reader | to_escaped_string >"$input" && [ -s "$input" ]; do
+  printf '{"role":"user","content":"'>"$this_turn"
+  cat -- "$input" >>"$this_turn"
+  printf '"}\n' >>"$this_turn"
+
+  # Run this turn
+  while oneshot "$@" && [ -s "$tool_calls" ]; do
+    merge_tool_calls
+    {
+      printf ',{"role": "assistant"'
+
+      if [ -s "$content" ]; then
+        printf ',"content":"'; cat -- "$content"; printf '"'
+      fi
+
+      if [ -s "$reasoning" ]; then
+        printf ',"reasoning_content":"'; cat -- "$reasoning"; printf '"'
+      fi
+
+      printf ',"tool_calls":[';  separate_by_comma <"$tool_calls"; printf ']'
+      printf '}'
+    } >>"$this_turn"
+
+    printf ',' >>"$this_turn"
+    call_tools >>"$this_turn"
+  done
+
+  # Merge this_turn to session
+  [ -s "$session" ] && printf "," >>"$session"
+  {
+    printf '['
+    cat -- "$this_turn"
+    printf ',{"role": "assistant"'
+    printf ',"content":"'; cat -- "$content"; printf '"}'
+    printf ']\n'
+  } | jq -c '.[] | del(.reasoning_content?) | select(has("content") or has("tool_calls"))' \
+    | separate_by_comma >>"$session"
 done
 
 if [ "$opt_write_back" = true ]; then
-  printf "%s" "$conversation" >"$opt_history_file"
+  [ -s "$opt_history_file" ] && printf "," >>"$opt_history_file"
+  cat -- "$session" >>"$opt_history_file"
 fi

@@ -1,0 +1,26 @@
+#!/bin/sh
+
+call() {
+  klang "$(jq -r '.scriptpath')" 2>&1
+}
+
+case "$1" in
+  call)
+    call
+    ;;
+  description)
+    printf '"Execute klang script file and output its result."'
+    ;;
+  parameters)
+    printf '{
+      "scriptpath": {
+        "type": "string",
+        "description": "klang script file to to executed."
+      }
+    }'
+    ;;
+  *)
+    printf "Unknown subcommand: %s\n" "$1" >&2
+    ;;
+esac
+

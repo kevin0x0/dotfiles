@@ -4,27 +4,47 @@ to_escaped_string() {
   sed 's/\\/\\\\/g; s/"/\\"/g; s/\t/\\t/g; s/\r/\\r/g; s/$/\\n/' | tr -d '\n'
 }
 
+make_input() {
+  if [ "$#" -ne 0 ]; then
+    printf "%s\n" "$*"
+  else
+    cat -u
+  fi
+}
+
+make_http_body() {
+
+  printf '{"model":"%s","messages":[' "$opt_model"
+
+  # Output messages
+  if [ "$opt_append_input_to_prompt" = true ]; then
+    printf '{"role":"system","content": "%s' "$opt_prompt"
+    to_escaped_string
+    printf '"}'
+  elif [ "$opt_json_input" != true ]; then
+    printf '{"role":"system","content":"%s"},{"role":"user","content":"' "$opt_prompt"
+    to_escaped_string
+    printf '"}'
+  else
+    cat -u
+  fi
+
+  printf '],"stream":%s,"temperature":1.3' "$opt_stream"
+  if [ -n "$opt_tools" ]; then
+    printf ',"tools": %s' "$opt_tools"
+  fi
+  printf '}'
+}
+
 do_curl() (
   url=$1
   api_key=$2
 
-  if [ "$opt_append_input_to_prompt" = true ]; then
-    input='{"role": "system", "content": "'"$opt_prompt$input"'"}'
-  elif [ "$opt_json_input" != true ]; then
-    input='{"role": "system", "content": "'"$opt_prompt"'"},{"role": "user", "content": "'"$input"'"}'
-  fi
-
   curl -Ns "$url" \
     -H "Content-Type: application/json" \
     -H "Authorization: Bearer $api_key" \
-    -d '{
-          "model": "'"$opt_model"'",
-          "messages": [
-              '"$input"'
-          ],
-          "stream": '"$opt_stream"',
-          "temperature": 1.3
-        }'
+    -H "Transfer-Encoding: chunked" \
+    -d '@-'
 
   # Output an empty line in the end to ensure the output always ends with newline.
   echo
@@ -50,8 +70,30 @@ parse_color() {
       all=*)
         opt_reasoning_content_color="${color##*=}"
         opt_content_color=$opt_reasoning_content_color
+        opt_tool_calls_color=$opt_reasoning_content_color
         opt_reasoning_content_prefix_color=$opt_reasoning_content_color
         opt_content_prefix_color=$opt_reasoning_content_color
+        opt_tool_calls_prefix_color=$opt_reasoning_content_color
+        ;;
+    esac
+    set -- "${1#*,}"
+  done
+}
+
+parse_dump() {
+  set -- "$1,"
+  while [ "${#1}" -ne 0 ]; do
+    prefix=${1%%,*}
+    case "$prefix" in
+      reasoning_content=*)
+        opt_reasoning_content_dump="${prefix##*=}"
+        ;;
+      content=*)
+        opt_content_dump="${prefix##*=}"
+        ;;
+      tool_calls=*)
+        opt_tool_calls_dump="${prefix##*=}"
+        ;;
     esac
     set -- "${1#*,}"
   done
@@ -68,9 +110,14 @@ parse_prefix() {
       content=*)
         opt_content_prefix="${prefix##*=}"
         ;;
+      tool_calls=*)
+        opt_tool_calls_prefix="${prefix##*=}"
+        ;;
       all=*)
         opt_reasoning_content_prefix="${prefix##*=}"
         opt_content_prefix=$opt_reasoning_content_prefix
+        opt_tool_calls_prefix=$opt_reasoning_content_prefix
+        ;;
     esac
     set -- "${1#*,}"
   done
@@ -113,64 +160,122 @@ get_prefix() {
     content)
       prefix="$opt_content_prefix"
       ;;
+    tool_calls)
+      prefix="$opt_tool_calls_prefix"
+      ;;
   esac
   printf "%s" "$prefix"
 }
 
 make_output() (
   last_output_type=none
-  while IFS= read -r reasoning_content; IFS= read -r content; do
+  last_output_toolname=
+  while IFS= read -r reasoning_content; IFS= read -r tool_calls; IFS= read -r content; do
+    # Handle reasoning content
     content_prefix=
-    if [ "$reasoning_content" != "null" ] && [ "$opt_output_reasoning" = true ]; then
-      content_prefix=$(get_prefix "$last_output_type" "reasoning_content");
-      newline=
-      [ "$last_output_type" = "content" ] && [ "$opt_append_newline" = true ] && newline='\n'
-      last_output_type=reasoning_content
-      reasoning_content=${reasoning_content#\"}
-      reasoning_content=${reasoning_content%\"}
-      printf "\"%s%s%s%s%s\"\n" "$newline" "$content_prefix" \
-        "$opt_reasoning_content_color" \
-        "$reasoning_content" \
-        "${opt_reasoning_content_color:+\\u001b[0m}"
+    if [ "$reasoning_content" != "null" ]; then
+      if [ "$opt_output_reasoning" = true ]; then
+        content_prefix=$(get_prefix "$last_output_type" "reasoning_content");
+        newline=
+        if [ "$last_output_type" != "reasoning_content" ] && [ "$last_output_type" != "none" ]; then
+          [ "$opt_append_newline" = true ] && newline='\n'
+        fi
+        reasoning_content=${reasoning_content#\"}
+        reasoning_content=${reasoning_content%\"}
+        if [ "${#reasoning_content}" -ne 0 ]; then
+          last_output_type=reasoning_content
+          printf "\"%s%s%s%s%s\"\n" "$newline" "$content_prefix" \
+            "$opt_reasoning_content_color" \
+            "$reasoning_content" \
+            "${opt_reasoning_content_color:+\\u001b[0m}"
+        fi
+      fi
+      printf "%s" "$reasoning_content" >&4
     fi
 
+    # Handle content
     content_prefix=
     if [ "$content" != "null" ]; then
       content_prefix=$(get_prefix "$last_output_type" "content");
       newline=
-      [ "$last_output_type" = "reasoning_content" ] && [ "$opt_append_newline" = true ] && newline='\n'
-      last_output_type=content
+      if [ "$last_output_type" != "content" ] && [ "$last_output_type" != "none" ]; then
+        [ "$opt_append_newline" = true ] && newline='\n'
+      fi
       content=${content#\"}
       content=${content%\"}
-      printf "\"%s%s%s%s%s\"\n" "$newline" "$content_prefix" \
-        "$opt_content_color" \
-        "$content" \
-        "${opt_content_color:+\\u001b[0m}"
+      if [ "${#content}" -ne 0 ]; then
+        last_output_type=content
+        printf "\"%s%s%s%s%s\"\n" "$newline" "$content_prefix" \
+          "$opt_content_color" \
+          "$content" \
+          "${opt_content_color:+\\u001b[0m}"
+      fi
 
       printf "%s" "$content" >&3
     fi
-  done 3>"$opt_dump_content" | jq --unbuffered -j '.'
+
+    # Handle tool calls
+    content_prefix=
+    if [ "$tool_calls" != "null" ]; then
+      if [ "$opt_output_tool_calls" = true ]; then
+        content_prefix=$(get_prefix "$last_output_type" "tool_calls");
+        newline=
+        if [ "$last_output_type" != "none" ] && [ "$last_output_type" != "tool_calls" ]; then
+          [ "$opt_append_newline" = true ] && newline='\n'
+        fi
+        call_infos=$(printf "%s\n" "$tool_calls" | jq '.[] | .function.name?,.function.arguments?')
+        while IFS= read -r name; IFS= read -r arguments; do
+          raw_name=${name%\"}
+          raw_name=${raw_name#\"}
+          arguments=${arguments%\"}
+          arguments=${arguments#\"}
+          output_content=
+          if [ "$raw_name" != "$last_output_toolname" ] && [ "$name" != null ]; then
+            [ "$last_output_type" = "tool_calls" ] && newline='\n'
+            output_content='calling '$raw_name'\n'
+            last_output_toolname=$raw_name
+          fi
+          last_output_type=tool_calls
+          output_content=$output_content$arguments
+          printf "\"%s%s%s%s%s\"\n" "$newline" "$content_prefix" \
+            "$opt_tool_calls_color" \
+            "$output_content" \
+            "${opt_tool_calls_color:+\\u001b[0m}"
+        done <<EOF
+$call_infos
+EOF
+      fi
+
+      printf "%s\n" "$tool_calls" | jq -c '.[]' >&5
+    fi
+  done 3>"$opt_content_dump" 4>"$opt_reasoning_content_dump" 5>"$opt_tool_calls_dump" | jq --unbuffered -j '.'
   [ "$opt_append_newline" = true ] && printf "\n"
 )
 
-input=
 opt_model=deepseek-chat
 opt_append_newline=true
+opt_tools=
 opt_json_input=false
 opt_stream=false
 opt_append_input_to_prompt=false
 opt_prompt=
 opt_ansi_seq=auto
 opt_output_reasoning=true
+opt_output_tool_calls=true
 opt_reasoning_content_prefix='REASONING:\n'
 opt_reasoning_content_color='37;2'
 opt_reasoning_content_prefix_color='42;30;1'
 opt_content_prefix='ANSWER:\n'
 opt_content_color='1'
 opt_content_prefix_color='43;30;1'
-opt_dump_content=/dev/null
+opt_tool_calls_prefix='TOOL CALL:\n'
+opt_tool_calls_color='37;2'
+opt_tool_calls_prefix_color='44;30;1'
+opt_content_dump=/dev/null
+opt_reasoning_content_dump=/dev/null
+opt_tool_calls_dump=/dev/null
 
-while getopts "ajsrNp:d:P:m:A:c:" opt "$@"; do
+while getopts "ajsfNt:p:d:P:m:A:c:" opt "$@"; do
    case "$opt" in
      a)
        opt_append_input_to_prompt=true
@@ -181,17 +286,21 @@ while getopts "ajsrNp:d:P:m:A:c:" opt "$@"; do
      s)
        opt_stream=true
        ;;
-     r)
-       opt_output_reasoning=true
+     f)
+       case $OPTARG in *r*) opt_output_reasoning=true;; esac
+       case $OPTARG in *t*) opt_output_tool_calls=true;; esac
        ;;
      N)
        opt_append_newline=false
+       ;;
+     t)
+       opt_tools=$OPTARG
        ;;
      p)
        opt_prompt=$(printf "%s\n" "$OPTARG" | to_escaped_string)
        ;;
      d)
-       opt_dump_content="$OPTARG"
+       parse_dump "$OPTARG"
        ;;
      P)
        parse_prefix "$OPTARG"
@@ -219,27 +328,22 @@ if  { [ "$opt_ansi_seq" = "auto" ] && [ ! -t 1 ]; } \
   opt_reasoning_content_prefix_color=
   opt_content_color=
   opt_content_prefix_color=
+  opt_tool_calls_color=
+  opt_tool_calls_prefix_color=
 fi
 
 opt_reasoning_content_prefix=$(make_prefix "$opt_reasoning_content_prefix_color" "$opt_reasoning_content_prefix")
 opt_content_prefix=$(make_prefix "$opt_content_prefix_color" "$opt_content_prefix")
+opt_tool_calls_prefix=$(make_prefix "$opt_tool_calls_prefix_color" "$opt_tool_calls_prefix")
 opt_reasoning_content_color=$(make_ansi "$opt_reasoning_content_color")
 opt_content_color=$(make_ansi "$opt_content_color")
+opt_tool_calls_color=$(make_ansi "$opt_tool_calls_color")
 
 if [ "${#opt_prompt}" -eq 0 ]; then
   opt_prompt="You are a knowledgeable assistant, and your task is to answer the questions provided by the user. The question is:\n"
 fi
 
-if [ "$#" -ne 0 ]; then
-  input="$*"
-else
-  input=$(cat)
-fi
-
 opt_prompt=$(printf "%s\n" "$opt_prompt" | to_escaped_string)
-if [ "$opt_json_input" = false ]; then
-  input=$(printf "%s\n" "$input" | to_escaped_string)
-fi
 
 if [ "$opt_stream" = false ]; then
   selector_prefix='.choices[0].message'
@@ -253,7 +357,9 @@ if [ "$?" -ne 0 ]; then
   exit 1
 fi
 
-do_curl "$URL" "$DEEPSEEK_API_KEY" \
+make_input "$@" \
+  | make_http_body \
+  | do_curl "$URL" "$DEEPSEEK_API_KEY" \
   | make_valid_json \
-  | jq --unbuffered "$selector_prefix.reasoning_content?,$selector_prefix.content?" \
+  | jq --unbuffered -c "$selector_prefix.reasoning_content?,$selector_prefix.tool_calls?,$selector_prefix.content?" \
   | make_output
