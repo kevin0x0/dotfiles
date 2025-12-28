@@ -61,9 +61,9 @@ merge_tool_calls() {
 
 call_tool() {
   if [ -x "$1" ]; then
-    LLM_CHAT_TMPFILE=$tmp "$@"
+    "$@"
   else
-    LLM_CHAT_TMPFILE=$tmp sh -- "$@"
+    sh -- "$@"
   fi
 
   # Empty the tmp file
@@ -72,7 +72,7 @@ call_tool() {
 
 call_tools() (
   delimiter=
-  while IFS= read -r call; do
+  while IFS= read -r call <&3; do
     tool_name=$(printf "%s\n" "$call" | jq -r ".function.name")
     id=$(printf "%s\n" "$call" | jq ".id")
     arguments=$(printf "%s\n" "$call" | jq -r ".function.arguments")
@@ -81,7 +81,8 @@ call_tools() (
     tool=$opt_tool_dir/$tool_name
 
     if [ -x "$tool" ] || [ -r "$tool" ]; then
-      printf "%s\n" "$arguments" | call_tool "$tool" call
+      printf "%s\n" "$arguments" >"$tmp"
+      call_tool "$tool" call "$tmp"
     else
       printf "llm-chat: failed to call tools: " >&2
       if [ -e "$tool"]; then
@@ -90,11 +91,16 @@ call_tools() (
         printf "%s is not executable or readable.\n" "$tool" >&2
       fi
       printf "FAILED TO CALL THIS TOOL"
-    fi | to_escaped_string
+    fi | {
+      dd count=8 bs=4096 iflag=fullblock 2>/dev/null
+      if IFS= read -r line; then
+        printf '\n!!!!!THE OUTPUT OF THIS TOOL("%s") WAS TOO LONG AND WAS TRUNCATED!!!!!\n' "$tool_name"
+      fi
+    } | to_escaped_string
 
     printf '"}\n'
     delimiter=,
-  done <"$tool_calls"
+  done 3<"$tool_calls"
 )
 
 generate_tool_list() (
