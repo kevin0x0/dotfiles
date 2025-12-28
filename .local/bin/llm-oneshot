@@ -143,7 +143,7 @@ make_valid_json() (
 
 make_prefix() {
   if [ -n "$1" ]; then
-    printf "\\u001b[%sm%s\\u001b[0m\n" "$1" "$2" \
+    printf '\\u001b[%sm%s\\u001b[0m\n' "$1" "$2" \
       | sed 's/\\n/\\u001b[0m\\n\\u001b['"$1"'m/'
   else
     printf "%s" "$2"
@@ -152,7 +152,7 @@ make_prefix() {
 
 make_ansi() {
   [ -z "$1" ] && return
-  printf "\\u001b[%sm" "$1"
+  printf '\\u001b[%sm' "$1"
 }
 
 
