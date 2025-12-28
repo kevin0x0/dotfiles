@@ -180,7 +180,7 @@ for f in "$reasoning" "$content" "$tool_calls" "$input" "$session" \
     eval "$clean_command"
     exit 1
   fi
-  this_command="rm -- '"$(printf "$f" | sed "s/'/'\\\\''/g")
+  this_command="rm -- '"$(printf "$f" | sed "s/'/'\\\\''/g")"'"
   clean_command=$clean_command${clean_command:+\;}$this_command
 done
 
