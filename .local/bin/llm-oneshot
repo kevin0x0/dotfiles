@@ -1,9 +1,5 @@
 #!/bin/sh
 
-to_escaped_string() {
-  sed 's/\\/\\\\/g; s/"/\\"/g; s/\t/\\t/g; s/\r/\\r/g; s/$/\\n/' | tr -d '\n'
-}
-
 make_input() {
   if [ "$#" -ne 0 ]; then
     printf "%s\n" "$*"
@@ -18,13 +14,15 @@ make_http_body() {
 
   # Output messages
   if [ "$opt_append_input_to_prompt" = true ]; then
-    printf '{"role":"system","content": "%s' "$opt_prompt"
-    to_escaped_string
-    printf '"}'
+    printf '{"role":"system","content": ' "$opt_prompt"
+    { printf "%s" "$opt_prompt"; cat; } | jq -Rsc '.'
+    printf '}'
   elif [ "$opt_json_input" != true ]; then
-    printf '{"role":"system","content":"%s"},{"role":"user","content":"' "$opt_prompt"
-    to_escaped_string
-    printf '"}'
+    printf '{"role":"system","content":'
+    printf "%s" "$opt_prompt" | jq -Rsc '.'
+    printf '},{"role":"user","content":'
+    jq -Rsc '.'
+    printf '}'
   else
     cat -u
   fi
@@ -302,7 +300,7 @@ while getopts "ajsfNt:p:d:P:m:A:c:" opt "$@"; do
        opt_tools=$OPTARG
        ;;
      p)
-       opt_prompt=$(printf "%s\n" "$OPTARG" | to_escaped_string)
+       opt_prompt=$OPTARG
        ;;
      d)
        parse_dump "$OPTARG"
@@ -347,8 +345,6 @@ opt_tool_calls_color=$(make_ansi "$opt_tool_calls_color")
 if [ "${#opt_prompt}" -eq 0 ]; then
   opt_prompt="You are a knowledgeable assistant, and your task is to answer the questions provided by the user. The question is:\n"
 fi
-
-opt_prompt=$(printf "%s\n" "$opt_prompt" | to_escaped_string)
 
 if [ "$opt_stream" = false ]; then
   selector_prefix='.choices[0].message'

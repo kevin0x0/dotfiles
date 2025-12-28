@@ -1,16 +1,5 @@
 #!/bin/sh
 
-to_escaped_string() {
-  sed 's/\\/\\\\/g; s/"/\\"/g; s/\t/\\t/g; s/\r/\\r/g; s/$/\\n/' | tr -d '\n'
-}
-
-put_file() {
-  if [ -s "$1" ] && [ "$not_empty" = true ]; then
-    printf ","
-  fi
-  cat -- "$1"
-}
-
 make_input() (
   not_empty=false
   for f in "$opt_history_file" "$session" "$this_turn"; do
@@ -76,7 +65,7 @@ call_tools() (
     tool_name=$(printf "%s\n" "$call" | jq -r ".function.name")
     id=$(printf "%s\n" "$call" | jq ".id")
     arguments=$(printf "%s\n" "$call" | jq -r ".function.arguments")
-    printf '%s{"role":"tool","tool_call_id":%s,"content":"' "$delimiter" "$id"
+    printf '%s{"role":"tool","tool_call_id":%s,"content":' "$delimiter" "$id"
 
     tool=$opt_tool_dir/$tool_name
 
@@ -96,9 +85,9 @@ call_tools() (
       if IFS= read -r line; then
         printf '\n!!!!!THE OUTPUT OF THIS TOOL("%s") WAS TOO LONG AND WAS TRUNCATED!!!!!\n' "$tool_name"
       fi
-    } | to_escaped_string
+    } | jq -Rsc '.'
 
-    printf '"}\n'
+    printf '}\n'
     delimiter=,
   done 3<"$tool_calls"
 )
@@ -189,10 +178,10 @@ trap "$clean_command" EXIT
 tool_list=$(generate_tool_list)
 dump_file_spec=reasoning_content="$reasoning",content="$content",tool_calls="$tool_calls"
 
-while $opt_input_reader | to_escaped_string >"$input" && [ -s "$input" ]; do
-  printf '{"role":"user","content":"'>"$this_turn"
-  cat -- "$input" >>"$this_turn"
-  printf '"}\n' >>"$this_turn"
+while $opt_input_reader >"$input" && [ -s "$input" ]; do
+  printf '{"role":"user","content":'>"$this_turn"
+  jq -Rsc '.' <"$input" >>"$this_turn"
+  printf '}\n' >>"$this_turn"
 
   # Run this turn
   while oneshot "$@" && [ -s "$tool_calls" ]; do

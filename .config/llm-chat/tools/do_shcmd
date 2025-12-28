@@ -32,7 +32,7 @@ case "$1" in
     call "$2"
     ;;
   description)
-    jq -Rc '.' <<EOF
+    jq -Rcs '.' <<EOF
 Request to execute given POSIX shell script and output result. Note:
   - The request may be rejected.
   - The script should terminate.
