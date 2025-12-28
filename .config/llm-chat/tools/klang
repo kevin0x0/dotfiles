@@ -16,7 +16,7 @@ call() {
 
 case "$1" in
   call)
-    call "$@"
+    call "$2"
     ;;
   description)
     printf '"Execute klang script and output its result."'

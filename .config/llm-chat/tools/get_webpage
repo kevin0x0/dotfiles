@@ -6,7 +6,7 @@ call() {
 
 case "$1" in
   call)
-    call "$@"
+    call "$2"
     ;;
   description)
     printf '"Get a web page"'

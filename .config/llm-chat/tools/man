@@ -11,7 +11,7 @@ call() {
 
 case "$1" in
   call)
-    call "$@"
+    call "$2"
     ;;
   description)
     printf '"Get manual page(i.e. call man utility)"'

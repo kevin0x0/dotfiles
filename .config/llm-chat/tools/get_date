@@ -7,12 +7,11 @@ call() {
   else
     date
   fi
-  date
 }
 
 case "$1" in
   call)
-    call "$@"
+    call "$2"
     ;;
   description)
     printf '"Get current date and time."'
