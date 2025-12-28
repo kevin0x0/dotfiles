@@ -1,7 +1,7 @@
 #!/bin/sh
 
 call() {
-  tz=$(jq -r ".timezone")
+  tz=$(jq -r ".timezone" <"$1")
   if [ "$tz" = UTC ]; then
     date -u
   else
@@ -12,7 +12,7 @@ call() {
 
 case "$1" in
   call)
-    call
+    call "$@"
     ;;
   description)
     printf '"Get current date and time."'

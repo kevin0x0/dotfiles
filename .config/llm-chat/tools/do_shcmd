@@ -1,0 +1,52 @@
+#!/bin/sh
+
+call() {
+  cmds=$(jq -r '.cmds' <"$1")
+  intent=$(jq -r '.intent' <"$1")
+  {
+    printf "\033[31mREQUEST TO EXECUTE COMMAND(s):\033[0m\n"
+    printf "%s" "$cmds" | tr '\n' '\000' | xargs -r0 printf "\033[1;31m|\033[0m \033[32;1m%s\033[0m\n"
+    printf "\033[31mCOMMAND EXECUTION INTENT:\033[0m\n"
+    printf "%s" "$intent" | tr '\n' '\000' | xargs -r0 printf "\033[1;31m=\033[0m \033[33;1m%s\033[0m\n"
+    printf "\033[1;31mDo you approve the request([y]/n/[r]eplace the original command(s))?\033[0m\n"
+  } >&2
+  IFS= read -r reply
+  case "$reply" in
+    y|"")
+      sh -c "$cmds" 2>&1
+      ;;
+    n)
+      IFS= read -r reason
+      printf "!!!!!REQUEST REJECTED!!!!!\n for reason: %s\n" "$reason"
+      ;;
+    r)
+      printf "\033[1;36mEnter your replacing command, which will be piped to sh:\033[0m\n" "$reason" >&2
+      cat | sh 2>&1
+      ;;
+  esac
+}
+
+case "$1" in
+  call)
+    call "$2"
+    ;;
+  description)
+    printf '"Request to execute given POSIX shell commands(THE REQUEST MAY BE REJECTED!!)."'
+    ;;
+  parameters)
+    printf '{
+      "cmds": {
+        "type": "string",
+        "description": "The commands to be executed."
+      },
+      "intent": {
+        "type": "string",
+        "description": "Your intent to execute this script."
+      }
+    }'
+    ;;
+  *)
+    printf "Unknown subcommand: %s\n" "$1"
+    ;;
+esac
+

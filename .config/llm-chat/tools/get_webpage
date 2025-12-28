@@ -1,12 +1,12 @@
 #!/bin/sh
 
 call() {
-  curl -sS -- "$(jq -r ".url")" 2>&1
+  curl -sS -- "$(jq -r ".url" <"$1")" 2>&1
 }
 
 case "$1" in
   call)
-    call
+    call "$@"
     ;;
   description)
     printf '"Get a web page"'

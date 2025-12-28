@@ -1,12 +1,12 @@
 #!/bin/sh
 
 call() {
-  cat -- "$(jq -r ".path")"
+  cat -- "$(jq -r ".path" <"$1")"
 }
 
 case "$1" in
   call)
-    call
+    call "$@"
     ;;
   description)
     printf '"Output the content of a given file."'

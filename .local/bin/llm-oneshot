@@ -46,6 +46,11 @@ do_curl() (
     -H "Transfer-Encoding: chunked" \
     -d '@-'
 
+  if [ "$?" -ne 0 ]; then
+    printf "fail to call curl\n" >&2
+    return "$?"
+  fi
+
   # Output an empty line in the end to ensure the output always ends with newline.
   echo
 )
