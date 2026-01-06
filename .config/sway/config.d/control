@@ -17,6 +17,8 @@ bindsym {
   $mod+d exec $menu
   # Start with prime-run
   $mod+Shift+d exec prime-run $menu
+  # Open documents
+  $mod+i exec opendoc
 }
 
 mode "start" {
@@ -80,9 +82,12 @@ bindsym $mod+Shift+a exec makoctl menu -- riced-menu -l 2
 # Utilities:
 #
 # Special keys to adjust volume
-bindsym --locked XF86AudioLowerVolume exec audioctl set pvolume 5%- && pkill -RTMIN+1 i3blocks
-bindsym --locked XF86AudioRaiseVolume exec audioctl set pvolume 5%+ && pkill -RTMIN+1 i3blocks
-bindsym --locked XF86AudioMute exec audioctl set pswitch toggle && pkill -RTMIN+1 i3blocks
+bindsym --locked XF86AudioLowerVolume exec audioctl set pvolume 5%- && pkill -USR1 i3status
+bindsym --locked XF86AudioRaiseVolume exec audioctl set pvolume 5%+ && pkill -USR1 i3status
+bindsym --locked XF86AudioMute exec audioctl set pswitch toggle && pkill -USR1 i3status
+# bindsym --locked XF86AudioLowerVolume exec audioctl set pvolume 5%- && pkill -RTMIN+1 i3blocks
+# bindsym --locked XF86AudioRaiseVolume exec audioctl set pvolume 5%+ && pkill -RTMIN+1 i3blocks
+# bindsym --locked XF86AudioMute exec audioctl set pswitch toggle && pkill -RTMIN+1 i3blocks
 
 # Special keys to adjust brightness via brightnessctl
 bindsym --locked XF86MonBrightnessDown exec brightnessctl set 1%-

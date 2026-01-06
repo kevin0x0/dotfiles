@@ -40,7 +40,7 @@ bar {
   separator_symbol " ▌"
   set icon_theme $icon-theme
 
-  status_command i3blocks
+  status_command i3status
   colors {
     separator #1a1b24
     statusline #ceb992

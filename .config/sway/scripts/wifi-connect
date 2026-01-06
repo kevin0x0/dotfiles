@@ -6,9 +6,11 @@ fi
 
 i=0
 while [ "$i" -le 20 ] && ! wifi-connected; do
-  pkill -RTMIN+3 i3blocks
+  pkill -USR1 i3status
+  # pkill -RTMIN+3 i3blocks
   i=$((i + 1))
   sleep 0.5
 done
 
-pkill -RTMIN+3 i3blocks
+pkill -USR1 i3status
+# pkill -RTMIN+3 i3blocks
