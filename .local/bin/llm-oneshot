@@ -255,11 +255,11 @@ EOF
   [ "$opt_append_newline" = true ] && printf "\n"
 )
 
-opt_model=deepseek-chat
+opt_model=deepseek-reasoner
 opt_append_newline=true
 opt_tools=
 opt_json_input=false
-opt_stream=false
+opt_stream=true
 opt_append_input_to_prompt=false
 opt_prompt=
 opt_ansi_seq=auto
@@ -278,7 +278,7 @@ opt_content_dump=/dev/null
 opt_reasoning_content_dump=/dev/null
 opt_tool_calls_dump=/dev/null
 
-while getopts "ajsfNt:p:d:P:m:A:c:" opt "$@"; do
+while getopts "ajsSfNt:p:d:P:m:A:c:" opt "$@"; do
    case "$opt" in
      a)
        opt_append_input_to_prompt=true
@@ -288,6 +288,9 @@ while getopts "ajsfNt:p:d:P:m:A:c:" opt "$@"; do
        ;;
      s)
        opt_stream=true
+       ;;
+     S)
+       opt_stream=false
        ;;
      f)
        case $OPTARG in *r*) opt_output_reasoning=true;; esac
