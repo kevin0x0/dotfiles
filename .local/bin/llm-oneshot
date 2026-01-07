@@ -135,6 +135,7 @@ make_valid_json() (
     if [ "$line" = "data: [DONE]" ]; then
       break
     fi
+    printf "%s: %s\n" "$(date)" "$line" >>~/llm-log
     printf "%s\n" "${line##data:}"
   done
 )
@@ -278,7 +279,7 @@ opt_content_dump=/dev/null
 opt_reasoning_content_dump=/dev/null
 opt_tool_calls_dump=/dev/null
 
-while getopts "ajsSfNt:p:d:P:m:A:c:" opt "$@"; do
+while getopts "ajsSNf:t:p:d:P:m:A:c:" opt "$@"; do
    case "$opt" in
      a)
        opt_append_input_to_prompt=true
@@ -292,12 +293,14 @@ while getopts "ajsSfNt:p:d:P:m:A:c:" opt "$@"; do
      S)
        opt_stream=false
        ;;
-     f)
-       case $OPTARG in *r*) opt_output_reasoning=true;; esac
-       case $OPTARG in *t*) opt_output_tool_calls=true;; esac
-       ;;
      N)
        opt_append_newline=false
+       ;;
+     f)
+       opt_output_reasoning=false
+       opt_output_tool_calls=false
+       case $OPTARG in *r*) opt_output_reasoning=true;; esac
+       case $OPTARG in *t*) opt_output_tool_calls=true;; esac
        ;;
      t)
        opt_tools=$OPTARG
