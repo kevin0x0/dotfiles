@@ -132,11 +132,18 @@ make_valid_json() (
   fi
 
   while IFS= read -r line; do
-    if [ "$line" = "data: [DONE]" ]; then
-      break
-    fi
-    printf "%s: %s\n" "$(date)" "$line" >>~/llm-log
-    printf "%s\n" "${line##data:}"
+    case "$line" in
+      "data: [DONE]")
+        break
+        ;;
+      data:*)
+        printf "%s: %s\n" "$(date)" "$line" >>~/llm-log
+        printf "%s\n" "${line##data:}"
+        ;;
+      *)
+        continue
+        ;;
+    esac
   done
 )
 
