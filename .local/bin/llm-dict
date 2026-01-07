@@ -46,10 +46,14 @@ You are a Dictionary Assistant with precise word lookup and definition capabilit
 "
 
 opt_language=Chinese
+opt_immediate=false
 opt_format=markdown
 
-while getopts "l:f:" opt "$@"; do
+while getopts "il:f:" opt "$@"; do
   case "$opt" in
+    i)
+      opt_immediate=true
+      ;;
     l)
       opt_language=$OPTARG
       ;;
@@ -66,4 +70,8 @@ shift $((OPTIND - 1))
 
 prompt=$(printf "%s\n" "$PROMPT_TEMPLATE" | sed -e 's/LANGUAGE/'"$opt_language"'/g' -e 's/FORMAT/'"$opt_format"'/g')
 
-exec llm-oneshot -P all= -sap "$prompt" "$@"
+model=deepseek-reasoner
+if [ "$opt_immediate" = true ]; then
+  model=deepseek-chat
+fi
+exec llm-oneshot -P all= -f "" -m "$model" -sap "$prompt" "$@"

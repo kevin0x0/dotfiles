@@ -13,9 +13,13 @@ PROMPT_TEMPLATE='\
 '
 
 opt_language=Chinese
+opt_immediate=false
 
-while getopts "l:f:" opt "$@"; do
+while getopts "il:f:" opt "$@"; do
   case "$opt" in
+    i)
+      opt_immediate=true
+      ;;
     l)
       opt_language=$OPTARG
       ;;
@@ -29,4 +33,8 @@ shift $((OPTIND - 1))
 
 prompt=$(printf "%s\n" "$PROMPT_TEMPLATE" | sed -e 's/LANGUAGE/'"$opt_language"'/g')
 
-exec llm-oneshot -P all= -sap "$prompt" "$@"
+model=deepseek-reasoner
+if [ "$opt_immediate" = true ]; then
+  model=deepseek-chat
+fi
+exec llm-oneshot -P all= -f "" -m "$model" -sap "$prompt" "$@"
