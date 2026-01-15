@@ -123,10 +123,18 @@ bindsym {
 # Resizing containers:
 #
 mode "resize" {
-  bindsym $mod+$left move left
-  bindsym $mod+$down move down
-  bindsym $mod+$up move up
-  bindsym $mod+$right move right
+  bindsym $mod+Shift+$left move left
+  bindsym $mod+Shift+$down move down
+  bindsym $mod+Shift+$up move up
+  bindsym $mod+Shift+$right move right
+
+  bindsym $mod+$left focus left
+  bindsym $mod+$down focus down
+  bindsym $mod+$up focus up
+  bindsym $mod+$right focus right
+  bindsym $mod+p focus parent
+  bindsym $mod+c focus child
+
 # left will shrink the containers width
 # right will grow the containers width
 # up will shrink the containers height
