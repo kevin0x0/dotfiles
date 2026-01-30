@@ -1,0 +1,57 @@
+vim9script
+
+source $VIMRUNTIME/defaults.vim
+
+set number
+set rnu
+
+set signcolumn=number
+
+set nowrap
+
+set expandtab
+set tabstop=2
+set softtabstop=2
+
+set autoindent
+set shiftwidth=2
+
+set showcmd
+
+set splitbelow
+set splitright
+
+set nohlsearch
+set noignorecase
+set incsearch
+
+set scrolloff=0
+
+set cursorline
+
+set jumpoptions+=stack
+
+
+noremap <silent> <M-h> <C-w>h
+noremap <silent> <M-j> <C-w>j
+noremap <silent> <M-k> <C-w>k
+noremap <silent> <M-l> <C-w>l
+
+noremap <silent> <M-S-h> <C-w>H
+noremap <silent> <M-S-j> <C-w>J
+noremap <silent> <M-S-k> <C-w>K
+noremap <silent> <M-S-l> <C-w>L
+
+inoremap jk <Esc>
+inoremap jK <Esc>
+inoremap Jk <Esc>
+inoremap JK <Esc>
+
+noremap <M-w> :w<CR>
+noremap <M-q> :q<CR>
+
+colorscheme desert
+
+const vimrcpath = expand('<sfile>:p:h') 
+execute('source ' .. vimrcpath .. '/emacscmdline.vim')
+execute('source ' .. vimrcpath .. '/altkeys.vim')
