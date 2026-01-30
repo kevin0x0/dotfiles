@@ -1,3 +1,5 @@
+$include /etc/inputrc
+
 set active-region-start-color "\e[1m\e[30m\e[44m"
 set active-region-end-color "\e[0m"
 
