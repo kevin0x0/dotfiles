@@ -52,6 +52,11 @@ noremap <M-q> :q<CR>
 
 colorscheme peachpuff
 
-const vimrcpath = expand('<sfile>:p:h') 
-execute('source ' .. vimrcpath .. '/emacscmdline.vim')
-execute('source ' .. vimrcpath .. '/altkeys.vim')
+map <M-e> :e %:h<CR>
+map <M-f> :call execute(':e ' .. getcwd())<CR>
+
+const config_dir = expand('<sfile>:p:h') 
+execute('source ' .. config_dir .. '/emacscmdline.vim')
+execute('source ' .. config_dir .. '/altkeys.vim')
+execute('source ' .. config_dir .. '/plug.vim')
+execute('source ' .. config_dir .. '/plugins.vim')
