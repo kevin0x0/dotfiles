@@ -1,10 +1,9 @@
+include colorscheme/current
 
 set $gnome-schema org.gnome.desktop.interface
 
 set $monofont FiraMono Nerd Font Mono
 set $font Adwaita Sans
-set $gtk-theme Materia
-set $icon-theme Adwaita
 set $cursor-theme capitaine-cursors
 
 font pango: $monofont, Bold 12
@@ -26,10 +25,10 @@ exec_always {
 }
 
 # border background text indicator child_border
-client.focused #2f7e6d #2f7e6d #202020 #4ca491 #2f7e6d
-client.focused_inactive #404040 #404040 #687a90 #404040 #404040
-client.unfocused #202020 #202020 #404040 #202020 #202020
-client.urgent #ff4060 #ff4060 #202020 #ff4060 #ff4060
+client.focused $focused_fg $focused_fg $focused_text $focused_indicator $focused_fg
+client.focused_inactive $inactive_fg $inactive_fg $inactive_text $inactive_fg $inactive_fg
+client.unfocused $unfocused_fg $unfocused_fg $unfocused_text $unfocused_fg $unfocused_fg
+client.urgent $urgent_fg $urgent_fg $urgent_text $urgent_fg $urgent_fg
 
 bar {
   font $monofont, Bold 12
@@ -38,22 +37,22 @@ bar {
   tray_padding 4
   status_padding 0
   separator_symbol " ▌"
-  set icon_theme $icon-theme
+  icon_theme $icon-theme
 
   status_command i3status
   colors {
-    separator #1a1b24
-    statusline #ceb992
-    background #1a1b24
+    separator $main_bg
+    statusline $statusline_text
+    background $main_bg
 
-    focused_separator #404040
-    focused_statusline #ceb992
-    focused_background #1a1b24
+    focused_separator $inactive_fg
+    focused_statusline $statusline_text
+    focused_background $main_bg
 
-    focused_workspace #2f7e6d #2f7e6d #1a1b24
-    active_workspace #1a1b24 #1a1b24 #4ca491
-    inactive_workspace #1a1b24 #1a1b24 #687a90
-    urgent_workspace #1a1b24 #1a1b24 #ff4060
+    focused_workspace $focused_fg $focused_fg $main_bg
+    active_workspace $main_bg $main_bg $focused_indicator
+    inactive_workspace $main_bg $main_bg $inactive_text
+    urgent_workspace $main_bg $main_bg $urgent_fg
   }
 }
 

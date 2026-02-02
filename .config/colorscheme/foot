@@ -1,0 +1,35 @@
+set -e
+
+case $1 in
+  dark)
+    theme=1
+    ;;
+  *)
+    theme=2
+    ;;
+esac
+CONFIG_FILE=${XDG_CONFIG_HOME:-$HOME/.config}/foot/foot.ini
+
+if [ ! -f "$CONFIG_FILE" ]; then
+  echo "$CONFIG_FILE doesn't exist" >&2
+  exit 1
+fi
+
+tmp=$(tmpfile)
+
+sed -- 's/^initial-color-theme=.*$/initial-color-theme='"$theme"'/' \
+  "$CONFIG_FILE" >"$tmp"
+
+cp -- "$tmp" "$CONFIG_FILE"
+rm -- "$tmp"
+
+case $theme in
+  1)
+    pkill -USR1 foot
+    ;;
+  2)
+    pkill -USR2 foot
+    ;;
+esac
+
+# vim: ft=sh

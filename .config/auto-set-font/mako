@@ -9,4 +9,4 @@ reload() {
   makoctl reload
 }
 
-# vim: ft=bash
+# vim: ft=sh

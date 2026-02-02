@@ -2,6 +2,10 @@
 FONTFAMILY='FiraMono Nerd Font Mono'
 # Font by fontconfig format
 FONT="$FONTFAMILY, Bold 14"
-COLORS='-S 232323 -s ceb992 -N 1a1b24 -n 2f7e6d -M 232323 -m 4ca491'
+
+DARK_COLORS='-S 232323 -s ceb992 -N 1a1b24 -n 2f7e6d -M 232323 -m 4ca491'
+LIGHT_COLORS='-S f4e9dd -s 3b2a1e -N f4e9dd -n d97b3e -M f4e9dd -m f0a85a'
+
+COLORS=$DARK_COLORS
 
 # vim: ft=bash

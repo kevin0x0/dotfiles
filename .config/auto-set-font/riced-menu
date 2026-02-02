@@ -9,4 +9,4 @@ reload() {
   return
 }
 
-# vim: ft=bash
+# vim: ft=sh

@@ -96,4 +96,6 @@ bindsym --locked XF86MonBrightnessUp exec brightnessctl set 1%+
 bindsym $mod+o opacity plus 0.02
 bindsym $mod+Shift+o opacity minus 0.02
 
+# Toggle colorscheme
+bindsym $mod+q exec colorscheme
 # vim: ft=swayconfig

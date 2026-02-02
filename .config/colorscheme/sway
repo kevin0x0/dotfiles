@@ -1,0 +1,7 @@
+set -e
+
+SWAY_CONFIG=${XDG_CONFIG_HOME:-$HOME/.config}/sway
+
+"$SWAY_CONFIG/scripts/change-colorscheme" "$1"
+
+# vim: ft=sh

@@ -11,4 +11,4 @@ reload() {
   swaymsg reload
 }
 
-# vim: ft=bash
+# vim: ft=sh

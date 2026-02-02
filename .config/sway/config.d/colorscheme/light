@@ -1,0 +1,21 @@
+set $main_bg #f4e9dd
+
+set $focused_fg #d97b3e
+set $focused_indicator #f0a85a
+set $focused_text #2b1b12
+
+set $inactive_fg #e0a06a
+set $inactive_text #3b2618
+
+set $unfocused_fg #f0d9c3
+set $unfocused_text #9c7a5b
+
+set $urgent_fg #d9534f
+set $urgent_text #ffffff
+
+set $statusline_text #3b2a1e
+
+set $gtk-theme Materia-light
+set $icon-theme Adwaita
+
+# vim: ft=swayconfig
