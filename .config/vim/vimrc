@@ -50,7 +50,7 @@ inoremap JK <Esc>
 noremap <M-w> :w<CR>
 noremap <M-q> :q<CR>
 
-colorscheme desert
+colorscheme peachpuff
 
 const vimrcpath = expand('<sfile>:p:h') 
 execute('source ' .. vimrcpath .. '/emacscmdline.vim')
