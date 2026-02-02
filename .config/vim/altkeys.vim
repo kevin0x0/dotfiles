@@ -10,4 +10,5 @@ tmap â <Esc>b
 tmap ÿ <Esc><BS>
 tmap ä <Esc>d
 tmap õ <Esc>u
+tmap ì <Esc>l
 tmap ã <Esc>c
