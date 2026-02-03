@@ -1,0 +1,20 @@
+#!/bin/sh
+
+SWAY_CONFIG_DIR=${XDG_CONFIG_HOME:-$HOME/.config}/sway
+
+theme=$1
+if [ -z "$theme" ]; then
+  theme=$(cd "$SWAY_CONFIG_DIR/config.d"; find colorscheme -type f \
+    | cut -d '/' -f 2 \
+    | riced-menu)
+fi
+
+if [ ! -f "$SWAY_CONFIG_DIR/config.d/colorscheme/$theme" ]; then
+  notify-send --app-name "change-colorscheme" --urgency critical -- \
+    "failed to change colorscheme" "colorscheme '$theme' doesn't exist"
+  exit 1
+fi
+
+ln -sf "$theme" "$SWAY_CONFIG_DIR/config.d/colorscheme/current"
+
+swaymsg reload
