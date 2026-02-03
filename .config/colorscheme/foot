@@ -25,10 +25,10 @@ rm -- "$tmp"
 
 case $theme in
   1)
-    pkill -USR1 foot
+    pkill -USR1 foot || true
     ;;
   2)
-    pkill -USR2 foot
+    pkill -USR2 foot || true
     ;;
 esac
 
