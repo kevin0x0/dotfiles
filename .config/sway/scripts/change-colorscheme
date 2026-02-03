@@ -1,4 +1,16 @@
 #!/bin/sh
+# This script changes sway's current colorscheme.
+#
+# It gets the theme from the command line or prompts the user to select one.
+# Then it links $SWAY_CONFIG_DIR/config.d/colorscheme/current to the chosen
+# theme. After that, it notifies sway to apply the changes.
+#
+# To apply changes, instead of executing `swaymsg reload` to reload whole
+# configuration, this script sources only the related configuration files and
+# feeds the necessary commands to sway via `swaymsg -- <command>`. This
+# significantly reduces the colorscheme changing latency.
+
+set -e
 
 SWAY_CONFIG_DIR=${XDG_CONFIG_HOME:-$HOME/.config}/sway
 
@@ -17,4 +29,75 @@ fi
 
 ln -sf "$theme" "$SWAY_CONFIG_DIR/config.d/colorscheme/current"
 
-swaymsg reload
+
+source_colorscheme() (
+  while IFS= read -r line; do
+    trimmed=${line#"${line%%[![:space:]]*}"}
+    case $trimmed in
+      '#'*)
+        continue
+        ;;
+      '')
+        continue
+        ;;
+    esac
+      swaymsg -- "$trimmed"
+  done <"$SWAY_CONFIG_DIR/config.d/colorscheme/current"
+)
+
+execute_commands() {
+  while IFS= read -r line; do
+    trimmed=${line#"${line%%[![:space:]]*}"}
+    case $trimmed in
+      '# DYNAMIC COMMAND END')
+        return
+        ;;
+      '#'*)
+        continue
+        ;;
+      '')
+        continue
+        ;;
+    esac
+
+    swaymsg -- "$trimmed"
+  done
+}
+
+execute_bar_colors_commands() (
+  bar_ids=$(swaymsg -rt get_bar_config | jq -r '.[]')
+
+  while IFS= read -r line; do
+    trimmed=${line#"${line%%[![:space:]]*}"}
+    case $trimmed in
+      '# BAR COLORS DYNAMIC COMMAND END')
+        return
+        ;;
+      '#'*)
+        continue
+        ;;
+      '')
+        continue
+        ;;
+    esac
+    for bar_id in $bar_ids; do
+      swaymsg -- bar "$bar_id" colors "$trimmed"
+    done
+  done
+)
+
+# Source colorscheme
+source_colorscheme
+
+# Read and execute commands from visual config to set colors
+while IFS= read -r line; do
+  trimmed=${line#"${line%%[![:space:]]*}"}
+  case $trimmed in
+    '# DYNAMIC COMMAND BEGIN')
+      execute_commands
+      ;;
+    '# BAR COLORS DYNAMIC COMMAND BEGIN')
+      execute_bar_colors_commands
+      ;;
+  esac
+done <"$SWAY_CONFIG_DIR/config.d/visual"
