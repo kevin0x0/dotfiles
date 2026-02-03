@@ -17,7 +17,6 @@ set $urgent_text #202020
 
 set $statusline_text #ceb992
 
-set $gtk-theme Materia
-set $icon-theme Adwaita
+set $gtk-theme Materia-dark
 
 # vim: ft=swayconfig

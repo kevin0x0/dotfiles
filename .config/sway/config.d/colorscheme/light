@@ -16,6 +16,5 @@ set $urgent_text #ffffff
 set $statusline_text #3b2a1e
 
 set $gtk-theme Materia-light
-set $icon-theme Adwaita
 
 # vim: ft=swayconfig
