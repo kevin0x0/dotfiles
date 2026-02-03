@@ -1,0 +1,26 @@
+font=FiraMono Nerd Font Mono, 12
+
+background-color=#f4e9dd
+text-color=#3b2a1e
+border-color=#d97b3e
+border-size=2
+border-radius=4
+width=500
+height=150
+
+default-timeout=5000
+
+format= <b>%s</b> <small><i>%a</i></small>\n%b
+
+
+[urgency=critical]
+height=300
+text-color=#ff4060
+border-color=#ff4060
+
+[urgency=low]
+height=150
+text-color=#687a90
+border-color=#687a90
+
+# vim: ft=dosini
