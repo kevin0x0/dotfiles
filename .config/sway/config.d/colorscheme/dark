@@ -18,5 +18,6 @@ set $urgent_text #202020
 set $statusline_text #ceb992
 
 set $gtk-theme Materia-dark
+set $color-scheme prefer-dark
 
 # vim: ft=swayconfig

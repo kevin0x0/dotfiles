@@ -32,6 +32,7 @@ exec_always {
 
 # DYNAMIC COMMAND BEGIN
 exec_always gsettings set $gnome-schema gtk-theme "$gtk-theme"
+exec_always gsettings set $gnome-schema color-scheme "$color-scheme"
 
 # border background text indicator child_border
 client.focused $focused_fg $focused_fg $focused_text $focused_indicator $focused_fg
@@ -48,7 +49,7 @@ bar {
   tray_padding 4
   status_padding 0
   separator_symbol " ▌"
-  icon_theme $icon-theme
+  icon_theme $icon-themnie
 
   status_command i3status
   colors {
