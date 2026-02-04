@@ -1,0 +1,22 @@
+set -e
+
+COLOR_CONFIG="${XDG_CONFIG_HOME:-$HOME/.config}/neomutt/colors/256"
+if [ ! -L "$COLOR_CONFIG" ]; then
+  echo "$COLOR_CONFIG doesn't exist or is not a symbol link" >&2
+  exit 1
+fi
+
+case $1 in
+  dark)
+    color=256-dark
+    ;;
+  *)
+    color=256-light
+    ;;
+esac
+
+ln -sf "$color" "$COLOR_CONFIG"
+
+# Unfortunately, it seems there is no simple solution to notify running neomutt
+# process to reload color config.
+# vim: ft=sh
