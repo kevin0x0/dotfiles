@@ -137,7 +137,6 @@ make_valid_json() (
         break
         ;;
       data:*)
-        printf "%s: %s\n" "$(date)" "$line" >>~/llm-log
         printf "%s\n" "${line##data:}"
         ;;
       *)
