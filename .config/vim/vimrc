@@ -50,7 +50,7 @@ inoremap JK <Esc>
 noremap <M-w> :w<CR>
 noremap <M-q> :q<CR>
 
-colorscheme peachpuff
+colorscheme default
 
 map <M-e> :e %:h<CR>
 map <M-f> :call execute(':e ' .. getcwd())<CR>
