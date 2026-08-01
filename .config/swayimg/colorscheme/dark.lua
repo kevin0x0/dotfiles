@@ -1,3 +1,4 @@
+return function()
 -- Text overlay configuration
 swayimg.text.color = 0xffc0caf5           -- foreground text color
 swayimg.text.background = 0xc01a1b26      -- text background color
@@ -13,3 +14,4 @@ swayimg.gallery.border_color = 0xff7aa2f7           -- border color for selected
 swayimg.gallery.selected_color = 0xff3b4261         -- background color for selected thumbnail
 swayimg.gallery.unselected_color = 0xa01a1b26       -- background color for unselected thumbnail
 swayimg.gallery.window_color = 0x00000000           -- window background color
+end
